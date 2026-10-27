@@ -313,3 +313,35 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/scripts/make_fixtures.py, Makefile
 - Commit: 6b5caec
 - Affects the other coder? yes (until L5 merges, `compute_score` is the stub, so refreshed scores are all 50)
+
+### 2026-10-27 · N9 · Homes and assessments stay in the in-memory store until N10
+- Decision: `POST /homes` and `POST /homes/{id}/assess` run the real pipeline, but the home, its real address/property/household and its latest assessment are kept in the stub store (`StubHome.real`, `StubHome.assessment`), not in Postgres. They are lost on restart. N10 moves homes and assessments into the database together with real users
+- Alternatives: insert placeholder `users` rows for stub-cookie emails so homes can be stored now
+- Why: `homes.user_id` needs a `users` row, which only exists with real accounts (N10); placeholder users would have to be migrated or deleted again
+- Files: backend/app/api/homes.py, backend/app/api/stub_store.py
+- Commit: c5ce465
+- Affects the other coder? yes (assessments vanish when the API restarts until N10)
+
+### 2026-10-27 · N9 · Property facts when creating a home
+- Decision: `property_override` wins; else the latest EPC for `address.uprn`; else, for a demo postcode, the demo home's property; else 400 `validation` with detail starting `property_override:` (also when the EPC register is down)
+- Alternatives: 502 `upstream_unavailable` when the register is down
+- Why: the user can always carry on by entering the details (spec §5: the app keeps working)
+- Files: backend/app/services/assessment.py, backend/app/api/homes.py
+- Commit: c5ce465
+- Affects the other coder? yes (front end shows the property form on that 400)
+
+### 2026-10-27 · N9 · Live warnings have a 3 s budget inside an assessment
+- Decision: `active_flood_warnings` is given `ASSESS_WARNINGS_BUDGET_S = 3.0`; slower counts as 0, the same as the feed being down (N7). The flood band is read before the parallel network calls because it uses the request's session directly
+- Alternatives: keep the 10 s outbound timeout and miss the < 5 s cold target
+- Why: the EA feed took 1.6–5.6 s cold in the N9 check; everything else took under 0.3 s
+- Files: backend/app/services/assessment.py, backend/app/config.py
+- Commit: c5ce465
+- Affects the other coder? no
+
+### 2026-10-27 · N9 · `subsidence_signal` is always `unknown` for now
+- Decision: no request field carries the user's subsidence answer, so new homes get the contract default `unknown`; a separate `contract:` PR proposes an optional household field
+- Alternatives: none without a contract change
+- Why: CONTRACT §2 says the value comes from the household form, but neither `Household` nor `HomeCreate` has it
+- Files: backend/app/services/assessment.py
+- Commit: c5ce465
+- Affects the other coder? yes

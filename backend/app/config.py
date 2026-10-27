@@ -22,6 +22,8 @@ MAX_LIST_ITEMS = 50  # CONTRACT §3: no pagination in M1
 # --- Outbound calls (spec §5) ------------------------------------------------------------
 EXTERNAL_TIMEOUT_S = 10.0
 LLM_TIMEOUT_S = 8.0
+# The EA warnings feed takes 1.6–5.6 s cold (N9 check); an assessment must answer in < 5 s.
+ASSESS_WARNINGS_BUDGET_S = 3.0
 
 # --- EPC register developer API (spec N6; docs/decisions/N.md) ---------------------------
 # Live service. Tokens from the integration (test) service only work against its own host,
