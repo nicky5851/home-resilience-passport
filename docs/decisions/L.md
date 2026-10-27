@@ -65,3 +65,51 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/app/scoring/risk.py, backend/app/scoring/score.py, backend/app/scoring/funding.py
 - Commit: 82bbc89
 - Affects the other coder? yes (the stub ignores inputs until L4/L5/L6 merge)
+
+### 2026-10-27 · L2 · Mock mode swaps `fetch`, not the client
+- Decision: with `NEXT_PUBLIC_API_MOCK=1`, `openapi-fetch` gets a mock `fetch` (`src/mocks/handler.ts`) that answers `/api/v1/...` from the fixtures, following the stub API's rules (cookie-less login kept in `sessionStorage`, 401/404/400 codes, share/revoke). Work uploads and certificate downloads are not mocked yet
+- Alternatives: `if (MOCK) return fixture` branches in every call; MSW (new dependency)
+- Why: page code is identical in both modes, so `/dev/contract` proves the same code against both; no new dependency (rule 3, rule 6)
+- Files: frontend/src/mocks/handler.ts, frontend/src/lib/api/client.ts
+- Commit: <hash>
+- Affects the other coder? no
+
+### 2026-10-27 · L2 · Contract checks are one shared list
+- Decision: `src/lib/api/contract-checks.ts` holds the 19 checks; the `/dev/contract` page renders them, and vitest runs them in mock mode on every CI run and against a live API when `CONTRACT_API_URL` is set
+- Alternatives: page-only checks
+- Why: CI catches mock/contract drift without a browser; the page and tests can never disagree (rule 3)
+- Files: frontend/src/lib/api/contract-checks.ts, frontend/src/lib/api/contract-checks.test.ts, frontend/src/app/dev/contract/
+- Commit: <hash>
+- Affects the other coder? no
+
+### 2026-10-27 · L2 · `mocks:sync` writes an index and runs before dev, build, typecheck and test
+- Decision: the sync script copies the fixture JSON and generates `src/mocks/fixtures/index.ts` (git-ignored); `pnpm dev`, `build`, `typecheck` and `test` run it first
+- Alternatives: run it only before `dev` and `build` as spec §4.4 says
+- Why: the mock handler imports the fixtures, so `tsc` and vitest need them too, including in CI (rule 1)
+- Files: frontend/scripts/mocks-sync.mjs, frontend/package.json
+- Commit: <hash>
+- Affects the other coder? no
+
+### 2026-10-27 · L2 · Minimal `/login` and `/homes` pages now
+- Decision: a bare log-in form (redirects to a same-site `next` only) and a protected "My homes" list, so the `RequireUser` redirect has a real target; L13 replaces both with the full account pages
+- Alternatives: redirect to a page that does not exist yet
+- Why: the L2 check needs a protected page that redirects to a working `/login` (rule 1)
+- Files: frontend/src/app/login/, frontend/src/app/homes/, frontend/src/components/auth/require-user.tsx, frontend/src/lib/auth/use-user.ts
+- Commit: <hash>
+- Affects the other coder? no
+
+### 2026-10-27 · L2 · CI fails on stale `schema.d.ts`
+- Decision: the front-end CI job runs `pnpm types` and `git diff --exit-code src/lib/api/schema.d.ts`; `schema.d.ts` is excluded from Prettier and ESLint so the generated file is committed as generated
+- Alternatives: format the generated file
+- Why: CONTRACT §3 (b); formatting would make the drift check depend on Prettier's version
+- Files: .github/workflows/ci.yml, Makefile, frontend/.prettierignore, frontend/eslint.config.mjs
+- Commit: <hash>
+- Affects the other coder? yes (after any API change N runs `make openapi` and `make types` and commits both)
+
+### 2026-10-27 · L2 · New dependencies `openapi-fetch`, `openapi-typescript`
+- Decision: added to the front end
+- Alternatives: none; spec §2 locks both
+- Why: required by L2
+- Files: frontend/package.json, frontend/pnpm-lock.yaml
+- Commit: <hash>
+- Affects the other coder? no
