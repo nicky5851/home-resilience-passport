@@ -4,7 +4,7 @@ COMPOSE := docker compose -f infra/docker-compose.yml
 BACKEND := cd backend &&
 HAS_FRONTEND := $(wildcard frontend/package.json)
 
-.PHONY: help install db dev api test lint format openapi openapi-check types seed validate-data fixtures train
+.PHONY: help install db migrate dev api test lint format openapi openapi-check types seed validate-data fixtures train
 
 help: ## Show this list
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-15s %s\n", $$1, $$2}'
@@ -18,13 +18,16 @@ endif
 db: ## Start Postgres and wait until it is ready
 	$(COMPOSE) up -d --wait db
 
-dev: db ## Postgres + API (:8000) + front end (:3000)
+migrate: db ## Apply database migrations
+	$(BACKEND) uv run alembic upgrade head
+
+dev: migrate ## Postgres + API (:8000) + front end (:3000)
 	@trap 'kill 0' EXIT; \
 	( $(BACKEND) uv run uvicorn app.main:app --reload --port 8000 ) & \
 	$(if $(HAS_FRONTEND),( cd frontend && pnpm dev ) &,) \
 	wait
 
-api: db ## Postgres + API only
+api: migrate ## Postgres + API only
 	$(BACKEND) uv run uvicorn app.main:app --reload --port 8000
 
 test: ## All tests
@@ -51,11 +54,11 @@ openapi-check: ## Fail if docs/openapi.json differs from the app's schema
 types: ## Regenerate frontend/src/lib/api/schema.d.ts (added in L2)
 	@echo "make types arrives in L2" && exit 1
 
-seed: ## Load data/reference/*.csv and demo homes (added in N4)
-	@echo "make seed arrives in N4" && exit 1
+seed: migrate ## Load data/reference/*.csv into the database
+	$(BACKEND) uv run python -m app.db.seed
 
-validate-data: ## Check A's CSVs against CONTRACT.md §5 (added in N4)
-	@echo "make validate-data arrives in N4" && exit 1
+validate-data: ## Check A's CSVs against CONTRACT.md §5
+	$(BACKEND) uv run python -m scripts.validate_data
 
 fixtures: ## Rebuild fixture outputs from the real pipeline (added in N8)
 	@echo "make fixtures arrives in N8" && exit 1

@@ -1,0 +1,9 @@
+id,name,category,hazards_reduced,cost_low_gbp,cost_high_gbp,annual_bill_saving_gbp,co2_saved_kg_per_year,resilience_points,property_types,renter_ok,needs_landlord,source_url
+flood-door,Flood door,flood,river_sea_flood;surface_water,1500,3500,0,0,8,,false,true,https://example.com/placeholder-source
+flood-plan-kit,Flood plan and grab bag,flood,river_sea_flood;surface_water,50,150,0,0,2,,true,false,https://example.com/placeholder-source
+reflective-blinds,Thermal reflective blinds,heat,overheating,100,400,20,30,3,,true,false,https://example.com/placeholder-source
+external-shutters,External window shutters,heat,overheating,800,2500,0,0,6,,false,true,https://example.com/placeholder-source
+roof-fixings,Roof and ridge tile fixings,storm,storm,400,1500,0,0,5,detached;semi_detached;terraced;bungalow,false,true,https://example.com/placeholder-source
+drain-survey,Drain survey and repair,subsidence,subsidence,200,1200,0,0,4,detached;semi_detached;terraced;bungalow,false,true,https://example.com/placeholder-source
+loft-insulation,Loft insulation top-up,carbon,,400,900,250,600,6,detached;semi_detached;terraced;bungalow,false,true,https://example.com/placeholder-source
+led-lighting,LED lighting throughout,carbon,,50,200,60,80,2,,true,false,https://example.com/placeholder-source

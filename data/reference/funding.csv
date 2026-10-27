@@ -1,0 +1,6 @@
+id,name,provider,kind,max_amount_gbp,apr_percent,income_bands,tenures,categories,is_mock,source_url
+boiler-upgrade-scheme,Boiler Upgrade Scheme,UK Government,grant,7500,,,owner_occupier;landlord,carbon,false,https://www.gov.uk/apply-boiler-upgrade-scheme
+eco4,Energy Company Obligation (ECO4),Energy suppliers,grant,,,under_20k,,carbon,false,https://www.gov.uk/energy-company-obligation
+lloyds-green-cashback,Green home cashback,Lloyds (illustrative),cashback,500,,,owner_occupier,,true,
+lloyds-insurance-discount,Flood resilience insurance discount,Lloyds (illustrative),insurance_discount,100,,,,flood,true,
+lloyds-home-improvement-loan,Home improvement loan,Lloyds (illustrative),loan,25000,6.9,,,,true,
