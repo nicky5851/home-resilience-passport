@@ -1,0 +1,5 @@
+.next
+node_modules
+pnpm-lock.yaml
+src/mocks/fixtures
+src/lib/api/schema.d.ts
