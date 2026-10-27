@@ -29,10 +29,10 @@ that person's step and only inside the paths they own (spec §3).
 ## When the human says "approved"
 
 1. Add any decisions you made that the spec did not cover to the person's log (`docs/decisions/N.md` or `docs/decisions/L.md`) using the format in spec §13. Mark "Affects the other coder? yes" when it touches a seam.
-2. `git add` only the files you changed, then `git commit` with the step's commit message from the spec.
-3. Fill the commit hash into the new decision-log entries and amend the commit.
-4. `git push -u origin <branch>`.
-5. Open the pull request if none exists (`gh pr create`), or update it (`gh pr edit`), listing the steps it contains and linking new decision-log entries.
+2. `git add` only the files you changed, then `git commit` with the step's commit message from the spec. Leave `PR: #?` in the new decision-log entries.
+3. `git push -u origin <branch>`.
+4. Open the pull request if none exists (`gh pr create`), or update it (`gh pr edit`), listing the steps it contains and linking new decision-log entries.
+5. Replace `PR: #?` with the pull request's number, commit (`docs: decision-log PR number`) and push. No amend, no force-push: the squash merge folds it in.
 6. Remind the human: merge to `main` at least once a day, and by 9 pm the evening before a sync meeting, when CI is green.
 
 Never start the next step on your own. Never push to `main` directly. Never force-push.
