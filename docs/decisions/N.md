@@ -7,7 +7,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: sync `psycopg` now, switch in N10
 - Why: fastapi-users' SQLAlchemy adapter needs an async session; avoids a driver change mid-build (rule 3)
 - Files: backend/app/config.py, .env.example, .github/workflows/ci.yml
-- Commit: 5427e2a
+- Commit: c2e0e00
 - Affects the other coder? no
 
 ### 2026-10-27 · N1 · Makefile targets for later steps are placeholders
@@ -15,7 +15,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: leave them out until their step
 - Why: CLAUDE.md lists them; a clear message beats "No rule to make target" (rule 5)
 - Files: Makefile
-- Commit: 5427e2a
+- Commit: c2e0e00
 - Affects the other coder? no
 
 ### 2026-10-27 · N1 · Node version pinned in `.nvmrc`
@@ -23,7 +23,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: rely on the README only
 - Why: `nvm use` / `uv` pick the right runtimes automatically (spec §2)
 - Files: .nvmrc, backend/.python-version
-- Commit: 5427e2a
+- Commit: c2e0e00
 - Affects the other coder? no
 
 ### 2026-10-27 · N2 · Fixtures written by a generator script
@@ -31,7 +31,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: hand-written JSON
 - Why: five large files stay consistent and schema-valid; rerun after any schema change until `make fixtures` (N8) replaces it (rule 3)
 - Files: backend/scripts/placeholder_fixtures.py, backend/tests/fixtures/demo_homes/
-- Commit: ac223ac
+- Commit: d441770
 - Affects the other coder? yes (output parts are placeholders, not L's scoring; measures/funding rows are placeholders until A's CSVs)
 
 ### 2026-10-27 · N2 · Contract models reject unknown keys
@@ -39,7 +39,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: Pydantic's default (ignore extra keys)
 - Why: a misspelt field in a fixture or request fails loudly instead of silently becoming `null` (rule 3)
 - Files: backend/app/schemas/base.py
-- Commit: ac223ac
+- Commit: d441770
 - Affects the other coder? yes (a request body with an extra key gets `400 validation`)
 
 ### 2026-10-27 · N2 · `HazardLevel.data_source` stays `str`
@@ -47,7 +47,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: a `Literal` of the five strings
 - Why: follow §4.1 to the letter; the test still catches a wrong string (rule 2)
 - Files: backend/app/schemas/hazards.py, backend/tests/test_schemas.py
-- Commit: ac223ac
+- Commit: d441770
 - Affects the other coder? no
 
 ### 2026-10-27 · N2 · `Passport` extends `PublicPassport`
@@ -55,5 +55,5 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: two independent classes
 - Why: the public model cannot gain household data by accident; FastAPI's response model strips the extra fields (rule 5)
 - Files: backend/app/schemas/passport.py
-- Commit: ac223ac
+- Commit: d441770
 - Affects the other coder? no
