@@ -4,7 +4,7 @@ COMPOSE := docker compose -f infra/docker-compose.yml
 BACKEND := cd backend &&
 HAS_FRONTEND := $(wildcard frontend/package.json)
 
-.PHONY: help install db dev api test lint format openapi types seed validate-data fixtures train
+.PHONY: help install db dev api test lint format openapi openapi-check types seed validate-data fixtures train
 
 help: ## Show this list
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-15s %s\n", $$1, $$2}'
@@ -42,11 +42,14 @@ endif
 format: ## Auto-format back-end code
 	$(BACKEND) uv run ruff format . && uv run ruff check --fix .
 
-openapi: ## Write docs/openapi.json from the app (added in N3)
-	@echo "make openapi arrives in N3" && exit 1
+openapi: ## Write docs/openapi.json from the app (no server needed)
+	$(BACKEND) uv run python -m scripts.export_openapi
 
-types: ## Regenerate frontend/src/lib/api/schema.d.ts (added in N3/L2)
-	@echo "make types arrives in N3/L2" && exit 1
+openapi-check: ## Fail if docs/openapi.json differs from the app's schema
+	$(BACKEND) uv run python -m scripts.export_openapi --check
+
+types: ## Regenerate frontend/src/lib/api/schema.d.ts (added in L2)
+	@echo "make types arrives in L2" && exit 1
 
 seed: ## Load data/reference/*.csv and demo homes (added in N4)
 	@echo "make seed arrives in N4" && exit 1

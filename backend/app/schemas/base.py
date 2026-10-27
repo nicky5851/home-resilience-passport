@@ -19,6 +19,11 @@ ExplanationText = Annotated[str, StringConstraints(max_length=200)]
 
 
 class Contract(BaseModel):
-    """Base for every contract model: unknown keys are rejected so typos fail loudly."""
+    """Base for every contract model.
 
-    model_config = ConfigDict(extra="forbid")
+    Unknown keys are rejected so typos fail loudly. In responses every field is always present
+    (CONTRACT §1 rule 2), so the output JSON schema marks fields with defaults as required too;
+    the generated front-end types then never make a response field optional.
+    """
+
+    model_config = ConfigDict(extra="forbid", json_schema_serialization_defaults_required=True)

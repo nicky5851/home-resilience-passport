@@ -79,6 +79,9 @@ class Settings(BaseSettings):
 
     storage_backend: Literal["local", "r2"] = "local"
 
+    # Public front-end URL, used to build share links.
+    next_public_app_url: str = "http://localhost:3000"
+
     @property
     def allowed_origin_list(self) -> list[str]:
         return [o.strip().rstrip("/") for o in self.allowed_origins.split(",") if o.strip()]
