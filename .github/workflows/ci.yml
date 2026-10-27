@@ -60,6 +60,11 @@ jobs:
           cache: pnpm
           cache-dependency-path: frontend/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      - name: API types match docs/openapi.json
+        run: |
+          pnpm types
+          git diff --exit-code src/lib/api/schema.d.ts || {
+            echo "schema.d.ts is stale. Run \`make types\` and commit the result."; exit 1; }
       - name: Lint
         run: pnpm lint && pnpm format:check
       - name: Typecheck

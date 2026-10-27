@@ -51,8 +51,8 @@ openapi: ## Write docs/openapi.json from the app (no server needed)
 openapi-check: ## Fail if docs/openapi.json differs from the app's schema
 	$(BACKEND) uv run python -m scripts.export_openapi --check
 
-types: ## Regenerate frontend/src/lib/api/schema.d.ts (added in L2)
-	@echo "make types arrives in L2" && exit 1
+types: ## Regenerate frontend/src/lib/api/schema.d.ts from docs/openapi.json
+	cd frontend && pnpm types
 
 seed: migrate ## Load data/reference/*.csv into the database
 	$(BACKEND) uv run python -m app.db.seed
