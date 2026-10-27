@@ -7,7 +7,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: allow all build scripts
 - Why: pnpm 12 blocks dependency install scripts by default and fails the install; allowing only what Next.js and ESLint need keeps the supply-chain check on (rule 3)
 - Files: frontend/pnpm-workspace.yaml
-- Commit: a2ca8be
+- Commit: 6c6f30f
 - Affects the other coder? no
 
 ### 2026-10-27 · L1 · shadcn/ui "Nova" preset on Radix, brand colours on top
@@ -15,7 +15,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: hand-written Tailwind config without shadcn variables
 - Why: shadcn components pick up the brand automatically; level colours live in one place for cards, charts and maps (rule 6)
 - Files: frontend/src/app/globals.css, frontend/src/lib/theme.ts, frontend/components.json
-- Commit: a2ca8be
+- Commit: 6c6f30f
 - Affects the other coder? no
 
 ### 2026-10-27 · L1 · No dark theme in M1
@@ -23,7 +23,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: keep an unused dark palette
 - Why: no toggle is planned and an untested palette could fail contrast checks in L14 (rule 3)
 - Files: frontend/src/app/globals.css
-- Commit: a2ca8be
+- Commit: 6c6f30f
 - Affects the other coder? no
 
 ### 2026-10-27 · L1 · Prettier style and lint gates
@@ -31,7 +31,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: ESLint only
 - Why: spec §2 lists eslint, prettier, tsc and vitest; width 100 matches the back end's ruff setting (rule 6)
 - Files: frontend/.prettierrc.json, frontend/eslint.config.mjs, frontend/vitest.config.ts, .github/workflows/ci.yml
-- Commit: a2ca8be
+- Commit: 6c6f30f
 - Affects the other coder? no
 
 ### 2026-10-27 · L1 · Footer links to `/privacy` before the page exists
@@ -39,7 +39,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: add the link in L13
 - Why: CONTRACT §6 rule 3 requires the footer link; the shell is its natural home (rule 6)
 - Files: frontend/src/components/app-shell/site-footer.tsx
-- Commit: a2ca8be
+- Commit: 6c6f30f
 - Affects the other coder? no
 
 ### 2026-10-27 · L3 · `completed_measures` defaults to `()` not `[]`
@@ -47,7 +47,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: `list[Measure] = []` exactly as written in spec §4.3
 - Why: a mutable default is a classic Python bug (ruff B006); callers passing a list or nothing work the same (rule 3)
 - Files: backend/app/scoring/score.py, backend/app/scoring/funding.py
-- Commit: 82bbc89
+- Commit: 5adec19
 - Affects the other coder? no (call sites are unchanged)
 
 ### 2026-10-27 · L3 · All §6/§7 numbers are in `scoring/config.py` from the start
@@ -55,7 +55,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: add them in L4–L6
 - Why: one place to review at Merge 1 with A; tests import the same constants (spec §2 Config)
 - Files: backend/app/scoring/config.py
-- Commit: 82bbc89
+- Commit: 5adec19
 - Affects the other coder? no
 
 ### 2026-10-27 · L3 · Stub values
@@ -63,7 +63,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: copy the fixture outputs
 - Why: obviously placeholder on screen, schema-valid, deterministic; N9 can wire the pipeline before L4 (rule 1)
 - Files: backend/app/scoring/risk.py, backend/app/scoring/score.py, backend/app/scoring/funding.py
-- Commit: 82bbc89
+- Commit: 5adec19
 - Affects the other coder? yes (the stub ignores inputs until L4/L5/L6 merge)
 
 ### 2026-10-27 · L2 · Mock mode swaps `fetch`, not the client
@@ -71,7 +71,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: `if (MOCK) return fixture` branches in every call; MSW (new dependency)
 - Why: page code is identical in both modes, so `/dev/contract` proves the same code against both; no new dependency (rule 3, rule 6)
 - Files: frontend/src/mocks/handler.ts, frontend/src/lib/api/client.ts
-- Commit: 1cc384a
+- Commit: 038b0d5
 - Affects the other coder? no
 
 ### 2026-10-27 · L2 · Contract checks are one shared list
@@ -79,7 +79,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: page-only checks
 - Why: CI catches mock/contract drift without a browser; the page and tests can never disagree (rule 3)
 - Files: frontend/src/lib/api/contract-checks.ts, frontend/src/lib/api/contract-checks.test.ts, frontend/src/app/dev/contract/
-- Commit: 1cc384a
+- Commit: 038b0d5
 - Affects the other coder? no
 
 ### 2026-10-27 · L2 · `mocks:sync` writes an index and runs before dev, build, typecheck and test
@@ -87,7 +87,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: run it only before `dev` and `build` as spec §4.4 says
 - Why: the mock handler imports the fixtures, so `tsc` and vitest need them too, including in CI (rule 1)
 - Files: frontend/scripts/mocks-sync.mjs, frontend/package.json
-- Commit: 1cc384a
+- Commit: 038b0d5
 - Affects the other coder? no
 
 ### 2026-10-27 · L2 · Minimal `/login` and `/homes` pages now
@@ -95,7 +95,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: redirect to a page that does not exist yet
 - Why: the L2 check needs a protected page that redirects to a working `/login` (rule 1)
 - Files: frontend/src/app/login/, frontend/src/app/homes/, frontend/src/components/auth/require-user.tsx, frontend/src/lib/auth/use-user.ts
-- Commit: 1cc384a
+- Commit: 038b0d5
 - Affects the other coder? no
 
 ### 2026-10-27 · L2 · CI fails on stale `schema.d.ts`
@@ -103,7 +103,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: format the generated file
 - Why: CONTRACT §3 (b); formatting would make the drift check depend on Prettier's version
 - Files: .github/workflows/ci.yml, Makefile, frontend/.prettierignore, frontend/eslint.config.mjs
-- Commit: 1cc384a
+- Commit: 038b0d5
 - Affects the other coder? yes (after any API change N runs `make openapi` and `make types` and commits both)
 
 ### 2026-10-27 · L2 · New dependencies `openapi-fetch`, `openapi-typescript`
@@ -111,5 +111,5 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: none; spec §2 locks both
 - Why: required by L2
 - Files: frontend/package.json, frontend/pnpm-lock.yaml
-- Commit: 1cc384a
+- Commit: 038b0d5
 - Affects the other coder? no
