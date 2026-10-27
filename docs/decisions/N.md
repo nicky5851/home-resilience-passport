@@ -57,3 +57,59 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/app/schemas/passport.py
 - Commit: d441770
 - Affects the other coder? no
+
+### 2026-10-27 · N3 · Route bodies live in `schemas/api.py`
+- Decision: the §4.2 shorthand shapes (`PostcodeLookup`, `HomeCreate`, `HomeCreated`, `HomeSummary`, `Assessment`, `PlanRequest`, `FundingRequest`, `ShareLink`, `ModelInfo`, `ErrorBody`, `ForgotPassword`, `ResetPassword`) are Pydantic models in the shared schemas package
+- Alternatives: define them inside N's routers
+- Why: they are contract (the front end's types come from them); keeping them with §4.1 makes every contract change one place (rule 2, rule 6)
+- Files: backend/app/schemas/api.py
+- Commit: <hash>
+- Affects the other coder? yes (new type names in `schema.d.ts`)
+
+### 2026-10-27 · N3 · `HomeSummary.score` is a full `ResilienceScore | null`
+- Decision: `GET /homes` returns the whole latest score object, not just the number
+- Alternatives: `score: int | null`
+- Why: §4.2 writes `score?` without a type; the "My homes" list can show the band without another call (rule 1)
+- Files: backend/app/schemas/api.py
+- Commit: <hash>
+- Affects the other coder? yes
+
+### 2026-10-27 · N3 · Response fields are required in OpenAPI
+- Decision: `json_schema_serialization_defaults_required=True` on every contract model
+- Alternatives: leave defaults optional in the schema
+- Why: CONTRACT §1 rule 2 says every field is always present; otherwise the generated TS types mark nullable fields optional. Side effect: `Address`, `Household`, `PropertyFacts` appear as `-Input` / `-Output` in OpenAPI
+- Files: backend/app/schemas/base.py, docs/openapi.json
+- Commit: <hash>
+- Affects the other coder? yes (use `components["schemas"]["PropertyFacts-Output"]` etc. for responses)
+
+### 2026-10-27 · N3 · Stub state is in memory
+- Decision: `app/api/stub_store.py` keeps homes, events, certificates and share links in a process-local dict; demo homes are readable by any logged-in user
+- Alternatives: write the stub against the database now
+- Why: N4 builds the tables, N9/N10/N14 replace the stub piece by piece; memory keeps N3 small (rule 3)
+- Files: backend/app/api/stub_store.py
+- Commit: <hash>
+- Affects the other coder? no (restarting the API forgets stub homes)
+
+### 2026-10-27 · N3 · `POST /homes/{id}/work` returns 200
+- Decision: 200 with the `PassportEvent`
+- Alternatives: 201
+- Why: the contract names 201 only for `POST /homes`; keep FastAPI's default elsewhere (rule 2)
+- Files: backend/app/api/homes.py
+- Commit: <hash>
+- Affects the other coder? no
+
+### 2026-10-27 · N3 · Unlisted 4xx statuses map to `validation`
+- Decision: e.g. 405 returns `code="validation"`; 422 never appears (converted to 400 and removed from OpenAPI)
+- Alternatives: invent new codes
+- Why: CONTRACT §3 lists a closed set of codes (rule 2)
+- Files: backend/app/api/errors.py, backend/app/main.py
+- Commit: <hash>
+- Affects the other coder? no
+
+### 2026-10-27 · N3 · New dependency `python-multipart`
+- Decision: added to the back end
+- Alternatives: none; FastAPI needs it for form-encoded login and multipart uploads
+- Why: required by CONTRACT §4 and §6
+- Files: backend/pyproject.toml, backend/uv.lock
+- Commit: <hash>
+- Affects the other coder? no
