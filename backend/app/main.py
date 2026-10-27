@@ -1,3 +1,6 @@
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import APIRouter, FastAPI
 
 from app.api import auth, homes, lookup, public
@@ -5,6 +8,13 @@ from app.api.errors import ERROR_RESPONSES, install_error_handlers
 from app.api.origin import origin_check
 from app.config import API_PREFIX, get_settings
 from app.schemas.api import Health
+from ml import predict
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    predict.model()  # load the EPC model once, before the first request
+    yield
 
 
 def create_app() -> FastAPI:
@@ -16,6 +26,7 @@ def create_app() -> FastAPI:
         openapi_url=f"{API_PREFIX}/openapi.json" if docs_on else None,
         docs_url="/docs" if docs_on else None,
         redoc_url=None,
+        lifespan=lifespan,
     )
     install_error_handlers(app)
     app.middleware("http")(origin_check)

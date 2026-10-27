@@ -497,3 +497,51 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/pyproject.toml, backend/uv.lock, Makefile
 - Commit: 7131404
 - Affects the other coder? no
+
+### 2026-10-28 · N13 · Estimates only fill gaps; `source` becomes "model"
+- Decision: when `epc_rating` is missing, the model fills the band, and CO2 only if it is missing too; `PropertyFacts.source` is set to `"model"` even when the other facts came from the user; a certificate's band is never replaced
+- Alternatives: keep `source="user"` and add a separate flag (needs a contract change); replace every EPC field
+- Why: spec N13 says set `source="model"`; the front end needs one field to show "Estimated by our model"
+- Files: backend/app/services/assessment.py
+- Commit: 2862ef2
+- Affects the other coder? yes (front-end label; scoring's "Our EPC model" data source)
+
+### 2026-10-28 · N13 · Estimate region from the postcode lookup
+- Decision: the region feature comes from postcodes.io (`PostcodeInfo.region`, cached), the same lookup the climate step uses; unknown region if the lookup fails
+- Alternatives: store a region on the home
+- Why: no new data or contract field; the training regions use the same names
+- Files: backend/app/services/assessment.py, backend/ml/features.py
+- Commit: 2862ef2
+- Affects the other coder? no
+
+### 2026-10-28 · N13 · The app works without the model file
+- Decision: if `ml/artifacts/epc_model.joblib` is missing or fails to load, it is logged once, there are no estimates (scoring handles a missing band) and `/model/info` returns `version: "unavailable"`
+- Alternatives: fail start-up
+- Why: spec §5 fallback rule: the app keeps working
+- Files: backend/ml/predict.py, backend/app/api/public.py
+- Commit: 2862ef2
+- Affects the other coder? no
+
+### 2026-10-28 · N13 · Predictions on one OpenMP thread
+- Decision: on model load the API process limits OpenMP to one thread (`threadpool_limits`)
+- Alternatives: default threads (17 ms typical, 46 ms worst); limiting per call (overhead made it slower)
+- Why: one home at a time is faster on one thread: 5.4 ms typical, 7.7 ms worst of 200 (spec limit 50 ms); the API has no other OpenMP work
+- Files: backend/ml/predict.py
+- Commit: 2862ef2
+- Affects the other coder? no
+
+### 2026-10-28 · N13 · Model loaded at start-up
+- Decision: a FastAPI lifespan in `app/main.py` loads the model once (cached) before the first request; about 1.3 s added to start-up
+- Alternatives: load on first use
+- Why: spec N13 says load once at start-up; the first assessment doesn't wait
+- Files: backend/app/main.py
+- Commit: 2862ef2
+- Affects the other coder? no
+
+### 2026-10-28 · N13 · `/model/info` metrics as flat dotted names
+- Decision: `metrics` holds `accuracy`, `within_one_band`, `macro_f1`, `co2_mae_tonnes`, `test_homes`, `train_homes`, plus `by_property_type.<type>.<metric>` and `by_region.<region>.<metric>` (38 values)
+- Alternatives: nested objects (contract says `dict[str, float]`)
+- Why: fits the contract unchanged; the Technology slide can pick the keys it needs
+- Files: backend/ml/predict.py
+- Commit: 2862ef2
+- Affects the other coder? yes (key names for the Technology slide)

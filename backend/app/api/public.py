@@ -10,6 +10,7 @@ from app.api.stub_store import fixtures, store
 from app.schemas import DemoHome, PassportEvent, PublicPassport
 from app.schemas.api import ModelInfo
 from app.services import homes
+from ml import predict
 
 demo = APIRouter(prefix="/demo", tags=["demo"])
 public = APIRouter(prefix="/public", tags=["public"])
@@ -39,5 +40,5 @@ async def public_passport(share_token: str, session: SessionDep) -> PublicPasspo
 
 @model.get("/info")
 def model_info() -> ModelInfo:
-    # Placeholder until N12/N13 train and serve the EPC model.
-    return ModelInfo(version="stub", trained_on="not trained yet", metrics={})
+    # For the Technology slide: version, training data and test metrics (docs/model_card.md).
+    return ModelInfo(**predict.info())
