@@ -63,7 +63,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: define them inside N's routers
 - Why: they are contract (the front end's types come from them); keeping them with §4.1 makes every contract change one place (rule 2, rule 6)
 - Files: backend/app/schemas/api.py
-- Commit: <hash>
+- Commit: 2d3a78b
 - Affects the other coder? yes (new type names in `schema.d.ts`)
 
 ### 2026-10-27 · N3 · `HomeSummary.score` is a full `ResilienceScore | null`
@@ -71,7 +71,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: `score: int | null`
 - Why: §4.2 writes `score?` without a type; the "My homes" list can show the band without another call (rule 1)
 - Files: backend/app/schemas/api.py
-- Commit: <hash>
+- Commit: 2d3a78b
 - Affects the other coder? yes
 
 ### 2026-10-27 · N3 · Response fields are required in OpenAPI
@@ -79,7 +79,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: leave defaults optional in the schema
 - Why: CONTRACT §1 rule 2 says every field is always present; otherwise the generated TS types mark nullable fields optional. Side effect: `Address`, `Household`, `PropertyFacts` appear as `-Input` / `-Output` in OpenAPI
 - Files: backend/app/schemas/base.py, docs/openapi.json
-- Commit: <hash>
+- Commit: 2d3a78b
 - Affects the other coder? yes (use `components["schemas"]["PropertyFacts-Output"]` etc. for responses)
 
 ### 2026-10-27 · N3 · Stub state is in memory
@@ -87,7 +87,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: write the stub against the database now
 - Why: N4 builds the tables, N9/N10/N14 replace the stub piece by piece; memory keeps N3 small (rule 3)
 - Files: backend/app/api/stub_store.py
-- Commit: <hash>
+- Commit: 2d3a78b
 - Affects the other coder? no (restarting the API forgets stub homes)
 
 ### 2026-10-27 · N3 · `POST /homes/{id}/work` returns 200
@@ -95,7 +95,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: 201
 - Why: the contract names 201 only for `POST /homes`; keep FastAPI's default elsewhere (rule 2)
 - Files: backend/app/api/homes.py
-- Commit: <hash>
+- Commit: 2d3a78b
 - Affects the other coder? no
 
 ### 2026-10-27 · N3 · Unlisted 4xx statuses map to `validation`
@@ -103,7 +103,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: invent new codes
 - Why: CONTRACT §3 lists a closed set of codes (rule 2)
 - Files: backend/app/api/errors.py, backend/app/main.py
-- Commit: <hash>
+- Commit: 2d3a78b
 - Affects the other coder? no
 
 ### 2026-10-27 · N3 · New dependency `python-multipart`
@@ -111,5 +111,5 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: none; FastAPI needs it for form-encoded login and multipart uploads
 - Why: required by CONTRACT §4 and §6
 - Files: backend/pyproject.toml, backend/uv.lock
-- Commit: <hash>
+- Commit: 2d3a78b
 - Affects the other coder? no
