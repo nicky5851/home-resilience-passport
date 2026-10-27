@@ -119,7 +119,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: `fastapi-users-db-sqlalchemy`'s `SQLAlchemyBaseUserTableUUID` mixin now
 - Why: no new dependency until N10; the columns match the mixin, so N10 can switch with no migration (rule 3)
 - Files: backend/app/db/models.py
-- Commit: <hash>
+- Commit: e0cce28
 - Affects the other coder? no
 
 ### 2026-10-27 · N4 · Demo homes validated but not stored yet
@@ -127,7 +127,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: create a demo user and five homes now
 - Why: there is no `demo_homes` table in N4's list and N15 seeds them "with full data" (rule 1, rule 3)
 - Files: backend/app/db/seed.py
-- Commit: <hash>
+- Commit: e0cce28
 - Affects the other coder? no
 
 ### 2026-10-27 · N4 · Seed replaces reference tables wholesale
@@ -135,7 +135,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: upsert row by row
 - Why: the tables always mirror A's CSVs, including removed rows; plans keep their own JSON copy of measures so nothing references these rows (rule 3)
 - Files: backend/app/db/seed.py
-- Commit: <hash>
+- Commit: e0cce28
 - Affects the other coder? no
 
 ### 2026-10-27 · N4 · Placeholder source URLs are warnings
@@ -143,7 +143,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: fail CI on placeholders
 - Why: lets the foundation merge before A's sheets arrive while keeping the gap visible on every run (rule 1)
 - Files: backend/app/db/reference.py, data/reference/measures.csv
-- Commit: <hash>
+- Commit: e0cce28
 - Affects the other coder? no
 
 ### 2026-10-27 · N4 · Tests use their own `<db>_test` database
@@ -151,7 +151,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: run against the dev database; transaction-rollback per test
 - Why: never touches dev data, and each run proves migrations work on a fresh DB (rule 3)
 - Files: backend/tests/conftest.py, backend/tests/test_db.py
-- Commit: <hash>
+- Commit: e0cce28
 - Affects the other coder? no
 
 ### 2026-10-27 · N4 · `flood_postcodes` is a minimal (postcode, band) table
@@ -159,7 +159,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: guess the RoFRS ZIP's columns now
 - Why: N7 inspects the real file and records the mapping; it adds columns in its own migration (rule 3)
 - Files: backend/app/db/models.py
-- Commit: <hash>
+- Commit: e0cce28
 - Affects the other coder? no
 
 ### 2026-10-27 · N4 · New dependencies `sqlalchemy[asyncio]`, `asyncpg`, `alembic`
@@ -167,5 +167,5 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: none; spec §2 locks SQLAlchemy 2.0 + Alembic, asyncpg is the async driver (N1 decision)
 - Why: required by N4
 - Files: backend/pyproject.toml, backend/uv.lock
-- Commit: <hash>
+- Commit: e0cce28
 - Affects the other coder? no
