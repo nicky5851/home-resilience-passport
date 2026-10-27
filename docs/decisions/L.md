@@ -119,7 +119,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: read the system clock inside `assess_risk`
 - Why: `test_assess_risk_contract` calls `assess_risk` twice and asserts equality, and `test_functions_are_pure` requires no I/O; reading the clock would make two calls with the same input differ (rule 2 — contract test, not just convention)
 - Files: backend/app/scoring/risk.py
-- Commit: 6c888ef
+- Commit: d26b0cf
 - Affects the other coder? yes (N9's assessment pipeline must overwrite `generated_at` with the real time before storing/returning the assessment — the value coming out of `assess_risk` is not the real timestamp)
 
 ### 2026-10-27 · L4 · Subsidence and flood `why` text goes beyond the demo fixtures
@@ -127,5 +127,5 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: match the placeholder fixtures' text exactly for continuity
 - Why: CODING_SPEC.md's L4 step requires "every `HazardLevel.why` is a human sentence"; output parts of fixtures are not contract and L's own expected values live in `backend/tests/scoring/expected/` (spec §3.3), so divergence here is expected and does not break anything N owns
 - Files: backend/app/scoring/risk.py, backend/tests/scoring/expected/*.json
-- Commit: 6c888ef
+- Commit: d26b0cf
 - Affects the other coder? no
