@@ -1,0 +1,42 @@
+{
+  "risk": {
+    "levels": [
+      {
+        "hazard": "river_sea_flood",
+        "today": "low",
+        "y2050": "low",
+        "why": "Your postcode is not in the Environment Agency's flood dataset, so this is low risk.",
+        "data_source": "Environment Agency"
+      },
+      {
+        "hazard": "overheating",
+        "today": "medium",
+        "y2050": "medium",
+        "why": "About 12 hot days a year by 2050, up from 5 today.",
+        "data_source": "Open-Meteo (CMIP6)"
+      },
+      {
+        "hazard": "storm",
+        "today": "low",
+        "y2050": "low",
+        "why": "Strongest winds around 41 km/h by 2050, from 40 km/h today.",
+        "data_source": "Open-Meteo (CMIP6)"
+      },
+      {
+        "hazard": "subsidence",
+        "today": "high",
+        "y2050": "high",
+        "why": "You told us the soil here is clay, which raises subsidence risk.",
+        "data_source": "Your answer"
+      },
+      {
+        "hazard": "surface_water",
+        "today": "medium",
+        "y2050": "medium",
+        "why": "Surface-water data is coming in a later version",
+        "data_source": "Environment Agency"
+      }
+    ],
+    "generated_at": "2026-10-27T09:00:00Z"
+  }
+}

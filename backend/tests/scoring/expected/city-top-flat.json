@@ -1,0 +1,42 @@
+{
+  "risk": {
+    "levels": [
+      {
+        "hazard": "river_sea_flood",
+        "today": "low",
+        "y2050": "low",
+        "why": "The Environment Agency rates flood risk here as very low.",
+        "data_source": "Environment Agency"
+      },
+      {
+        "hazard": "overheating",
+        "today": "high",
+        "y2050": "high",
+        "why": "About 16 hot days a year by 2050, up from 6 today. Raised a level for a top-floor flat or an A/B-rated home.",
+        "data_source": "Open-Meteo (CMIP6)"
+      },
+      {
+        "hazard": "storm",
+        "today": "low",
+        "y2050": "low",
+        "why": "Strongest winds around 40 km/h by 2050, from 38 km/h today.",
+        "data_source": "Open-Meteo (CMIP6)"
+      },
+      {
+        "hazard": "subsidence",
+        "today": "medium",
+        "y2050": "medium",
+        "why": "You did not tell us about soil or wall cracks, so this is scored as medium risk.",
+        "data_source": "Your answer"
+      },
+      {
+        "hazard": "surface_water",
+        "today": "medium",
+        "y2050": "medium",
+        "why": "Surface-water data is coming in a later version",
+        "data_source": "Environment Agency"
+      }
+    ],
+    "generated_at": "2026-10-27T09:00:00Z"
+  }
+}

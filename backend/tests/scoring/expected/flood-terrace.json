@@ -1,0 +1,42 @@
+{
+  "risk": {
+    "levels": [
+      {
+        "hazard": "river_sea_flood",
+        "today": "high",
+        "y2050": "high",
+        "why": "The Environment Agency rates flood risk here as high. There is 1 active flood warning nearby.",
+        "data_source": "Environment Agency"
+      },
+      {
+        "hazard": "overheating",
+        "today": "low",
+        "y2050": "low",
+        "why": "About 4 hot days a year by 2050, up from 2 today.",
+        "data_source": "Open-Meteo (CMIP6)"
+      },
+      {
+        "hazard": "storm",
+        "today": "low",
+        "y2050": "low",
+        "why": "Strongest winds around 46 km/h by 2050, from 44 km/h today.",
+        "data_source": "Open-Meteo (CMIP6)"
+      },
+      {
+        "hazard": "subsidence",
+        "today": "low",
+        "y2050": "low",
+        "why": "Based on what you told us, there's no reported subsidence signal.",
+        "data_source": "Your answer"
+      },
+      {
+        "hazard": "surface_water",
+        "today": "medium",
+        "y2050": "medium",
+        "why": "Surface-water data is coming in a later version",
+        "data_source": "Environment Agency"
+      }
+    ],
+    "generated_at": "2026-10-27T09:00:00Z"
+  }
+}
