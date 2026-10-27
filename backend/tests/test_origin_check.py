@@ -4,28 +4,27 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 
-LOGIN = "/api/v1/auth/login"
-FORM = {"username": "a@example.com", "password": "x"}
+LOGOUT = "/api/v1/auth/logout"  # a POST that needs no database
 
 
 def test_post_without_origin_is_forbidden() -> None:
-    res = TestClient(app).post(LOGIN, data=FORM)
+    res = TestClient(app).post(LOGOUT)
     assert res.status_code == 403
     assert res.json()["code"] == "forbidden"
     assert isinstance(res.json()["detail"], str)
 
 
 def test_post_with_wrong_origin_is_forbidden() -> None:
-    res = TestClient(app).post(LOGIN, data=FORM, headers={"Origin": "https://evil.example"})
+    res = TestClient(app).post(LOGOUT, headers={"Origin": "https://evil.example"})
     assert res.status_code == 403
 
 
 def test_post_with_allowed_origin(origin: str) -> None:
-    assert TestClient(app).post(LOGIN, data=FORM, headers={"Origin": origin}).status_code == 204
+    assert TestClient(app).post(LOGOUT, headers={"Origin": origin}).status_code == 204
 
 
 def test_referer_used_when_origin_missing(origin: str) -> None:
-    res = TestClient(app).post(LOGIN, data=FORM, headers={"Referer": f"{origin}/login?next=/"})
+    res = TestClient(app).post(LOGOUT, headers={"Referer": f"{origin}/login?next=/"})
     assert res.status_code == 204
 
 

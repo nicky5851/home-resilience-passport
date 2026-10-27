@@ -6,6 +6,7 @@ nulls, regional climate defaults, 0 warnings), and scoring handles the gaps.
 
 import asyncio
 import logging
+from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -80,5 +81,8 @@ async def assess(
     address: Address, prop: PropertyFacts, session: AsyncSession, cache: Cache
 ) -> Assessment:
     inputs = await hazard_inputs(address, prop, session, cache)
-    risk = assess_risk(inputs)
+    # L's assess_risk is pure, so its `generated_at` is fixed; stamp the real time here.
+    risk = assess_risk(inputs).model_copy(
+        update={"generated_at": datetime.now(UTC).replace(microsecond=0)}
+    )
     return Assessment(inputs=inputs, risk=risk, score=compute_score(risk, prop))

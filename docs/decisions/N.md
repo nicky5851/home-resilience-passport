@@ -345,3 +345,59 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/app/services/assessment.py
 - Commit: c5ce465
 - Affects the other coder? yes
+
+### 2026-10-28 · N10 · Our own user store instead of fastapi-users-db-sqlalchemy
+- Decision: `app/auth/users.py` has a five-method `UserStore` (get, get_by_email, create, update, delete) over `app.db.models.User`; only the core `fastapi-users` package is installed
+- Alternatives: `fastapi-users[sqlalchemy]`
+- Why: its SQLAlchemy adapter pins SQLAlchemy below 2.1 and would downgrade 2.1.6 → 2.0.55 for the whole back end; the adapter is ~30 lines
+- Files: backend/app/auth/users.py, backend/pyproject.toml, backend/uv.lock
+- Commit: 5f0f5e4
+- Affects the other coder? no
+
+### 2026-10-28 · N10 · Our routes call fastapi-users; its routers are not mounted
+- Decision: register/login/logout/forgot/reset/me keep the stub's route functions and call `UserManager` and `JWTStrategy`; every fastapi-users error is mapped to CONTRACT §3 there (duplicate → 409 `conflict`; bad password rule → 400 with the rule in plain English; bad login → 400 "Email or password is incorrect"; bad reset token → 400). Email lookups ignore case
+- Alternatives: mount `fastapi_users.get_auth_router()` etc.
+- Why: keeps `docs/openapi.json` byte-identical, so the front end and the contract do not change
+- Files: backend/app/api/auth.py, backend/app/api/deps.py
+- Commit: 5f0f5e4
+- Affects the other coder? no
+
+### 2026-10-28 · N10 · Reset link opens `/reset-password?token=…`
+- Decision: with `RESEND_API_KEY` unset (M1), forgot-password logs `Password reset link for user <id>: <NEXT_PUBLIC_APP_URL>/reset-password?token=<token>` (no email address in the log). Tokens last 1 hour (fastapi-users default). With the key set it logs that email arrives in M2 and does not log the link
+- Alternatives: `/login/reset?token=`
+- Why: the spec names forgot/reset pages but no path
+- Files: backend/app/auth/users.py, backend/app/config.py
+- Commit: 5f0f5e4
+- Affects the other coder? yes (L builds the page at that path; see docs/FOR_L.md)
+
+### 2026-10-28 · N10 · Users' homes in Postgres; demo homes stay in memory
+- Decision: homes, households, assessments, passport events and share links are stored (`app/services/homes.py`) and shown to routes as `StubHome` views; the five demo homes still answer from fixtures, readable by every logged-in user. Plans and funding still come from the fixture matched by postcode (N11 / L6); certificate files of stored homes stay in memory (`homes.CERTIFICATES`) until N14. Events are stored to the microsecond for ordering and shown to the second. Replaces the N9 in-memory decision
+- Alternatives: store demo homes per user
+- Why: demo homes are read-only showcases (CONTRACT §3); the user approved moving homes and assessments into the database in N10
+- Files: backend/app/services/homes.py, backend/app/api/homes.py, backend/app/api/public.py, backend/app/api/stub_store.py
+- Commit: 5f0f5e4
+- Affects the other coder? yes (certificates are lost when the API restarts until N14)
+
+### 2026-10-28 · N10 · Rate limits count every attempt; production needs a real secret
+- Decision: login and register limits count every request, successful or not, per client IP (`X-Forwarded-For` first entry only when `ENV=production`); assess counts per user. `Retry-After` is rounded up to whole seconds. Settings refuse to load in production with the dev `AUTH_SECRET` or one under 32 characters
+- Alternatives: count only failed logins
+- Why: simplest reading of CONTRACT §3; a weak secret lets anyone forge login cookies
+- Files: backend/app/core/ratelimit.py, backend/app/api/deps.py, backend/app/config.py
+- Commit: 5f0f5e4
+- Affects the other coder? no
+
+### 2026-10-28 · N10 · Export shape
+- Decision: `/users/me/export` is `{"user": {UserRead + created_at, last_seen_at, privacy_accepted_at, privacy_version}, "homes": [{"passport": Passport, "assessments": [...], "plans": [...]}]}`; never the password hash; certificates by file name only (in passport events)
+- Alternatives: one flat list per table
+- Why: readable by a person, and contains every row CONTRACT §4 lists
+- Files: backend/app/api/auth.py
+- Commit: 5f0f5e4
+- Affects the other coder? no
+
+### 2026-10-28 · N10 · Risk `generated_at` is the assessment's time
+- Decision: the assessment service overwrites `RiskProfile.generated_at` from L's pure `assess_risk` with the current UTC time (to the second)
+- Alternatives: pass the time into `assess_risk`
+- Why: keeps L's function pure (spec §4.3); missed in N9
+- Files: backend/app/services/assessment.py
+- Commit: 5f0f5e4
+- Affects the other coder? no

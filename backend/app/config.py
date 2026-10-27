@@ -10,7 +10,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import field_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -54,6 +54,10 @@ AUTH_COOKIE_NAME = "hrp_auth"
 AUTH_COOKIE_LIFETIME = timedelta(days=7)
 PASSWORD_MIN_LENGTH = 10
 PRIVACY_VERSION = "2026-10-26"
+AUTH_SECRET_MIN_CHARS = 32
+LAST_SEEN_INTERVAL = timedelta(days=1)  # spec N10: update last_seen_at at most once a day
+RESET_PASSWORD_PATH = "/reset-password"  # front-end page the reset link opens (?token=...)
+DEV_AUTH_SECRET = "dev-only-secret-change-me-0123456789abcdef"
 
 # --- Rate limits (CONTRACT §3): (requests, window) ---------------------------------------
 RATE_LIMIT_LOGIN = (5, timedelta(minutes=1))  # per IP
@@ -80,7 +84,7 @@ class Settings(BaseSettings):
 
     env: Literal["development", "test", "production"] = "development"
     database_url: str = "postgresql+asyncpg://hrp:hrp@localhost:5432/hrp"
-    auth_secret: str = "dev-only-secret-change-me-0123456789abcdef"
+    auth_secret: str = DEV_AUTH_SECRET
     allowed_origins: str = "http://localhost:3000"
 
     epc_api_token: str | None = None
@@ -98,8 +102,21 @@ class Settings(BaseSettings):
 
     storage_backend: Literal["local", "r2"] = "local"
 
+    # Password-reset email (M2). Unset in M1: the reset link is written to the API log.
+    resend_api_key: str | None = None
+
     # Public front-end URL, used to build share links.
     next_public_app_url: str = "http://localhost:3000"
+
+    @model_validator(mode="after")
+    def _production_needs_a_real_secret(self) -> "Settings":
+        """Every session cookie is signed with AUTH_SECRET (CONTRACT §4)."""
+        weak = self.auth_secret == DEV_AUTH_SECRET or len(self.auth_secret) < AUTH_SECRET_MIN_CHARS
+        if self.env == "production" and weak:
+            raise ValueError(
+                f"AUTH_SECRET must be at least {AUTH_SECRET_MIN_CHARS} random characters"
+            )
+        return self
 
     @property
     def allowed_origin_list(self) -> list[str]:
