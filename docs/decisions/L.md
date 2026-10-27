@@ -47,7 +47,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: `list[Measure] = []` exactly as written in spec §4.3
 - Why: a mutable default is a classic Python bug (ruff B006); callers passing a list or nothing work the same (rule 3)
 - Files: backend/app/scoring/score.py, backend/app/scoring/funding.py
-- Commit: <hash>
+- Commit: 82bbc89
 - Affects the other coder? no (call sites are unchanged)
 
 ### 2026-10-27 · L3 · All §6/§7 numbers are in `scoring/config.py` from the start
@@ -55,7 +55,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: add them in L4–L6
 - Why: one place to review at Merge 1 with A; tests import the same constants (spec §2 Config)
 - Files: backend/app/scoring/config.py
-- Commit: <hash>
+- Commit: 82bbc89
 - Affects the other coder? no
 
 ### 2026-10-27 · L3 · Stub values
@@ -63,5 +63,5 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: copy the fixture outputs
 - Why: obviously placeholder on screen, schema-valid, deterministic; N9 can wire the pipeline before L4 (rule 1)
 - Files: backend/app/scoring/risk.py, backend/app/scoring/score.py, backend/app/scoring/funding.py
-- Commit: <hash>
+- Commit: 82bbc89
 - Affects the other coder? yes (the stub ignores inputs until L4/L5/L6 merge)
