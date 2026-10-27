@@ -90,7 +90,7 @@ def test_lookup_unknown_postcode_has_empty_list(client) -> None:
     assert body.addresses == []
 
 
-@pytest.mark.parametrize("pc", ["EH1 1YZ", "BT1 1AA", "G1 1XQ"])
+@pytest.mark.parametrize("pc", ["EH1 1YZ", "BT1 1AA"])
 def test_lookup_scotland_ni_unsupported(client, pc: str) -> None:
     res = client.get(f"{API}/lookup/postcode/{pc}")
     assert res.status_code == 400

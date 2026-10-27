@@ -1,13 +1,23 @@
 from typing import Annotated
 
 from fastapi import Depends, Request, Response
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.adapters.cache import Cache, DbCache
 from app.api.errors import ApiError
 from app.api.stub_store import STUB_USER_ID
 from app.config import AUTH_COOKIE_LIFETIME, AUTH_COOKIE_NAME, get_settings
+from app.db.session import get_session
 from app.schemas import UserRead
 
 STUB_COOKIE_PREFIX = "stub-"
+
+
+def get_api_cache(session: Annotated[AsyncSession, Depends(get_session)]) -> Cache:
+    return DbCache(session)
+
+
+ApiCacheDep = Annotated[Cache, Depends(get_api_cache)]
 
 
 def current_user(request: Request) -> UserRead:

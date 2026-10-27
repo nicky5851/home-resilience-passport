@@ -1,9 +1,11 @@
 import json
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures" / "demo_homes"
+RECORDED_DIR = Path(__file__).parent / "adapters" / "recorded"
 DEMO_SLUGS = ("flood-terrace", "coastal-bungalow", "city-top-flat", "clay-semi", "rural-cottage")
 
 
@@ -23,15 +25,62 @@ def origin() -> str:
     return get_settings().allowed_origin_list[0]
 
 
+class MemoryCache:
+    """Stands in for the `api_cache` table so API tests need no Postgres."""
+
+    def __init__(self) -> None:
+        self.rows: dict[str, tuple[dict, datetime]] = {}
+
+    async def get(self, key: str) -> dict | None:
+        value, expires_at = self.rows.get(key, (None, None))
+        return value if expires_at and expires_at > datetime.now(UTC) else None
+
+    async def put(self, key: str, source: str, value: dict, ttl: timedelta) -> None:
+        self.rows[key] = (value, datetime.now(UTC) + ttl)
+
+
 @pytest.fixture
-def client(origin: str):
+def memory_cache() -> MemoryCache:
+    return MemoryCache()
+
+
+@pytest.fixture
+def postcodes_io():
+    """postcodes.io answered from recorded responses (unrecorded postcodes get its 404).
+
+    Any other outbound request fails the test, so API tests never touch the network.
+    """
+    import httpx
+    import respx
+
+    from app.adapters.postcodes import POSTCODES_IO_URL
+
+    def answer(request: httpx.Request) -> httpx.Response:
+        compact = request.url.path.rsplit("/", 1)[-1].upper()
+        path = RECORDED_DIR / "postcodes" / f"{compact}.json"
+        if not path.exists():
+            path = RECORDED_DIR / "postcodes" / "ZZ999ZZ.json"
+        body = json.loads(path.read_text())
+        return httpx.Response(body["status"], json=body)
+
+    with respx.mock(assert_all_called=False) as router:
+        yield router.get(url__startswith=POSTCODES_IO_URL).mock(side_effect=answer)
+
+
+@pytest.fixture
+def client(origin: str, memory_cache: MemoryCache, postcodes_io):
     """A logged-out client that sends an allowed Origin on every request."""
     from fastapi.testclient import TestClient
 
+    from app.api.deps import get_api_cache
     from app.main import app
 
-    with TestClient(app, headers={"Origin": origin}) as c:
-        yield c
+    app.dependency_overrides[get_api_cache] = lambda: memory_cache
+    try:
+        with TestClient(app, headers={"Origin": origin}) as c:
+            yield c
+    finally:
+        app.dependency_overrides.pop(get_api_cache, None)
 
 
 @pytest.fixture
