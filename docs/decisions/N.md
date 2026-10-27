@@ -215,7 +215,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: hard-coded live URL; cache keys without the host
 - Why: integration tokens get `403 UNAUTHORISED` on live. During the N6 live check the dev cache served integration test homes after switching to live, for up to 30 days; per-host keys stop that
 - Files: backend/app/config.py, backend/app/adapters/epc.py, .env.example, README.md, docs/DECISIONS.md
-- Commit: 00d8dfb
+- Commit: c861041
 - Affects the other coder? yes (new variable `EPC_API_BASE_URL` in the shared `.env.example`; each person needs their own token, README "EPC API token")
 
 ### 2026-10-27 · N6 · Code tables from the register's codes CSV
@@ -223,7 +223,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: call `/api/codes/info` at runtime
 - Why: code meanings change between schema versions (`main_fuel` 10 is electricity in RdSAP-17, dual fuel in SAP-17); a static table needs no extra calls and no token
 - Files: backend/scripts/epc_codes.py, backend/app/adapters/epc_codes.json
-- Commit: 00d8dfb
+- Commit: c861041
 - Affects the other coder? no
 
 ### 2026-10-27 · N6 · Mapping rules for certificates
@@ -231,7 +231,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: first row wins; coded fuel only
 - Why: the register returns same-day certificates for one UPRN; one recorded certificate codes bottled LPG while describing electric heating, and the description is what users see
 - Files: backend/app/adapters/epc.py
-- Commit: 00d8dfb
+- Commit: c861041
 - Affects the other coder? no
 
 ### 2026-10-27 · N6 · Lookup lists the demo address first; at most 50 addresses
@@ -239,7 +239,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: demo address only; register addresses only
 - Why: keeps the demo path working (rule 1) while showing real data
 - Files: backend/app/api/lookup.py
-- Commit: 00d8dfb
+- Commit: c861041
 - Affects the other coder? no
 
 ### 2026-10-27 · N6 · Test fixtures recorded from the integration API
@@ -247,5 +247,5 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: record live responses
 - Why: integration data is the register's test data, so nothing about real homes is committed
 - Files: backend/tests/adapters/
-- Commit: 00d8dfb
+- Commit: c861041
 - Affects the other coder? no
