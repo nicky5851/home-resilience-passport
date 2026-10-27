@@ -1,0 +1,42 @@
+{
+ "data": [
+  {
+   "certificateNumber": "0000-0000-9876-5432-1001",
+   "addressLine1": "1 Some Street",
+   "addressLine2": "Some Area",
+   "addressLine3": "Some County",
+   "addressLine4": null,
+   "postcode": "CF10 1EP",
+   "postTown": "Whitbury",
+   "council": "Cardiff",
+   "constituency": "Cardiff South and Penarth",
+   "currentEnergyEfficiencyBand": "C",
+   "registrationDate": "2026-05-09",
+   "uprn": 1,
+   "schemaType": "SAP-Schema-19.2.0"
+  },
+  {
+   "certificateNumber": "0000-0000-9876-5432-1003",
+   "addressLine1": "1 Some Street",
+   "addressLine2": "Some Area",
+   "addressLine3": "Some County",
+   "addressLine4": null,
+   "postcode": "CF10 1EP",
+   "postTown": "Whitbury",
+   "council": "Cardiff",
+   "constituency": "Cardiff South and Penarth",
+   "currentEnergyEfficiencyBand": "C",
+   "registrationDate": "2026-05-09",
+   "uprn": 10013746189,
+   "schemaType": "SAP-Schema-19.2.0"
+  }
+ ],
+ "pagination": {
+  "totalRecords": 2,
+  "currentPage": 1,
+  "totalPages": 1,
+  "nextPage": null,
+  "prevPage": null,
+  "pageSize": 1000
+ }
+}

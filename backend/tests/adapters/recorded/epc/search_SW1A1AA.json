@@ -1,0 +1,72 @@
+{
+ "data": [
+  {
+   "certificateNumber": "0502-9668-3722-8429-1243",
+   "addressLine1": "123 Main Street",
+   "addressLine2": "Apartment 4B",
+   "addressLine3": null,
+   "addressLine4": null,
+   "postcode": "SW1A 1AA",
+   "postTown": "London",
+   "council": "Westminster",
+   "constituency": "Cities of London and Westminster",
+   "currentEnergyEfficiencyBand": "D",
+   "registrationDate": "2025-05-23",
+   "uprn": 10033527301,
+   "schemaType": "RdSAP-Schema-21.0.0"
+  },
+  {
+   "certificateNumber": "2106-5106-4957-3526-5650",
+   "addressLine1": "Buckingham Palace",
+   "addressLine2": "The Mall",
+   "addressLine3": null,
+   "addressLine4": null,
+   "postcode": "SW1A 1AA",
+   "postTown": "LONDON",
+   "council": "Westminster",
+   "constituency": "Cities of London and Westminster",
+   "currentEnergyEfficiencyBand": "D",
+   "registrationDate": "2022-07-05",
+   "uprn": 10033544614,
+   "schemaType": "RdSAP-Schema-20.0.0"
+  },
+  {
+   "certificateNumber": "2106-5106-4957-3526-5651",
+   "addressLine1": "Buckingham Palace",
+   "addressLine2": "The Mall",
+   "addressLine3": null,
+   "addressLine4": null,
+   "postcode": "SW1A 1AA",
+   "postTown": "LONDON",
+   "council": "Westminster",
+   "constituency": "Cities of London and Westminster",
+   "currentEnergyEfficiencyBand": "D",
+   "registrationDate": "2022-07-05",
+   "uprn": 10033544614,
+   "schemaType": "RdSAP-Schema-20.0.0"
+  },
+  {
+   "certificateNumber": "2230-0021-2000-0036-0202",
+   "addressLine1": "102 Buckingham Palace",
+   "addressLine2": null,
+   "addressLine3": null,
+   "addressLine4": null,
+   "postcode": "SW1A 1AA",
+   "postTown": "LONDON",
+   "council": "Westminster",
+   "constituency": "Cities of London and Westminster",
+   "currentEnergyEfficiencyBand": "E",
+   "registrationDate": "2020-10-09",
+   "uprn": null,
+   "schemaType": "RdSAP-Schema-20.0.0"
+  }
+ ],
+ "pagination": {
+  "totalRecords": 4,
+  "currentPage": 1,
+  "totalPages": 1,
+  "nextPage": null,
+  "prevPage": null,
+  "pageSize": 1000
+ }
+}
