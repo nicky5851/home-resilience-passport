@@ -19,7 +19,8 @@
       "lower_bills"
     ],
     "vulnerable": false,
-    "consent_lloyds_data": false
+    "consent_lloyds_data": false,
+    "subsidence_signal": "unknown"
   },
   "property": {
     "property_type": "flat",
@@ -511,7 +512,8 @@
         "lower_bills"
       ],
       "vulnerable": false,
-      "consent_lloyds_data": false
+      "consent_lloyds_data": false,
+      "subsidence_signal": "unknown"
     },
     "share_token": null
   }

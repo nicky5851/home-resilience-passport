@@ -19,7 +19,8 @@
       "lower_bills"
     ],
     "vulnerable": true,
-    "consent_lloyds_data": false
+    "consent_lloyds_data": false,
+    "subsidence_signal": "no"
   },
   "property": {
     "property_type": "terraced",
@@ -839,7 +840,8 @@
         "lower_bills"
       ],
       "vulnerable": true,
-      "consent_lloyds_data": false
+      "consent_lloyds_data": false,
+      "subsidence_signal": "no"
     },
     "share_token": null
   }

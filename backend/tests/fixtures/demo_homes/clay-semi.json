@@ -19,7 +19,8 @@
       "lower_carbon"
     ],
     "vulnerable": false,
-    "consent_lloyds_data": false
+    "consent_lloyds_data": false,
+    "subsidence_signal": "yes"
   },
   "property": {
     "property_type": "semi_detached",
@@ -820,7 +821,8 @@
         "lower_carbon"
       ],
       "vulnerable": false,
-      "consent_lloyds_data": false
+      "consent_lloyds_data": false,
+      "subsidence_signal": "yes"
     },
     "share_token": null
   }

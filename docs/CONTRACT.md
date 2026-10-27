@@ -44,7 +44,7 @@ of this document; where they disagree, fix the code to match this file.
 | `heavy_rain_days_2050` | days/yr | Same, 2041–2050 | same | 0–50 | `null` |
 | `max_wind_baseline_kmh` | km/h | Mean of each year's highest daily maximum 10 m wind speed, 1991–2020. This is sustained wind from the model, **not gusts** (Open-Meteo's climate API has no gusts), so values are lower than gust figures in the news | same (`wind_speed_10m_max`) | 10–150 | `null` |
 | `max_wind_2050_kmh` | km/h | Same, 2041–2050 | same | 10–150 | `null` |
-| `subsidence_signal` | enum | User answer: `clay_reported` (knows soil is clay), `cracks_reported` (new cracks in walls), `none_reported`, `unknown` (did not answer) | Household form | enum | `"unknown"` |
+| `subsidence_signal` | enum | User answer: `clay_reported` (knows soil is clay), `cracks_reported` (new cracks in walls), `none_reported`, `unknown` (did not answer) | Household form: `Household.subsidence_signal` `yes` → `cracks_reported`, `no` → `none_reported`, `unknown` → `unknown`. `clay_reported` comes only from the demo homes (`demo_homes.csv`) in M1 | enum | `"unknown"` |
 | `property` | object | `PropertyFacts` (spec §4.1). `top_floor` is `true` only for flats on the top storey | EPC, our model, or user | – | fields `null` |
 
 Rules:

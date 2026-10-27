@@ -129,6 +129,9 @@ def test_household_rules() -> None:
     base = dict(tenure="owner_occupier", income_band="under_20k", budget_gbp=0)
     h = Household(**base)
     assert h.vulnerable is None and h.priorities == [] and h.consent_lloyds_data is False
+    assert h.subsidence_signal == "unknown"
+    with pytest.raises(ValidationError):
+        Household(**base | {"subsidence_signal": "cracks_reported"})  # the form answers yes/no
     with pytest.raises(ValidationError):
         Household(**base | {"priorities": ["comfort", "lower_bills", "home_value", "lower_carbon"]})
     with pytest.raises(ValidationError):
