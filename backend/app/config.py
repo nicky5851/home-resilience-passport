@@ -10,6 +10,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -21,6 +22,12 @@ MAX_LIST_ITEMS = 50  # CONTRACT §3: no pagination in M1
 # --- Outbound calls (spec §5) ------------------------------------------------------------
 EXTERNAL_TIMEOUT_S = 10.0
 LLM_TIMEOUT_S = 8.0
+
+# --- EPC register developer API (spec N6; docs/decisions/N.md) ---------------------------
+# Live service. Tokens from the integration (test) service only work against its own host,
+# https://api.get-energy-performance-data.epb-integration.communities.gov.uk (set in .env).
+EPC_API_LIVE_URL = "https://api.get-energy-performance-data.communities.gov.uk"
+EPC_SEARCH_PAGE_SIZE = 1000  # API allows 1–5000; one postcode never comes close
 
 # --- Cache TTLs (spec §5) ----------------------------------------------------------------
 POSTCODE_CACHE_TTL = timedelta(days=30)
@@ -72,6 +79,13 @@ class Settings(BaseSettings):
     allowed_origins: str = "http://localhost:3000"
 
     epc_api_token: str | None = None
+    epc_api_base_url: str = EPC_API_LIVE_URL
+
+    @field_validator("epc_api_base_url", mode="before")
+    @classmethod
+    def _blank_base_url_is_live(cls, v: object) -> object:
+        """`EPC_API_BASE_URL=` (left empty in .env) means the live service."""
+        return EPC_API_LIVE_URL if v is None or (isinstance(v, str) and not v.strip()) else v
 
     anthropic_api_key: str | None = None
     anthropic_model: str = "claude-sonnet-5-5"

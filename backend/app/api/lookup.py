@@ -1,15 +1,19 @@
-"""Postcode lookup: location from postcodes.io (N5); addresses from the EPC register in N6."""
+"""Postcode lookup: location from postcodes.io (N5), addresses from the EPC register (N6)."""
+
+import logging
 
 from fastapi import APIRouter
 
-from app.adapters import postcodes
+from app.adapters import epc, postcodes
 from app.adapters.http import UpstreamUnavailable
 from app.api.deps import ApiCacheDep
 from app.api.errors import ApiError
 from app.api.stub_store import Fixture, fixture_by_postcode
+from app.config import MAX_LIST_ITEMS
 from app.schemas import normalise_postcode
 from app.schemas.api import LookupAddress, PostcodeLookup
 
+log = logging.getLogger(__name__)
 router = APIRouter(prefix="/lookup", tags=["lookup"])
 
 UNSUPPORTED_REGION_DETAIL = "Home Resilience Passport covers England and Wales for now."
@@ -48,17 +52,23 @@ async def lookup_postcode(postcode: str, cache: ApiCacheDep) -> PostcodeLookup:
     if info.country not in SUPPORTED_COUNTRIES:
         raise ApiError(400, "unsupported_region", UNSUPPORTED_REGION_DETAIL)
 
-    # Until N6 (EPC register) only demo homes have an address to pick.
-    addresses = []
+    addresses: list[LookupAddress] = []
     if demo is not None:
         a = demo.demo.address
-        addresses = [
+        addresses.append(
             LookupAddress(line1=a.line1, uprn=a.uprn, epc_rating=demo.demo.property.epc_rating)
-        ]
+        )
+    try:
+        found = await epc.search_postcode(pc, cache)
+    except UpstreamUnavailable:
+        # No token or the register is down: the user picks "My address isn't listed" (CONTRACT §3).
+        log.warning("EPC register unavailable; returning no addresses")
+        found = []
+    addresses += [LookupAddress(line1=f.line1, uprn=f.uprn, epc_rating=f.epc_rating) for f in found]
     return PostcodeLookup(
         postcode=pc,
         lat=info.lat,
         lon=info.lon,
         local_authority=info.local_authority,
-        addresses=addresses,
+        addresses=addresses[:MAX_LIST_ITEMS],
     )

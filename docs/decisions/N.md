@@ -209,3 +209,43 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/pyproject.toml, backend/uv.lock
 - Commit: ff60142
 - Affects the other coder? no
+
+### 2026-10-27 · N6 · `EPC_API_BASE_URL` setting; cache keys per environment
+- Decision: the EPC API base URL is a setting, live by default (an empty value also means live). A token only works on the environment that issued it, so the integration (test) host is set in `.env` when using an integration token. EPC cache keys include the API host
+- Alternatives: hard-coded live URL; cache keys without the host
+- Why: integration tokens get `403 UNAUTHORISED` on live. During the N6 live check the dev cache served integration test homes after switching to live, for up to 30 days; per-host keys stop that
+- Files: backend/app/config.py, backend/app/adapters/epc.py, .env.example, README.md, docs/DECISIONS.md
+- Commit: 00d8dfb
+- Affects the other coder? yes (new variable `EPC_API_BASE_URL` in the shared `.env.example`; each person needs their own token, README "EPC API token")
+
+### 2026-10-27 · N6 · Code tables from the register's codes CSV
+- Decision: `scripts/epc_codes.py` turns the register's public codes CSV into `app/adapters/epc_codes.json` ({schema: {code: {key: value}}}, England and Wales schemas only) for `property_type`, `built_form`, `construction_age_band`, `main_fuel`; values use the bulk-data wording the demo fixtures use ("Mid-Terrace", "1900-1929", "mains gas")
+- Alternatives: call `/api/codes/info` at runtime
+- Why: code meanings change between schema versions (`main_fuel` 10 is electricity in RdSAP-17, dual fuel in SAP-17); a static table needs no extra calls and no token
+- Files: backend/scripts/epc_codes.py, backend/app/adapters/epc_codes.json
+- Commit: 00d8dfb
+- Affects the other coder? no
+
+### 2026-10-27 · N6 · Mapping rules for certificates
+- Decision: latest certificate per address, ties on the same date broken by certificate number; fuel taken from the main-heating description when it names one, else the coded fuel; flats get `floor_level` from the storey and `top_floor` from the level/top-storey answers, houses get `floor_level=0`, `top_floor=null`
+- Alternatives: first row wins; coded fuel only
+- Why: the register returns same-day certificates for one UPRN; one recorded certificate codes bottled LPG while describing electric heating, and the description is what users see
+- Files: backend/app/adapters/epc.py
+- Commit: 00d8dfb
+- Affects the other coder? no
+
+### 2026-10-27 · N6 · Lookup lists the demo address first; at most 50 addresses
+- Decision: for a demo postcode the demo address is listed before the register's addresses; the list is cut at 50 (CONTRACT §3). Without a token, or with the register down, the register part is empty
+- Alternatives: demo address only; register addresses only
+- Why: keeps the demo path working (rule 1) while showing real data
+- Files: backend/app/api/lookup.py
+- Commit: 00d8dfb
+- Affects the other coder? no
+
+### 2026-10-27 · N6 · Test fixtures recorded from the integration API
+- Decision: `backend/tests/adapters/recorded/epc/` holds integration-API responses (SW1A 1AA, CF10 1EP and their certificates) plus the register's official RdSAP-17.0 flat sample (integration has no flats). The live check ran against the live API but its answers are not stored
+- Alternatives: record live responses
+- Why: integration data is the register's test data, so nothing about real homes is committed
+- Files: backend/tests/adapters/
+- Commit: 00d8dfb
+- Affects the other coder? no

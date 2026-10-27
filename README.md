@@ -22,6 +22,22 @@ curl localhost:8000/api/v1/health   # {"status":"ok"}
 
 API docs: http://localhost:8000/docs
 
+## EPC API token
+
+Address lists and property facts come from the EPC register. Without a token the app still
+works: the address list is empty and users enter their home's details by hand.
+
+- **Each person gets their own token.** Sign in at
+  https://get-energy-performance-data.communities.gov.uk and copy the token shown under
+  **"My Bearer token"**. Do not share one token between people.
+- **The integration site gives test-only tokens.** A token from the integration (test) site only
+  works against its own API (`https://api.get-energy-performance-data.epb-integration.communities.gov.uk`)
+  and returns test homes, not real ones; against the live API it gets `403 UNAUTHORISED`. For real
+  data use a live token and leave `EPC_API_BASE_URL` empty (it defaults to the live API).
+- **Tokens go only in `.env`** (`EPC_API_TOKEN=...`), which git ignores. Never put a token in
+  git (including `.env.example`, code, tests or fixtures) or in chat, issues or pull requests.
+  If one leaks, get a new one from the same page.
+
 ## Everyday commands
 
 | Command | What it does |

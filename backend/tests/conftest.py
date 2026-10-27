@@ -45,13 +45,18 @@ def memory_cache() -> MemoryCache:
 
 
 @pytest.fixture
-def postcodes_io():
-    """postcodes.io answered from recorded responses (unrecorded postcodes get its 404).
-
-    Any other outbound request fails the test, so API tests never touch the network.
-    """
-    import httpx
+def mock_http():
+    """Every outbound request must match a mocked route, so tests never touch the network."""
     import respx
+
+    with respx.mock(assert_all_called=False) as router:
+        yield router
+
+
+@pytest.fixture
+def postcodes_io(mock_http):
+    """postcodes.io answered from recorded responses (unrecorded postcodes get its 404)."""
+    import httpx
 
     from app.adapters.postcodes import POSTCODES_IO_URL
 
@@ -63,12 +68,26 @@ def postcodes_io():
         body = json.loads(path.read_text())
         return httpx.Response(body["status"], json=body)
 
-    with respx.mock(assert_all_called=False) as router:
-        yield router.get(url__startswith=POSTCODES_IO_URL).mock(side_effect=answer)
+    return mock_http.get(url__startswith=POSTCODES_IO_URL).mock(side_effect=answer)
 
 
 @pytest.fixture
-def client(origin: str, memory_cache: MemoryCache, postcodes_io):
+def epc_api(mock_http, monkeypatch):
+    """The EPC register with a test token; answers 404 (nothing registered) unless a test
+    sets `side_effect` or `return_value`."""
+    import httpx
+
+    from app.config import EPC_API_LIVE_URL, get_settings
+
+    monkeypatch.setattr(get_settings(), "epc_api_token", "test-token")
+    monkeypatch.setattr(get_settings(), "epc_api_base_url", EPC_API_LIVE_URL)
+    return mock_http.get(url__startswith=EPC_API_LIVE_URL).mock(
+        return_value=httpx.Response(404, json={"error": "No certificates found"})
+    )
+
+
+@pytest.fixture
+def client(origin: str, memory_cache: MemoryCache, postcodes_io, epc_api):
     """A logged-out client that sends an allowed Origin on every request."""
     from fastapi.testclient import TestClient
 
