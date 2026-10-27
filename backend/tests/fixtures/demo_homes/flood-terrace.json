@@ -38,12 +38,12 @@
   "inputs": {
     "rofrs_band": "high",
     "active_flood_warnings": 1,
-    "hot_days_baseline": 1.5,
-    "hot_days_2050": 4.0,
-    "heavy_rain_days_baseline": 4.0,
-    "heavy_rain_days_2050": 5.5,
-    "max_wind_baseline_kmh": 44.0,
-    "max_wind_2050_kmh": 46.0,
+    "hot_days_baseline": 0.6,
+    "hot_days_2050": 3.7,
+    "heavy_rain_days_baseline": 2.1,
+    "heavy_rain_days_2050": 1.6,
+    "max_wind_baseline_kmh": 50.0,
+    "max_wind_2050_kmh": 54.2,
     "subsidence_signal": "none_reported",
     "property": {
       "property_type": "terraced",
@@ -66,28 +66,28 @@
         "hazard": "river_sea_flood",
         "today": "high",
         "y2050": "high",
-        "why": "The Environment Agency rates flood risk here as high.",
+        "why": "The Environment Agency rates flood risk here as high. There is 1 active flood warning nearby.",
         "data_source": "Environment Agency"
       },
       {
         "hazard": "overheating",
         "today": "low",
         "y2050": "low",
-        "why": "About 4 hot days a year by 2050, up from 2 today.",
+        "why": "About 4 hot days a year by 2050, up from 1 today.",
         "data_source": "Open-Meteo (CMIP6)"
       },
       {
         "hazard": "storm",
-        "today": "low",
-        "y2050": "low",
-        "why": "Strongest winds around 46 km/h by 2050, from 44 km/h today.",
+        "today": "medium",
+        "y2050": "medium",
+        "why": "Strongest winds around 54 km/h by 2050, from 50 km/h today.",
         "data_source": "Open-Meteo (CMIP6)"
       },
       {
         "hazard": "subsidence",
         "today": "low",
         "y2050": "low",
-        "why": "Based on what you told us about your soil and walls.",
+        "why": "Based on what you told us, there's no reported subsidence signal.",
         "data_source": "Your answer"
       },
       {
@@ -101,38 +101,38 @@
     "generated_at": "2026-10-27T09:00:00Z"
   },
   "score": {
-    "value": 60,
-    "band": "C",
+    "value": 50,
+    "band": "D",
     "components": [
       {
         "name": "flood",
-        "points": 3.0,
+        "points": 15.0,
         "max_points": 30.0,
-        "reason": "Your flood risk by 2050 sets these points."
+        "reason": "Placeholder points until the score engine is ready."
       },
       {
         "name": "heat",
-        "points": 20.0,
+        "points": 10.0,
         "max_points": 20.0,
-        "reason": "Your heat risk by 2050 sets these points."
+        "reason": "Placeholder points until the score engine is ready."
       },
       {
         "name": "storm",
-        "points": 10.0,
+        "points": 5.0,
         "max_points": 10.0,
-        "reason": "Your storm risk by 2050 sets these points."
+        "reason": "Placeholder points until the score engine is ready."
       },
       {
         "name": "subsidence",
-        "points": 10.0,
+        "points": 5.0,
         "max_points": 10.0,
-        "reason": "Your subsidence risk by 2050 sets these points."
+        "reason": "Placeholder points until the score engine is ready."
       },
       {
         "name": "carbon",
-        "points": 17.4,
+        "points": 15.0,
         "max_points": 30.0,
-        "reason": "Based on your EPC score of 58."
+        "reason": "Placeholder points until the score engine is ready."
       }
     ],
     "version": "v1"
@@ -501,28 +501,28 @@
           "hazard": "river_sea_flood",
           "today": "high",
           "y2050": "high",
-          "why": "The Environment Agency rates flood risk here as high.",
+          "why": "The Environment Agency rates flood risk here as high. There is 1 active flood warning nearby.",
           "data_source": "Environment Agency"
         },
         {
           "hazard": "overheating",
           "today": "low",
           "y2050": "low",
-          "why": "About 4 hot days a year by 2050, up from 2 today.",
+          "why": "About 4 hot days a year by 2050, up from 1 today.",
           "data_source": "Open-Meteo (CMIP6)"
         },
         {
           "hazard": "storm",
-          "today": "low",
-          "y2050": "low",
-          "why": "Strongest winds around 46 km/h by 2050, from 44 km/h today.",
+          "today": "medium",
+          "y2050": "medium",
+          "why": "Strongest winds around 54 km/h by 2050, from 50 km/h today.",
           "data_source": "Open-Meteo (CMIP6)"
         },
         {
           "hazard": "subsidence",
           "today": "low",
           "y2050": "low",
-          "why": "Based on what you told us about your soil and walls.",
+          "why": "Based on what you told us, there's no reported subsidence signal.",
           "data_source": "Your answer"
         },
         {
@@ -536,38 +536,38 @@
       "generated_at": "2026-10-27T09:00:00Z"
     },
     "latest_score": {
-      "value": 60,
-      "band": "C",
+      "value": 50,
+      "band": "D",
       "components": [
         {
           "name": "flood",
-          "points": 3.0,
+          "points": 15.0,
           "max_points": 30.0,
-          "reason": "Your flood risk by 2050 sets these points."
+          "reason": "Placeholder points until the score engine is ready."
         },
         {
           "name": "heat",
-          "points": 20.0,
+          "points": 10.0,
           "max_points": 20.0,
-          "reason": "Your heat risk by 2050 sets these points."
+          "reason": "Placeholder points until the score engine is ready."
         },
         {
           "name": "storm",
-          "points": 10.0,
+          "points": 5.0,
           "max_points": 10.0,
-          "reason": "Your storm risk by 2050 sets these points."
+          "reason": "Placeholder points until the score engine is ready."
         },
         {
           "name": "subsidence",
-          "points": 10.0,
+          "points": 5.0,
           "max_points": 10.0,
-          "reason": "Your subsidence risk by 2050 sets these points."
+          "reason": "Placeholder points until the score engine is ready."
         },
         {
           "name": "carbon",
-          "points": 17.4,
+          "points": 15.0,
           "max_points": 30.0,
-          "reason": "Based on your EPC score of 58."
+          "reason": "Placeholder points until the score engine is ready."
         }
       ],
       "version": "v1"
