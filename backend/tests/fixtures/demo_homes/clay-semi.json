@@ -1,0 +1,827 @@
+{
+  "slug": "clay-semi",
+  "hazard_shown": "subsidence",
+  "address": {
+    "uprn": null,
+    "line1": "27 Court Road",
+    "postcode": "SE9 3AB",
+    "lat": 51.439138,
+    "lon": 0.053111,
+    "local_authority": "Greenwich",
+    "country": "england"
+  },
+  "household": {
+    "tenure": "owner_occupier",
+    "income_band": "60k_100k",
+    "budget_gbp": 15000,
+    "priorities": [
+      "home_value",
+      "lower_carbon"
+    ],
+    "vulnerable": false,
+    "consent_lloyds_data": false
+  },
+  "property": {
+    "property_type": "semi_detached",
+    "built_form": "Semi-Detached",
+    "construction_age_band": "1930-1949",
+    "floor_area_m2": 96.0,
+    "floor_level": 0,
+    "top_floor": null,
+    "main_heating": "Boiler and radiators, mains gas",
+    "main_fuel": "mains gas",
+    "epc_rating": "D",
+    "epc_score": 63,
+    "co2_tonnes_per_year": 3.9,
+    "source": "demo"
+  },
+  "inputs": {
+    "rofrs_band": "none",
+    "active_flood_warnings": 0,
+    "hot_days_baseline": 5.0,
+    "hot_days_2050": 12.0,
+    "heavy_rain_days_baseline": 3.5,
+    "heavy_rain_days_2050": 4.5,
+    "max_wind_baseline_kmh": 40.0,
+    "max_wind_2050_kmh": 41.0,
+    "subsidence_signal": "clay_reported",
+    "property": {
+      "property_type": "semi_detached",
+      "built_form": "Semi-Detached",
+      "construction_age_band": "1930-1949",
+      "floor_area_m2": 96.0,
+      "floor_level": 0,
+      "top_floor": null,
+      "main_heating": "Boiler and radiators, mains gas",
+      "main_fuel": "mains gas",
+      "epc_rating": "D",
+      "epc_score": 63,
+      "co2_tonnes_per_year": 3.9,
+      "source": "demo"
+    }
+  },
+  "risk": {
+    "levels": [
+      {
+        "hazard": "river_sea_flood",
+        "today": "low",
+        "y2050": "low",
+        "why": "The Environment Agency rates flood risk here as none.",
+        "data_source": "Environment Agency"
+      },
+      {
+        "hazard": "overheating",
+        "today": "medium",
+        "y2050": "medium",
+        "why": "About 12 hot days a year by 2050, up from 5 today.",
+        "data_source": "Open-Meteo (CMIP6)"
+      },
+      {
+        "hazard": "storm",
+        "today": "low",
+        "y2050": "low",
+        "why": "Strongest winds around 41 km/h by 2050, from 40 km/h today.",
+        "data_source": "Open-Meteo (CMIP6)"
+      },
+      {
+        "hazard": "subsidence",
+        "today": "high",
+        "y2050": "high",
+        "why": "Based on what you told us about your soil and walls.",
+        "data_source": "Your answer"
+      },
+      {
+        "hazard": "surface_water",
+        "today": "medium",
+        "y2050": "medium",
+        "why": "Surface-water data is coming in a later version",
+        "data_source": "Environment Agency"
+      }
+    ],
+    "generated_at": "2026-10-27T09:00:00Z"
+  },
+  "score": {
+    "value": 70,
+    "band": "B",
+    "components": [
+      {
+        "name": "flood",
+        "points": 30.0,
+        "max_points": 30.0,
+        "reason": "Your flood risk by 2050 sets these points."
+      },
+      {
+        "name": "heat",
+        "points": 10.0,
+        "max_points": 20.0,
+        "reason": "Your heat risk by 2050 sets these points."
+      },
+      {
+        "name": "storm",
+        "points": 10.0,
+        "max_points": 10.0,
+        "reason": "Your storm risk by 2050 sets these points."
+      },
+      {
+        "name": "subsidence",
+        "points": 1.0,
+        "max_points": 10.0,
+        "reason": "Your subsidence risk by 2050 sets these points."
+      },
+      {
+        "name": "carbon",
+        "points": 18.9,
+        "max_points": 30.0,
+        "reason": "Based on your EPC score of 63."
+      }
+    ],
+    "version": "v1"
+  },
+  "plan": {
+    "items": [
+      {
+        "measure": {
+          "id": "led-lighting",
+          "name": "LED lighting throughout",
+          "category": "carbon",
+          "hazards_reduced": [],
+          "cost_low_gbp": 50,
+          "cost_high_gbp": 200,
+          "annual_bill_saving_gbp": 60,
+          "co2_saved_kg_per_year": 80,
+          "resilience_points": 2,
+          "property_types": [],
+          "renter_ok": true,
+          "needs_landlord": false,
+          "source_url": "https://example.com/placeholder-source"
+        },
+        "rank": 1,
+        "score_uplift": 2,
+        "payback_years": 2.1,
+        "explanation": "LED lighting throughout reduces your carbon risk and adds about 2 points for £50–£200.",
+        "selected": true
+      },
+      {
+        "measure": {
+          "id": "reflective-blinds",
+          "name": "Thermal reflective blinds",
+          "category": "heat",
+          "hazards_reduced": [
+            "overheating"
+          ],
+          "cost_low_gbp": 100,
+          "cost_high_gbp": 400,
+          "annual_bill_saving_gbp": 20,
+          "co2_saved_kg_per_year": 30,
+          "resilience_points": 3,
+          "property_types": [],
+          "renter_ok": true,
+          "needs_landlord": false,
+          "source_url": "https://example.com/placeholder-source"
+        },
+        "rank": 2,
+        "score_uplift": 3,
+        "payback_years": 12.5,
+        "explanation": "Thermal reflective blinds reduces your overheating risk and adds about 3 points for £100–£400.",
+        "selected": true
+      },
+      {
+        "measure": {
+          "id": "loft-insulation",
+          "name": "Loft insulation top-up",
+          "category": "carbon",
+          "hazards_reduced": [],
+          "cost_low_gbp": 400,
+          "cost_high_gbp": 900,
+          "annual_bill_saving_gbp": 250,
+          "co2_saved_kg_per_year": 600,
+          "resilience_points": 6,
+          "property_types": [
+            "detached",
+            "semi_detached",
+            "terraced",
+            "bungalow"
+          ],
+          "renter_ok": false,
+          "needs_landlord": true,
+          "source_url": "https://example.com/placeholder-source"
+        },
+        "rank": 3,
+        "score_uplift": 6,
+        "payback_years": 2.6,
+        "explanation": "Loft insulation top-up reduces your carbon risk and adds about 6 points for £400–£900.",
+        "selected": true
+      },
+      {
+        "measure": {
+          "id": "drain-survey",
+          "name": "Drain survey and repair",
+          "category": "subsidence",
+          "hazards_reduced": [
+            "subsidence"
+          ],
+          "cost_low_gbp": 200,
+          "cost_high_gbp": 1200,
+          "annual_bill_saving_gbp": 0,
+          "co2_saved_kg_per_year": 0,
+          "resilience_points": 4,
+          "property_types": [
+            "detached",
+            "semi_detached",
+            "terraced",
+            "bungalow"
+          ],
+          "renter_ok": false,
+          "needs_landlord": true,
+          "source_url": "https://example.com/placeholder-source"
+        },
+        "rank": 4,
+        "score_uplift": 4,
+        "payback_years": null,
+        "explanation": "Drain survey and repair reduces your subsidence risk and adds about 4 points for £200–£1200.",
+        "selected": true
+      },
+      {
+        "measure": {
+          "id": "external-shutters",
+          "name": "External window shutters",
+          "category": "heat",
+          "hazards_reduced": [
+            "overheating"
+          ],
+          "cost_low_gbp": 800,
+          "cost_high_gbp": 2500,
+          "annual_bill_saving_gbp": 0,
+          "co2_saved_kg_per_year": 0,
+          "resilience_points": 6,
+          "property_types": [],
+          "renter_ok": false,
+          "needs_landlord": true,
+          "source_url": "https://example.com/placeholder-source"
+        },
+        "rank": 5,
+        "score_uplift": 6,
+        "payback_years": null,
+        "explanation": "External window shutters reduces your overheating risk and adds about 6 points for £800–£2500.",
+        "selected": true
+      },
+      {
+        "measure": {
+          "id": "flood-plan-kit",
+          "name": "Flood plan and grab bag",
+          "category": "flood",
+          "hazards_reduced": [
+            "river_sea_flood",
+            "surface_water"
+          ],
+          "cost_low_gbp": 50,
+          "cost_high_gbp": 150,
+          "annual_bill_saving_gbp": 0,
+          "co2_saved_kg_per_year": 0,
+          "resilience_points": 2,
+          "property_types": [],
+          "renter_ok": true,
+          "needs_landlord": false,
+          "source_url": "https://example.com/placeholder-source"
+        },
+        "rank": 6,
+        "score_uplift": 0,
+        "payback_years": null,
+        "explanation": "Flood plan and grab bag reduces your river sea flood risk and adds about 0 points for £50–£150.",
+        "selected": false
+      },
+      {
+        "measure": {
+          "id": "roof-fixings",
+          "name": "Roof and ridge tile fixings",
+          "category": "storm",
+          "hazards_reduced": [
+            "storm"
+          ],
+          "cost_low_gbp": 400,
+          "cost_high_gbp": 1500,
+          "annual_bill_saving_gbp": 0,
+          "co2_saved_kg_per_year": 0,
+          "resilience_points": 5,
+          "property_types": [
+            "detached",
+            "semi_detached",
+            "terraced",
+            "bungalow"
+          ],
+          "renter_ok": false,
+          "needs_landlord": true,
+          "source_url": "https://example.com/placeholder-source"
+        },
+        "rank": 7,
+        "score_uplift": 0,
+        "payback_years": null,
+        "explanation": "Roof and ridge tile fixings reduces your storm risk and adds about 0 points for £400–£1500.",
+        "selected": false
+      },
+      {
+        "measure": {
+          "id": "flood-door",
+          "name": "Flood door",
+          "category": "flood",
+          "hazards_reduced": [
+            "river_sea_flood",
+            "surface_water"
+          ],
+          "cost_low_gbp": 1500,
+          "cost_high_gbp": 3500,
+          "annual_bill_saving_gbp": 0,
+          "co2_saved_kg_per_year": 0,
+          "resilience_points": 8,
+          "property_types": [],
+          "renter_ok": false,
+          "needs_landlord": true,
+          "source_url": "https://example.com/placeholder-source"
+        },
+        "rank": 8,
+        "score_uplift": 0,
+        "payback_years": null,
+        "explanation": "Flood door reduces your river sea flood risk and adds about 0 points for £1500–£3500.",
+        "selected": false
+      }
+    ],
+    "total_cost_low_gbp": 1550,
+    "total_cost_high_gbp": 5200,
+    "projected_score": {
+      "value": 91,
+      "band": "A",
+      "components": [
+        {
+          "name": "flood",
+          "points": 30.0,
+          "max_points": 30.0,
+          "reason": "Your flood risk by 2050 sets these points."
+        },
+        {
+          "name": "heat",
+          "points": 19.0,
+          "max_points": 20.0,
+          "reason": "Your heat risk by 2050 sets these points."
+        },
+        {
+          "name": "storm",
+          "points": 10.0,
+          "max_points": 10.0,
+          "reason": "Your storm risk by 2050 sets these points."
+        },
+        {
+          "name": "subsidence",
+          "points": 5.0,
+          "max_points": 10.0,
+          "reason": "Your subsidence risk by 2050 sets these points."
+        },
+        {
+          "name": "carbon",
+          "points": 26.9,
+          "max_points": 30.0,
+          "reason": "Based on your EPC score of 63."
+        }
+      ],
+      "version": "v1"
+    },
+    "explanation_source": "template"
+  },
+  "funding": {
+    "lines": [
+      {
+        "option": {
+          "id": "boiler-upgrade-scheme",
+          "name": "Boiler Upgrade Scheme",
+          "provider": "UK Government",
+          "kind": "grant",
+          "max_amount_gbp": 7500,
+          "apr_percent": null,
+          "income_bands": [],
+          "tenures": [
+            "owner_occupier",
+            "landlord"
+          ],
+          "categories": [
+            "carbon"
+          ],
+          "is_mock": false,
+          "source_url": "https://www.gov.uk/apply-boiler-upgrade-scheme"
+        },
+        "amount_gbp": 450,
+        "note": "You appear to qualify."
+      },
+      {
+        "option": {
+          "id": "lloyds-green-cashback",
+          "name": "Green home cashback",
+          "provider": "Lloyds (illustrative)",
+          "kind": "cashback",
+          "max_amount_gbp": 500,
+          "apr_percent": null,
+          "income_bands": [],
+          "tenures": [
+            "owner_occupier"
+          ],
+          "categories": [],
+          "is_mock": true,
+          "source_url": ""
+        },
+        "amount_gbp": 500,
+        "note": "Illustrative product."
+      },
+      {
+        "option": {
+          "id": "lloyds-home-improvement-loan",
+          "name": "Home improvement loan",
+          "provider": "Lloyds (illustrative)",
+          "kind": "loan",
+          "max_amount_gbp": 25000,
+          "apr_percent": 6.9,
+          "income_bands": [],
+          "tenures": [],
+          "categories": [],
+          "is_mock": true,
+          "source_url": ""
+        },
+        "amount_gbp": 600,
+        "note": "Illustrative loan over 5 years for the remaining cost."
+      }
+    ],
+    "covered_gbp": 950,
+    "gap_gbp": 600,
+    "monthly_cost_gbp": 12
+  },
+  "passport": {
+    "home_id": "51c32b10-3348-559d-94e1-7d8b1687b266",
+    "address": {
+      "uprn": null,
+      "line1": "27 Court Road",
+      "postcode": "SE9 3AB",
+      "lat": 51.439138,
+      "lon": 0.053111,
+      "local_authority": "Greenwich",
+      "country": "england"
+    },
+    "property": {
+      "property_type": "semi_detached",
+      "built_form": "Semi-Detached",
+      "construction_age_band": "1930-1949",
+      "floor_area_m2": 96.0,
+      "floor_level": 0,
+      "top_floor": null,
+      "main_heating": "Boiler and radiators, mains gas",
+      "main_fuel": "mains gas",
+      "epc_rating": "D",
+      "epc_score": 63,
+      "co2_tonnes_per_year": 3.9,
+      "source": "demo"
+    },
+    "latest_risk": {
+      "levels": [
+        {
+          "hazard": "river_sea_flood",
+          "today": "low",
+          "y2050": "low",
+          "why": "The Environment Agency rates flood risk here as none.",
+          "data_source": "Environment Agency"
+        },
+        {
+          "hazard": "overheating",
+          "today": "medium",
+          "y2050": "medium",
+          "why": "About 12 hot days a year by 2050, up from 5 today.",
+          "data_source": "Open-Meteo (CMIP6)"
+        },
+        {
+          "hazard": "storm",
+          "today": "low",
+          "y2050": "low",
+          "why": "Strongest winds around 41 km/h by 2050, from 40 km/h today.",
+          "data_source": "Open-Meteo (CMIP6)"
+        },
+        {
+          "hazard": "subsidence",
+          "today": "high",
+          "y2050": "high",
+          "why": "Based on what you told us about your soil and walls.",
+          "data_source": "Your answer"
+        },
+        {
+          "hazard": "surface_water",
+          "today": "medium",
+          "y2050": "medium",
+          "why": "Surface-water data is coming in a later version",
+          "data_source": "Environment Agency"
+        }
+      ],
+      "generated_at": "2026-10-27T09:00:00Z"
+    },
+    "latest_score": {
+      "value": 70,
+      "band": "B",
+      "components": [
+        {
+          "name": "flood",
+          "points": 30.0,
+          "max_points": 30.0,
+          "reason": "Your flood risk by 2050 sets these points."
+        },
+        {
+          "name": "heat",
+          "points": 10.0,
+          "max_points": 20.0,
+          "reason": "Your heat risk by 2050 sets these points."
+        },
+        {
+          "name": "storm",
+          "points": 10.0,
+          "max_points": 10.0,
+          "reason": "Your storm risk by 2050 sets these points."
+        },
+        {
+          "name": "subsidence",
+          "points": 1.0,
+          "max_points": 10.0,
+          "reason": "Your subsidence risk by 2050 sets these points."
+        },
+        {
+          "name": "carbon",
+          "points": 18.9,
+          "max_points": 30.0,
+          "reason": "Based on your EPC score of 63."
+        }
+      ],
+      "version": "v1"
+    },
+    "plan": {
+      "items": [
+        {
+          "measure": {
+            "id": "led-lighting",
+            "name": "LED lighting throughout",
+            "category": "carbon",
+            "hazards_reduced": [],
+            "cost_low_gbp": 50,
+            "cost_high_gbp": 200,
+            "annual_bill_saving_gbp": 60,
+            "co2_saved_kg_per_year": 80,
+            "resilience_points": 2,
+            "property_types": [],
+            "renter_ok": true,
+            "needs_landlord": false,
+            "source_url": "https://example.com/placeholder-source"
+          },
+          "rank": 1,
+          "score_uplift": 2,
+          "payback_years": 2.1,
+          "explanation": "LED lighting throughout reduces your carbon risk and adds about 2 points for £50–£200.",
+          "selected": true
+        },
+        {
+          "measure": {
+            "id": "reflective-blinds",
+            "name": "Thermal reflective blinds",
+            "category": "heat",
+            "hazards_reduced": [
+              "overheating"
+            ],
+            "cost_low_gbp": 100,
+            "cost_high_gbp": 400,
+            "annual_bill_saving_gbp": 20,
+            "co2_saved_kg_per_year": 30,
+            "resilience_points": 3,
+            "property_types": [],
+            "renter_ok": true,
+            "needs_landlord": false,
+            "source_url": "https://example.com/placeholder-source"
+          },
+          "rank": 2,
+          "score_uplift": 3,
+          "payback_years": 12.5,
+          "explanation": "Thermal reflective blinds reduces your overheating risk and adds about 3 points for £100–£400.",
+          "selected": true
+        },
+        {
+          "measure": {
+            "id": "loft-insulation",
+            "name": "Loft insulation top-up",
+            "category": "carbon",
+            "hazards_reduced": [],
+            "cost_low_gbp": 400,
+            "cost_high_gbp": 900,
+            "annual_bill_saving_gbp": 250,
+            "co2_saved_kg_per_year": 600,
+            "resilience_points": 6,
+            "property_types": [
+              "detached",
+              "semi_detached",
+              "terraced",
+              "bungalow"
+            ],
+            "renter_ok": false,
+            "needs_landlord": true,
+            "source_url": "https://example.com/placeholder-source"
+          },
+          "rank": 3,
+          "score_uplift": 6,
+          "payback_years": 2.6,
+          "explanation": "Loft insulation top-up reduces your carbon risk and adds about 6 points for £400–£900.",
+          "selected": true
+        },
+        {
+          "measure": {
+            "id": "drain-survey",
+            "name": "Drain survey and repair",
+            "category": "subsidence",
+            "hazards_reduced": [
+              "subsidence"
+            ],
+            "cost_low_gbp": 200,
+            "cost_high_gbp": 1200,
+            "annual_bill_saving_gbp": 0,
+            "co2_saved_kg_per_year": 0,
+            "resilience_points": 4,
+            "property_types": [
+              "detached",
+              "semi_detached",
+              "terraced",
+              "bungalow"
+            ],
+            "renter_ok": false,
+            "needs_landlord": true,
+            "source_url": "https://example.com/placeholder-source"
+          },
+          "rank": 4,
+          "score_uplift": 4,
+          "payback_years": null,
+          "explanation": "Drain survey and repair reduces your subsidence risk and adds about 4 points for £200–£1200.",
+          "selected": true
+        },
+        {
+          "measure": {
+            "id": "external-shutters",
+            "name": "External window shutters",
+            "category": "heat",
+            "hazards_reduced": [
+              "overheating"
+            ],
+            "cost_low_gbp": 800,
+            "cost_high_gbp": 2500,
+            "annual_bill_saving_gbp": 0,
+            "co2_saved_kg_per_year": 0,
+            "resilience_points": 6,
+            "property_types": [],
+            "renter_ok": false,
+            "needs_landlord": true,
+            "source_url": "https://example.com/placeholder-source"
+          },
+          "rank": 5,
+          "score_uplift": 6,
+          "payback_years": null,
+          "explanation": "External window shutters reduces your overheating risk and adds about 6 points for £800–£2500.",
+          "selected": true
+        },
+        {
+          "measure": {
+            "id": "flood-plan-kit",
+            "name": "Flood plan and grab bag",
+            "category": "flood",
+            "hazards_reduced": [
+              "river_sea_flood",
+              "surface_water"
+            ],
+            "cost_low_gbp": 50,
+            "cost_high_gbp": 150,
+            "annual_bill_saving_gbp": 0,
+            "co2_saved_kg_per_year": 0,
+            "resilience_points": 2,
+            "property_types": [],
+            "renter_ok": true,
+            "needs_landlord": false,
+            "source_url": "https://example.com/placeholder-source"
+          },
+          "rank": 6,
+          "score_uplift": 0,
+          "payback_years": null,
+          "explanation": "Flood plan and grab bag reduces your river sea flood risk and adds about 0 points for £50–£150.",
+          "selected": false
+        },
+        {
+          "measure": {
+            "id": "roof-fixings",
+            "name": "Roof and ridge tile fixings",
+            "category": "storm",
+            "hazards_reduced": [
+              "storm"
+            ],
+            "cost_low_gbp": 400,
+            "cost_high_gbp": 1500,
+            "annual_bill_saving_gbp": 0,
+            "co2_saved_kg_per_year": 0,
+            "resilience_points": 5,
+            "property_types": [
+              "detached",
+              "semi_detached",
+              "terraced",
+              "bungalow"
+            ],
+            "renter_ok": false,
+            "needs_landlord": true,
+            "source_url": "https://example.com/placeholder-source"
+          },
+          "rank": 7,
+          "score_uplift": 0,
+          "payback_years": null,
+          "explanation": "Roof and ridge tile fixings reduces your storm risk and adds about 0 points for £400–£1500.",
+          "selected": false
+        },
+        {
+          "measure": {
+            "id": "flood-door",
+            "name": "Flood door",
+            "category": "flood",
+            "hazards_reduced": [
+              "river_sea_flood",
+              "surface_water"
+            ],
+            "cost_low_gbp": 1500,
+            "cost_high_gbp": 3500,
+            "annual_bill_saving_gbp": 0,
+            "co2_saved_kg_per_year": 0,
+            "resilience_points": 8,
+            "property_types": [],
+            "renter_ok": false,
+            "needs_landlord": true,
+            "source_url": "https://example.com/placeholder-source"
+          },
+          "rank": 8,
+          "score_uplift": 0,
+          "payback_years": null,
+          "explanation": "Flood door reduces your river sea flood risk and adds about 0 points for £1500–£3500.",
+          "selected": false
+        }
+      ],
+      "total_cost_low_gbp": 1550,
+      "total_cost_high_gbp": 5200,
+      "projected_score": {
+        "value": 91,
+        "band": "A",
+        "components": [
+          {
+            "name": "flood",
+            "points": 30.0,
+            "max_points": 30.0,
+            "reason": "Your flood risk by 2050 sets these points."
+          },
+          {
+            "name": "heat",
+            "points": 19.0,
+            "max_points": 20.0,
+            "reason": "Your heat risk by 2050 sets these points."
+          },
+          {
+            "name": "storm",
+            "points": 10.0,
+            "max_points": 10.0,
+            "reason": "Your storm risk by 2050 sets these points."
+          },
+          {
+            "name": "subsidence",
+            "points": 5.0,
+            "max_points": 10.0,
+            "reason": "Your subsidence risk by 2050 sets these points."
+          },
+          {
+            "name": "carbon",
+            "points": 26.9,
+            "max_points": 30.0,
+            "reason": "Based on your EPC score of 63."
+          }
+        ],
+        "version": "v1"
+      },
+      "explanation_source": "template"
+    },
+    "events": [
+      {
+        "id": "d1bf6cf6-ec2c-5b80-90dc-a801956fa227",
+        "kind": "assessed",
+        "at": "2026-10-27T09:00:00Z",
+        "score_after": 70,
+        "detail": {}
+      }
+    ],
+    "household": {
+      "tenure": "owner_occupier",
+      "income_band": "60k_100k",
+      "budget_gbp": 15000,
+      "priorities": [
+        "home_value",
+        "lower_carbon"
+      ],
+      "vulnerable": false,
+      "consent_lloyds_data": false
+    },
+    "share_token": null
+  }
+}

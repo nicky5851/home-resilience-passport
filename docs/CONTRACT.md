@@ -38,7 +38,7 @@ of this document; where they disagree, fix the code to match this file.
 | --- | --- | --- | --- | --- | --- |
 | `rofrs_band` | enum | Highest EA Risk of Flooding from Rivers and Sea band present in the postcode: `high` (≥ 3.3%/yr), `medium` (1–3.3%), `low` (0.1–1%), `very_low` (< 0.1%), `none` (postcode not in the dataset) | EA RoFRS postcodes | enum | `null` |
 | `active_flood_warnings` | count | EA flood warnings or alerts currently in force within 5 km of the home | EA flood-monitoring API | 0–50 | `0` |
-| `hot_days_baseline` | days/yr | Mean number of days per year with daily max temperature ≥ 30 °C, years 1991–2020 | Open-Meteo, model `EC_Earth3P_HR` | 0–60 | `null` |
+| `hot_days_baseline` | days/yr | Mean number of days per year with daily max temperature ≥ 28 °C, years 1991–2020 | Open-Meteo, model `EC_Earth3P_HR` | 0–60 | `null` |
 | `hot_days_2050` | days/yr | Same, years 2041–2050 | same | 0–90 | `null` |
 | `heavy_rain_days_baseline` | days/yr | Mean days per year with precipitation ≥ 20 mm, 1991–2020 | same | 0–40 | `null` |
 | `heavy_rain_days_2050` | days/yr | Same, 2041–2050 | same | 0–50 | `null` |

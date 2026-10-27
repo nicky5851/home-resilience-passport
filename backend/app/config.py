@@ -34,7 +34,7 @@ FLOOD_WARNINGS_RADIUS_KM = 5
 CLIMATE_MODEL = "EC_Earth3P_HR"
 CLIMATE_BASELINE_YEARS = (1991, 2020)
 CLIMATE_FUTURE_YEARS = (2041, 2050)
-HOT_DAY_THRESHOLD_C = 30.0  # may become 28.0 after the hot-day threshold check (N2)
+HOT_DAY_THRESHOLD_C = 28.0  # CONTRACT §2: 30 °C gave 0.83 days/yr in London (N2 check)
 HEAVY_RAIN_THRESHOLD_MM = 20.0
 
 # --- Auth (CONTRACT §4) ------------------------------------------------------------------
