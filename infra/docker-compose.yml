@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: hrp
+      POSTGRES_PASSWORD: hrp
+      POSTGRES_DB: hrp
+    ports:
+      - "5432:5432"
+    volumes:
+      - hrp-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hrp -d hrp"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  hrp-db:

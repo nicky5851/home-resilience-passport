@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: hrp
+          POSTGRES_PASSWORD: hrp
+          POSTGRES_DB: hrp
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U hrp -d hrp"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    env:
+      ENV: test
+      DATABASE_URL: postgresql+asyncpg://hrp:hrp@localhost:5432/hrp
+      AUTH_SECRET: test-secret-not-for-production-0123456789
+      ALLOWED_ORIGINS: http://test
+      STORAGE_BACKEND: local
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --frozen
+      - name: Lint
+        run: uv run ruff check . && uv run ruff format --check .
+      - name: Test
+        run: uv run pytest -q
