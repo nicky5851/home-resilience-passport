@@ -7,7 +7,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: allow all build scripts
 - Why: pnpm 12 blocks dependency install scripts by default and fails the install; allowing only what Next.js and ESLint need keeps the supply-chain check on (rule 3)
 - Files: frontend/pnpm-workspace.yaml
-- Commit: <hash>
+- Commit: a2ca8be
 - Affects the other coder? no
 
 ### 2026-10-27 · L1 · shadcn/ui "Nova" preset on Radix, brand colours on top
@@ -15,7 +15,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: hand-written Tailwind config without shadcn variables
 - Why: shadcn components pick up the brand automatically; level colours live in one place for cards, charts and maps (rule 6)
 - Files: frontend/src/app/globals.css, frontend/src/lib/theme.ts, frontend/components.json
-- Commit: <hash>
+- Commit: a2ca8be
 - Affects the other coder? no
 
 ### 2026-10-27 · L1 · No dark theme in M1
@@ -23,7 +23,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: keep an unused dark palette
 - Why: no toggle is planned and an untested palette could fail contrast checks in L14 (rule 3)
 - Files: frontend/src/app/globals.css
-- Commit: <hash>
+- Commit: a2ca8be
 - Affects the other coder? no
 
 ### 2026-10-27 · L1 · Prettier style and lint gates
@@ -31,7 +31,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: ESLint only
 - Why: spec §2 lists eslint, prettier, tsc and vitest; width 100 matches the back end's ruff setting (rule 6)
 - Files: frontend/.prettierrc.json, frontend/eslint.config.mjs, frontend/vitest.config.ts, .github/workflows/ci.yml
-- Commit: <hash>
+- Commit: a2ca8be
 - Affects the other coder? no
 
 ### 2026-10-27 · L1 · Footer links to `/privacy` before the page exists
@@ -39,5 +39,5 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: add the link in L13
 - Why: CONTRACT §6 rule 3 requires the footer link; the shell is its natural home (rule 6)
 - Files: frontend/src/components/app-shell/site-footer.tsx
-- Commit: <hash>
+- Commit: a2ca8be
 - Affects the other coder? no
