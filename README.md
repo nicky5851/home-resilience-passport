@@ -4,7 +4,7 @@ A web app where a UK homeowner enters a postcode and a few household details and
 climate risks today and in 2050, a Resilience Score (A–G), a costed improvement plan, a funding
 bundle and a shareable passport. Built for the TCS Sustainathon UK&I (Lloyds Banking Group challenge).
 
-- Spec: [`docs/CODING_SPEC.md`](docs/CODING_SPEC.md) · Contract: [`docs/CONTRACT.md`](docs/CONTRACT.md)
+- Spec: [`docs/CODING_SPEC.md`](docs/CODING_SPEC.md) · Contract: [`docs/CONTRACT.md`](docs/CONTRACT.md) · Who starts where: [`docs/HANDOFF.md`](docs/HANDOFF.md)
 - Coverage: England and Wales.
 
 ## Requirements
