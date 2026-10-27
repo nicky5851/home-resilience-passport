@@ -4,7 +4,7 @@ COMPOSE := docker compose -f infra/docker-compose.yml
 BACKEND := cd backend &&
 HAS_FRONTEND := $(wildcard frontend/package.json)
 
-.PHONY: help install db migrate dev api test lint format openapi openapi-check types seed flood-data validate-data fixtures train
+.PHONY: help install db migrate dev api test lint format openapi openapi-check types seed flood-data validate-data fixtures fixtures-inputs train
 
 help: ## Show this list
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-15s %s\n", $$1, $$2}'
@@ -63,8 +63,11 @@ flood-data: migrate ## Download (if missing) and load EA RoFRS flood postcodes
 validate-data: ## Check A's CSVs against CONTRACT.md §5
 	$(BACKEND) uv run python -m scripts.validate_data
 
-fixtures: ## Rebuild fixture outputs from the real pipeline (added in N8)
-	@echo "make fixtures arrives in N8" && exit 1
+fixtures: ## Rebuild demo fixture outputs (risk, score) from their inputs, offline
+	$(BACKEND) uv run python -m scripts.make_fixtures
+
+fixtures-inputs: ## Record real HazardInputs for the demo homes (contract: PR needs L), then outputs
+	$(BACKEND) uv run python -m scripts.make_fixtures --inputs
 
 train: ## Prepare data and train the EPC model (added in N12)
 	@echo "make train arrives in N12" && exit 1

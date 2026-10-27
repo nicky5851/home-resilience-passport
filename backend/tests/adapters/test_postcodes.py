@@ -25,12 +25,12 @@ async def test_england_postcode(postcodes_io, memory_cache) -> None:
     info = await lookup_postcode("SW1A 1AA", memory_cache)
     assert (info.lat, info.lon) == (51.50101, -0.141563)
     assert info.local_authority == "Westminster"
-    assert info.country == "england"
+    assert (info.country, info.region) == ("england", "London")
 
 
 async def test_wales_postcode(postcodes_io, memory_cache) -> None:
     info = await lookup_postcode("CF10 1EP", memory_cache)
-    assert (info.local_authority, info.country) == ("Cardiff", "wales")
+    assert (info.local_authority, info.country, info.region) == ("Cardiff", "wales", "Wales")
 
 
 async def test_unknown_postcode_not_found(postcodes_io, memory_cache) -> None:
@@ -154,3 +154,17 @@ async def test_db_cache_down_is_a_miss_not_an_error() -> None:
             await cache.put("test:a", "test", {"x": 1}, POSTCODE_CACHE_TTL)
     finally:
         await engine.dispose()
+
+
+async def test_db_cache_survives_parallel_use(engine, caplog) -> None:
+    """Adapters share one request's cache under asyncio.gather (found in the N8 live check)."""
+    import asyncio
+
+    async with make_sessionmaker(engine)() as s:
+        cache = DbCache(s)
+        await asyncio.gather(
+            *(cache.put(f"test:p{i}", "test", {"i": i}, POSTCODE_CACHE_TTL) for i in range(5))
+        )
+        got = await asyncio.gather(*(cache.get(f"test:p{i}") for i in range(5)))
+    assert got == [{"i": i} for i in range(5)]
+    assert "api_cache" not in caplog.text
