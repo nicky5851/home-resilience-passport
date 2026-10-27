@@ -63,7 +63,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: define them inside N's routers
 - Why: they are contract (the front end's types come from them); keeping them with §4.1 makes every contract change one place (rule 2, rule 6)
 - Files: backend/app/schemas/api.py
-- Commit: 8214278
+- Commit: 010cf6d
 - Affects the other coder? yes (new type names in `schema.d.ts`)
 
 ### 2026-10-27 · N3 · `HomeSummary.score` is a full `ResilienceScore | null`
@@ -71,7 +71,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: `score: int | null`
 - Why: §4.2 writes `score?` without a type; the "My homes" list can show the band without another call (rule 1)
 - Files: backend/app/schemas/api.py
-- Commit: 8214278
+- Commit: 010cf6d
 - Affects the other coder? yes
 
 ### 2026-10-27 · N3 · Response fields are required in OpenAPI
@@ -79,7 +79,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: leave defaults optional in the schema
 - Why: CONTRACT §1 rule 2 says every field is always present; otherwise the generated TS types mark nullable fields optional. Side effect: `Address`, `Household`, `PropertyFacts` appear as `-Input` / `-Output` in OpenAPI
 - Files: backend/app/schemas/base.py, docs/openapi.json
-- Commit: 8214278
+- Commit: 010cf6d
 - Affects the other coder? yes (use `components["schemas"]["PropertyFacts-Output"]` etc. for responses)
 
 ### 2026-10-27 · N3 · Stub state is in memory
@@ -87,7 +87,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: write the stub against the database now
 - Why: N4 builds the tables, N9/N10/N14 replace the stub piece by piece; memory keeps N3 small (rule 3)
 - Files: backend/app/api/stub_store.py
-- Commit: 8214278
+- Commit: 010cf6d
 - Affects the other coder? no (restarting the API forgets stub homes)
 
 ### 2026-10-27 · N3 · `POST /homes/{id}/work` returns 200
@@ -95,7 +95,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: 201
 - Why: the contract names 201 only for `POST /homes`; keep FastAPI's default elsewhere (rule 2)
 - Files: backend/app/api/homes.py
-- Commit: 8214278
+- Commit: 010cf6d
 - Affects the other coder? no
 
 ### 2026-10-27 · N3 · Unlisted 4xx statuses map to `validation`
@@ -103,7 +103,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: invent new codes
 - Why: CONTRACT §3 lists a closed set of codes (rule 2)
 - Files: backend/app/api/errors.py, backend/app/main.py
-- Commit: 8214278
+- Commit: 010cf6d
 - Affects the other coder? no
 
 ### 2026-10-27 · N3 · New dependency `python-multipart`
@@ -111,5 +111,61 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: none; FastAPI needs it for form-encoded login and multipart uploads
 - Why: required by CONTRACT §4 and §6
 - Files: backend/pyproject.toml, backend/uv.lock
-- Commit: 8214278
+- Commit: 010cf6d
+- Affects the other coder? no
+
+### 2026-10-27 · N4 · `users` table defined by hand with fastapi-users' columns
+- Decision: `id`, `email`, `hashed_password`, `is_active`, `is_superuser`, `is_verified` written out in `models.py`, plus our own columns
+- Alternatives: `fastapi-users-db-sqlalchemy`'s `SQLAlchemyBaseUserTableUUID` mixin now
+- Why: no new dependency until N10; the columns match the mixin, so N10 can switch with no migration (rule 3)
+- Files: backend/app/db/models.py
+- Commit: e0cce28
+- Affects the other coder? no
+
+### 2026-10-27 · N4 · Demo homes validated but not stored yet
+- Decision: `make seed` loads `measures` and `funding_options`; `demo_homes.csv` is checked by `make validate-data` only. `/demo/homes` keeps serving the fixtures
+- Alternatives: create a demo user and five homes now
+- Why: there is no `demo_homes` table in N4's list and N15 seeds them "with full data" (rule 1, rule 3)
+- Files: backend/app/db/seed.py
+- Commit: e0cce28
+- Affects the other coder? no
+
+### 2026-10-27 · N4 · Seed replaces reference tables wholesale
+- Decision: delete all rows then insert, in one transaction
+- Alternatives: upsert row by row
+- Why: the tables always mirror A's CSVs, including removed rows; plans keep their own JSON copy of measures so nothing references these rows (rule 3)
+- Files: backend/app/db/seed.py
+- Commit: e0cce28
+- Affects the other coder? no
+
+### 2026-10-27 · N4 · Placeholder source URLs are warnings
+- Decision: `example.com` / `example.org` in `source_url` prints a warning; `make validate-data` still passes
+- Alternatives: fail CI on placeholders
+- Why: lets the foundation merge before A's sheets arrive while keeping the gap visible on every run (rule 1)
+- Files: backend/app/db/reference.py, data/reference/measures.csv
+- Commit: e0cce28
+- Affects the other coder? no
+
+### 2026-10-27 · N4 · Tests use their own `<db>_test` database
+- Decision: a session fixture drops and recreates `hrp_test` and migrates it to head; locally DB tests skip with a hint if Postgres is down, in CI (`CI` set) they fail
+- Alternatives: run against the dev database; transaction-rollback per test
+- Why: never touches dev data, and each run proves migrations work on a fresh DB (rule 3)
+- Files: backend/tests/conftest.py, backend/tests/test_db.py
+- Commit: e0cce28
+- Affects the other coder? no
+
+### 2026-10-27 · N4 · `flood_postcodes` is a minimal (postcode, band) table
+- Decision: composite primary key, no other columns
+- Alternatives: guess the RoFRS ZIP's columns now
+- Why: N7 inspects the real file and records the mapping; it adds columns in its own migration (rule 3)
+- Files: backend/app/db/models.py
+- Commit: e0cce28
+- Affects the other coder? no
+
+### 2026-10-27 · N4 · New dependencies `sqlalchemy[asyncio]`, `asyncpg`, `alembic`
+- Decision: added to the back end
+- Alternatives: none; spec §2 locks SQLAlchemy 2.0 + Alembic, asyncpg is the async driver (N1 decision)
+- Why: required by N4
+- Files: backend/pyproject.toml, backend/uv.lock
+- Commit: e0cce28
 - Affects the other coder? no

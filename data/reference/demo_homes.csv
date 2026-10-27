@@ -1,0 +1,6 @@
+slug,postcode,house_number,hazard_shown,tenure,income_band,budget_gbp,priorities,vulnerable,subsidence_signal,notes
+flood-terrace,YO1 9TJ,12,river_sea_flood,owner_occupier,20k_40k,5000,flood_safety;lower_bills,true,none_reported,Placeholder until A's sheet
+coastal-bungalow,TR18 3JA,3,storm,owner_occupier,under_20k,2000,lower_bills;comfort,,unknown,Placeholder until A's sheet
+city-top-flat,E1 8NG,51,overheating,private_renter,40k_60k,500,comfort;lower_bills,false,unknown,Placeholder until A's sheet
+clay-semi,SE9 3AB,27,subsidence,owner_occupier,60k_100k,15000,home_value;lower_carbon,false,clay_reported,Placeholder until A's sheet
+rural-cottage,GL54 1HP,4,low_risk,owner_occupier,over_100k,25000,lower_carbon;home_value,false,none_reported,Placeholder until A's sheet
