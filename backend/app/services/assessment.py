@@ -17,6 +17,7 @@ from app.config import ASSESS_WARNINGS_BUDGET_S
 from app.schemas import Address, HazardInputs, PropertyFacts
 from app.schemas.api import Assessment
 from app.scoring import assess_risk, compute_score
+from ml import predict
 
 log = logging.getLogger(__name__)
 
@@ -41,6 +42,27 @@ async def _region(postcode: str, cache: Cache) -> str | None:
         return (await postcodes.lookup_postcode(postcode, cache)).region
     except (UpstreamUnavailable, postcodes.PostcodeNotFound):
         return None  # climate falls back to the nearest region
+
+
+async def with_estimate(prop: PropertyFacts, address: Address, cache: Cache) -> PropertyFacts:
+    """No EPC band: our model estimates band and CO2 (`source="model"`, spec N13).
+
+    A certificate's or the user's facts are never replaced, only gaps filled. Without a model
+    file the facts stay as they are and scoring handles the missing band.
+    """
+    if prop.epc_rating is not None:
+        return prop
+    est = predict.estimate(prop, await _region(address.postcode, cache))
+    if est is None:
+        return prop
+    co2 = prop.co2_tonnes_per_year
+    return prop.model_copy(
+        update={
+            "epc_rating": est.band,
+            "co2_tonnes_per_year": est.co2_tonnes_per_year if co2 is None else co2,
+            "source": "model",
+        }
+    )
 
 
 async def _warnings(address: Address, cache: Cache) -> int:
@@ -80,6 +102,7 @@ async def hazard_inputs(
 async def assess(
     address: Address, prop: PropertyFacts, session: AsyncSession, cache: Cache
 ) -> Assessment:
+    prop = await with_estimate(prop, address, cache)
     inputs = await hazard_inputs(address, prop, session, cache)
     # L's assess_risk is pure, so its `generated_at` is fixed; stamp the real time here.
     risk = assess_risk(inputs).model_copy(
