@@ -4,7 +4,7 @@ COMPOSE := docker compose -f infra/docker-compose.yml
 BACKEND := cd backend &&
 HAS_FRONTEND := $(wildcard frontend/package.json)
 
-.PHONY: help install db migrate dev api test lint format openapi openapi-check types seed flood-data validate-data fixtures fixtures-inputs train
+.PHONY: help install db migrate dev api test lint format openapi openapi-check types seed flood-data validate-data fixtures fixtures-inputs epc-data train
 
 help: ## Show this list
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-15s %s\n", $$1, $$2}'
@@ -69,5 +69,9 @@ fixtures: ## Rebuild demo fixture outputs (risk, score) from their inputs, offli
 fixtures-inputs: ## Record real HazardInputs for the demo homes (contract: PR needs L), then outputs
 	$(BACKEND) uv run python -m scripts.make_fixtures --inputs
 
-train: ## Prepare data and train the EPC model (added in N12)
-	@echo "make train arrives in N12" && exit 1
+epc-data: ## Stream 3 regions of the EPC bulk data into data/raw/epc_bulk.csv (needs EPC_API_TOKEN)
+	$(BACKEND) uv run python -m ml.download
+
+train: ## Prepare data and train the EPC model (downloads the extract first if missing)
+	@test -f data/raw/epc_bulk.csv || $(MAKE) epc-data
+	$(BACKEND) uv run --group ml python -m ml.train

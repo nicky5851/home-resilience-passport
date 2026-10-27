@@ -441,3 +441,59 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/app/api/homes.py, backend/app/services/homes.py
 - Commit: 0aa9ab8
 - Affects the other coder? yes (plan before assessment is 404)
+
+### 2026-10-28 · N12 · EPC bulk data read in place with HTTP range requests
+- Decision: `ml/download.py` asks the register API for the domestic bulk file (`/api/files/domestic/csv`, bearer token; 302 to a signed S3 link that expires after 30 s), reads the 8.3 GB zip's index and only the chosen year's member through `Range` requests, renewing the link on every 403, and never prints the signed link
+- Alternatives: download the whole 8.3 GB zip; sign in to the website and download by hand
+- Why: about 270 MB transferred instead of 8.3 GB (20 GB of free disk), no manual step, reproducible from `make epc-data`
+- Files: backend/ml/download.py, Makefile
+- Commit: 7131404
+- Affects the other coder? no
+
+### 2026-10-28 · N12 · Training subset: 2024 certificates in London, Yorkshire and the South West
+- Decision: one lodgement year (2024) and three regions (E12000007, E12000003, E12000009): 553,640 certificates, 537,908 homes after cleaning
+- Alternatives: several years; other regions
+- Why: spec asks for about 3 regions and 500k certificates; these hold the five demo homes and mix city flats, terraces and rural houses
+- Files: backend/ml/download.py, docs/model_card.md
+- Commit: 7131404
+- Affects the other coder? no
+
+### 2026-10-28 · N12 · Seven features built by one module for training and serving
+- Decision: `ml/features.py` builds property type (EPC adapter's rule), built form, age band (prefix removed), floor area, region (ONS code → postcodes.io name), heating type (from the description) and fuel (description first, coded fuel second, as the adapter) from both a bulk row and `PropertyFacts`
+- Alternatives: separate code for training and serving
+- Why: the model must never see a value the app cannot produce
+- Files: backend/ml/features.py
+- Commit: 7131404
+- Affects the other coder? no
+
+### 2026-10-28 · N12 · Cleaning rules
+- Decision: latest certificate per UPRN (rows without UPRN kept); drop rows without a valid band A–G or with CO2 outside 0–50 t/yr; floor area outside 10–1000 m² becomes unknown; categories under 0.2% of homes become "other"; split unit = postcode area (letters of the outward code)
+- Alternatives: drop rows with any missing feature
+- Why: the model handles missing values natively, and the app often lacks some facts
+- Files: backend/ml/prepare.py
+- Commit: 7131404
+- Affects the other coder? no
+
+### 2026-10-28 · N12 · Early stopping with 30 rounds of patience
+- Decision: both models use early stopping with `n_iter_no_change=30` (max 300 rounds, learning rate 0.1, seed 42)
+- Alternatives: default patience 10 (stopped after 11 rounds); 300 fixed rounds
+- Why: on a validation split of the training areas (not the test set) accuracy was 66.0% vs 65.3% (patience 10) and 64.1% (300 rounds)
+- Files: backend/ml/train.py
+- Commit: 7131404
+- Affects the other coder? no
+
+### 2026-10-28 · N12 · Model artefact committed to git
+- Decision: `backend/ml/artifacts/epc_model.joblib` (0.7 MB, both models, kept categories, metrics, version) is committed with `metrics.json` and `confusion_matrix.png`
+- Alternatives: Git LFS; train on deploy
+- Why: spec §2 commits artefacts under 25 MB; the app needs the model without the training data
+- Files: backend/ml/artifacts/
+- Commit: 7131404
+- Affects the other coder? no
+
+### 2026-10-28 · N12 · scikit-learn and pandas are runtime dependencies; matplotlib training-only
+- Decision: `scikit-learn` and `pandas` in the back end's main dependencies (N13 predicts inside the API); `matplotlib` in the `ml` dependency group (`uv run --group ml`), used only for the confusion matrix
+- Alternatives: everything in the `ml` group
+- Why: the API loads the model at start-up; CI and the API image need not install plotting
+- Files: backend/pyproject.toml, backend/uv.lock, Makefile
+- Commit: 7131404
+- Affects the other coder? no
