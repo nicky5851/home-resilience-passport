@@ -215,7 +215,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: hard-coded live URL; cache keys without the host
 - Why: integration tokens get `403 UNAUTHORISED` on live. During the N6 live check the dev cache served integration test homes after switching to live, for up to 30 days; per-host keys stop that
 - Files: backend/app/config.py, backend/app/adapters/epc.py, .env.example, README.md, docs/DECISIONS.md
-- Commit: 00d8dfb
+- Commit: c861041
 - Affects the other coder? yes (new variable `EPC_API_BASE_URL` in the shared `.env.example`; each person needs their own token, README "EPC API token")
 
 ### 2026-10-27 · N6 · Code tables from the register's codes CSV
@@ -223,7 +223,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: call `/api/codes/info` at runtime
 - Why: code meanings change between schema versions (`main_fuel` 10 is electricity in RdSAP-17, dual fuel in SAP-17); a static table needs no extra calls and no token
 - Files: backend/scripts/epc_codes.py, backend/app/adapters/epc_codes.json
-- Commit: 00d8dfb
+- Commit: c861041
 - Affects the other coder? no
 
 ### 2026-10-27 · N6 · Mapping rules for certificates
@@ -231,7 +231,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: first row wins; coded fuel only
 - Why: the register returns same-day certificates for one UPRN; one recorded certificate codes bottled LPG while describing electric heating, and the description is what users see
 - Files: backend/app/adapters/epc.py
-- Commit: 00d8dfb
+- Commit: c861041
 - Affects the other coder? no
 
 ### 2026-10-27 · N6 · Lookup lists the demo address first; at most 50 addresses
@@ -239,7 +239,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: demo address only; register addresses only
 - Why: keeps the demo path working (rule 1) while showing real data
 - Files: backend/app/api/lookup.py
-- Commit: 00d8dfb
+- Commit: c861041
 - Affects the other coder? no
 
 ### 2026-10-27 · N6 · Test fixtures recorded from the integration API
@@ -247,5 +247,37 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: record live responses
 - Why: integration data is the register's test data, so nothing about real homes is committed
 - Files: backend/tests/adapters/
-- Commit: 00d8dfb
+- Commit: c861041
 - Affects the other coder? no
+
+### 2026-10-27 · N7 · RoFRS: one row per postcode, highest band with properties
+- Decision: the ZIP's CSV has one row per postcode with property counts per band; `flood_postcodes` stores the highest band whose `TOT_CNT_*` count is > 0, one row per postcode, in the existing (postcode, band) table. Rows whose `PC` is not a real postcode ("V…" pseudo-postcodes, 106k rows) are skipped. The table is replaced as a whole
+- Alternatives: one row per postcode and band (N4's guess); weighted average by property count; a migration adding the counts
+- Why: CONTRACT §2 defines `rofrs_band` as the highest band present; no schema change needed (rule 3); conservative for flood risk (rule 5)
+- Files: backend/app/db/load_rofrs.py, docs/DECISIONS.md
+- Commit: 4ada357
+- Affects the other coder? no
+
+### 2026-10-27 · N7 · Empty table or database down means unknown, not `none`
+- Decision: `rofrs_band` returns `None` for Wales, when `flood_postcodes` is empty, or when the database cannot be read; `none` only when the data is loaded and the postcode is not in it
+- Alternatives: `none` whenever no row is found
+- Why: a machine that never ran `make flood-data` must not tell a household it is not at flood risk (rule 5)
+- Files: backend/app/adapters/flood.py
+- Commit: 4ada357
+- Affects the other coder? no
+
+### 2026-10-27 · N7 · Live warnings count severity 1–3 only, capped at 50
+- Decision: count EA items with `severityLevel` 1 (severe warning), 2 (warning) or 3 (alert) within 5 km; level 4 ("no longer in force") is ignored. Capped at 50 (CONTRACT §2 range). Cached 15 minutes by lat/lon rounded to 3 decimals; failures return 0 and are not cached
+- Alternatives: count every item returned
+- Why: CONTRACT §2 counts warnings "currently in force"; the live feed includes expired ones
+- Files: backend/app/adapters/flood.py
+- Commit: 4ada357
+- Affects the other coder? no
+
+### 2026-10-27 · N7 · `make flood-data` downloads the RoFRS ZIP itself
+- Decision: the loader downloads the ZIP (no sign-up, OGL) into git-ignored `data/raw/` when missing, or with `--download`; 120 s timeout for this one-off 5 MB download; tests build a tiny ZIP so CI never downloads
+- Alternatives: manual download; commit the data
+- Why: one command per machine; the big file stays out of git
+- Files: backend/app/db/load_rofrs.py, backend/app/config.py, Makefile
+- Commit: 4ada357
+- Affects the other coder? yes (each machine runs `make flood-data` once, otherwise every flood band is unknown)

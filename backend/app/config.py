@@ -38,6 +38,9 @@ CLIMATE_CACHE_ROUND_DEGREES = 1  # lat/lon rounded to 0.1°
 
 # --- Hazard data (CONTRACT §2) -----------------------------------------------------------
 FLOOD_WARNINGS_RADIUS_KM = 5
+FLOOD_WARNINGS_MAX = 50  # CONTRACT §2 valid range 0–50
+ROFRS_ZIP = REPO_ROOT / "data" / "raw" / "RoFRS_Postcodes_in_Areas_at_Risk.zip"  # git-ignored
+ROFRS_DOWNLOAD_TIMEOUT_S = 120.0  # one-off 5 MB download by the loader, not a request path
 CLIMATE_MODEL = "EC_Earth3P_HR"
 CLIMATE_BASELINE_YEARS = (1991, 2020)
 CLIMATE_FUTURE_YEARS = (2041, 2050)

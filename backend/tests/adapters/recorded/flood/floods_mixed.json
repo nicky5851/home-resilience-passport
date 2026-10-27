@@ -1,0 +1,144 @@
+{
+ "@context": "http://environment.data.gov.uk/flood-monitoring/meta/context.jsonld",
+ "meta": {
+  "publisher": "Environment Agency",
+  "licence": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+  "documentation": "http://environment.data.gov.uk/flood-monitoring/doc/reference",
+  "version": "0.9",
+  "comment": "Status: Beta service",
+  "hasFormat": [
+   "http://environment.data.gov.uk/flood-monitoring/id/floods.csv",
+   "http://environment.data.gov.uk/flood-monitoring/id/floods.rdf",
+   "http://environment.data.gov.uk/flood-monitoring/id/floods.ttl",
+   "http://environment.data.gov.uk/flood-monitoring/id/floods.html"
+  ]
+ },
+ "items": [
+  {
+   "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/122FWC001",
+   "description": "North Sea coast at Bridlington - Harbour Road and Floral Pavilion",
+   "eaAreaName": "Yorkshire",
+   "eaRegionName": "No longer used",
+   "floodArea": {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/122FWC001",
+    "county": "East Riding of Yorkshire",
+    "notation": "122FWC001",
+    "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/122FWC001/polygon",
+    "riverOrSea": "North Sea"
+   },
+   "floodAreaID": "122FWC001",
+   "isTidal": true,
+   "message": "High tides and forecast weather conditions are expected to cause flooding tomorrow morning.\u00a0\nFlooding is expected from 04:00 to 06:30 on 28/10/2026.\u00a0\nHigh astronomical tides and a large surge is expected. The wind direction is predominantly offshore, so the main risk is from higher than normal water levels. Locations most affected will be coastal roads, promenades and footpaths.\u00a0\nWe are closely monitoring the situation .\u00a0\nAvoid coastal roads, footpaths and carparks, which may be flooded. Stay away from promenades where wave and spray overtopping is possible\u00a0\nThis message will be updated by 10:30PM on Tuesday 27 October or as the situation changes.\u00a0\n",
+   "severity": "Flood warning",
+   "severityLevel": 2,
+   "timeMessageChanged": "2026-10-27T14:23:00",
+   "timeRaised": "2026-10-27T14:23:55",
+   "timeSeverityChanged": "2026-10-27T14:23:00"
+  },
+  {
+   "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/065FWC1602",
+   "description": "South Hayling and South Eastoke seafront",
+   "eaAreaName": "Solent and South Downs",
+   "eaRegionName": "No longer used",
+   "floodArea": {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/065FWC1602",
+    "county": "Hampshire",
+    "notation": "065FWC1602",
+    "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/065FWC1602/polygon",
+    "riverOrSea": "Langstone Harbour, The Solent"
+   },
+   "floodAreaID": "065FWC1602",
+   "isTidal": true,
+   "message": "High tides are expected to cause flooding on Wednesday.\nFlooding is expected for 2 hours either side of Wednesday afternoon's tide at 12:21 on 28/10/2026.  \nThe weather increases tide table values by 0.22 m. Total forecast tide is 5.23 metres Chart Datum (2.50 mAOD) at Portsmouth. Light Westerly Force 3 wind. South Hayling beach (towards Eastoke) has been affected by previous storms. Water could push further up the beach than normal. Property at Eastoke corner, near the nature reserve, and at Southwood Road may flood. Overtopping of splash walls along the beach front may flood gardens. Beach huts at West Beach, near the Inn on the beach, may also be affected. Thursday's tide at 00:45 on 29/10/2026 is forecast to be 50 cm lower (2 mAOD).\nWe are liaising with emergency services and local authorities .\nActivate any flood protection products you may have.  \nThis message will be updated by 4:00PM on Wednesday 28 October or as the situation changes.\n",
+   "severity": "Flood warning",
+   "severityLevel": 2,
+   "timeMessageChanged": "2026-10-27T15:57:00",
+   "timeRaised": "2026-10-27T15:57:11",
+   "timeSeverityChanged": "2026-10-26T09:36:00"
+  },
+  {
+   "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/065WAC404",
+   "description": "Climping Seafront",
+   "eaAreaName": "Solent and South Downs",
+   "eaRegionName": "No longer used",
+   "floodArea": {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/065WAC404",
+    "county": "West Sussex",
+    "notation": "065WAC404",
+    "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/065WAC404/polygon",
+    "riverOrSea": "English Channel"
+   },
+   "floodAreaID": "065WAC404",
+   "isTidal": true,
+   "message": "High tides on Wednesday may lead to flooding.\nFlooding is possible for 2 hours either side of Wednesday's early morning tide at 00:00 on 28/10/2026.\nThe weather increases tide table values by 0.1 m. Total forecast tide is 6.05 metres Chart Datum (3.00 mAOD) at Littlehampton. Strong Westerly Force 5 wind. Waves could cause overtopping of the beach, affecting Climping Street Car Park. A small amount of water may then flow or be directed westwards along Mill Lane towards residential property in Climping Street. Wednesday's afternoon tide at 12:15 on 28/10/2026 is forecast to be 23 cm higher (3.23 mAOD). Flood impacts should reduce on Thursday.\nWe are closely monitoring the situation We routinely check the condition of the beach at Climping.\nConsider activating any flood protection products you may have. Access could be restricted. Take care if visiting Climping beach.\nThis message will be updated by 6:00PM on Wednesday 28 October or as the situation changes.\n",
+   "severity": "Flood alert",
+   "severityLevel": 3,
+   "timeMessageChanged": "2026-10-27T15:25:00",
+   "timeRaised": "2026-10-27T15:25:04",
+   "timeSeverityChanged": "2026-10-24T12:05:00"
+  },
+  {
+   "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/122WAC954",
+   "description": "North Sea coast at Bridlington",
+   "eaAreaName": "Yorkshire",
+   "eaRegionName": "No longer used",
+   "floodArea": {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/122WAC954",
+    "county": "East Riding of Yorkshire",
+    "notation": "122WAC954",
+    "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/122WAC954/polygon",
+    "riverOrSea": "North Sea"
+   },
+   "floodAreaID": "122WAC954",
+   "isTidal": true,
+   "message": "High tides and forecast weather conditions tomorrow morning may lead to flooding.\nFlooding is possible from 04:00 to 06:30 on 28/10/2026.\nHigh astronomical tides and a large surge is expected. The wind direction is predominantly offshore, so the main risk is from higher than normal water levels. Locations most affected will be coastal roads, promenades and footpaths.\nWe are closely monitoring the situation.\nAvoid coastal roads, footpaths and carparks, which may be flooded. Stay away from promenades where overtopping is possible.\nThis message will be updated by 11PM on Tuesday 27 October or as the situation changes.\n",
+   "severity": "Flood alert",
+   "severityLevel": 3,
+   "timeMessageChanged": "2026-10-27T14:14:00",
+   "timeRaised": "2026-10-27T14:14:14",
+   "timeSeverityChanged": "2026-10-26T13:30:00"
+  },
+  {
+   "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/111WATCHXH",
+   "description": "Christchurch Harbour",
+   "eaAreaName": "Wessex",
+   "eaRegionName": "No longer used",
+   "floodArea": {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/111WATCHXH",
+    "county": "Bournemouth, Christchurch and Poole",
+    "notation": "111WATCHXH",
+    "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/111WATCHXH/polygon",
+    "riverOrSea": "English Channel"
+   },
+   "floodAreaID": "111WATCHXH",
+   "isTidal": true,
+   "message": "There is no longer a threat of flooding.\nThe previous tide of concern has now passed,  the weather is more settled and no flooding is expected. High tide tomorrow morning may see this alert re-issued.\nWe will continue to monitor the situation and will issue further alerts or warnings if necessary. \nContinue to take care on waterside roads and footpaths and don't put yourself in unnecessary danger. \n",
+   "severity": "Warning no longer in force",
+   "severityLevel": 4,
+   "timeMessageChanged": "2026-10-27T12:46:00",
+   "timeRaised": "2026-10-27T12:46:56",
+   "timeSeverityChanged": "2026-10-27T12:46:00"
+  },
+  {
+   "@id": "http://environment.data.gov.uk/flood-monitoring/id/floods/031WAT217",
+   "description": "Severn estuary from Gloucester to Sharpness",
+   "eaAreaName": "West Midlands",
+   "eaRegionName": "No longer used",
+   "floodArea": {
+    "@id": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/031WAT217",
+    "county": "Gloucestershire",
+    "notation": "031WAT217",
+    "polygon": "http://environment.data.gov.uk/flood-monitoring/id/floodAreas/031WAT217/polygon",
+    "riverOrSea": "Severn Estuary"
+   },
+   "floodAreaID": "031WAT217",
+   "isTidal": true,
+   "message": "There is no longer a threat of flooding.\nCoastal conditions are expected to improve and no flooding is expected.  \nWe will continue to monitor the situation and will issue further alerts or warnings if necessary.  \nContinue to take care on waterside roads and footpaths and don't put yourself in unnecessary danger.  \n",
+   "severity": "Warning no longer in force",
+   "severityLevel": 4,
+   "timeMessageChanged": "2026-10-27T10:49:00",
+   "timeRaised": "2026-10-27T10:49:18",
+   "timeSeverityChanged": "2026-10-27T10:49:00"
+  }
+ ]
+}
