@@ -71,7 +71,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: `if (MOCK) return fixture` branches in every call; MSW (new dependency)
 - Why: page code is identical in both modes, so `/dev/contract` proves the same code against both; no new dependency (rule 3, rule 6)
 - Files: frontend/src/mocks/handler.ts, frontend/src/lib/api/client.ts
-- Commit: <hash>
+- Commit: 1cc384a
 - Affects the other coder? no
 
 ### 2026-10-27 · L2 · Contract checks are one shared list
@@ -79,7 +79,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: page-only checks
 - Why: CI catches mock/contract drift without a browser; the page and tests can never disagree (rule 3)
 - Files: frontend/src/lib/api/contract-checks.ts, frontend/src/lib/api/contract-checks.test.ts, frontend/src/app/dev/contract/
-- Commit: <hash>
+- Commit: 1cc384a
 - Affects the other coder? no
 
 ### 2026-10-27 · L2 · `mocks:sync` writes an index and runs before dev, build, typecheck and test
@@ -87,7 +87,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: run it only before `dev` and `build` as spec §4.4 says
 - Why: the mock handler imports the fixtures, so `tsc` and vitest need them too, including in CI (rule 1)
 - Files: frontend/scripts/mocks-sync.mjs, frontend/package.json
-- Commit: <hash>
+- Commit: 1cc384a
 - Affects the other coder? no
 
 ### 2026-10-27 · L2 · Minimal `/login` and `/homes` pages now
@@ -95,7 +95,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: redirect to a page that does not exist yet
 - Why: the L2 check needs a protected page that redirects to a working `/login` (rule 1)
 - Files: frontend/src/app/login/, frontend/src/app/homes/, frontend/src/components/auth/require-user.tsx, frontend/src/lib/auth/use-user.ts
-- Commit: <hash>
+- Commit: 1cc384a
 - Affects the other coder? no
 
 ### 2026-10-27 · L2 · CI fails on stale `schema.d.ts`
@@ -103,7 +103,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: format the generated file
 - Why: CONTRACT §3 (b); formatting would make the drift check depend on Prettier's version
 - Files: .github/workflows/ci.yml, Makefile, frontend/.prettierignore, frontend/eslint.config.mjs
-- Commit: <hash>
+- Commit: 1cc384a
 - Affects the other coder? yes (after any API change N runs `make openapi` and `make types` and commits both)
 
 ### 2026-10-27 · L2 · New dependencies `openapi-fetch`, `openapi-typescript`
@@ -111,5 +111,5 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: none; spec §2 locks both
 - Why: required by L2
 - Files: frontend/package.json, frontend/pnpm-lock.yaml
-- Commit: <hash>
+- Commit: 1cc384a
 - Affects the other coder? no
