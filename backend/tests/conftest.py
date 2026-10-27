@@ -113,14 +113,41 @@ USER_TABLES = ("users", "homes", "households", "assessments", "plans", "passport
                "work_files", "share_links")  # fmt: skip
 
 
+@pytest.fixture(scope="session")
+def seeded(db_url: str) -> str:
+    """The test database with A's reference CSVs loaded (`make seed`), once per session."""
+    import asyncio
+
+    from sqlalchemy.ext.asyncio import create_async_engine
+    from sqlalchemy.pool import NullPool
+
+    from app.db.seed import seed
+
+    async def run() -> None:
+        eng = create_async_engine(db_url, poolclass=NullPool)
+        try:
+            await seed(eng)
+        finally:
+            await eng.dispose()
+
+    asyncio.run(run())
+    return db_url
+
+
 @pytest.fixture
 def client(
-    origin: str, db_url: str, memory_cache: MemoryCache, postcodes_io, epc_api, offline_hazards
+    origin: str,
+    seeded: str,
+    db_url: str,
+    memory_cache: MemoryCache,
+    postcodes_io,
+    epc_api,
+    offline_hazards,
 ):
     """A logged-out client that sends an allowed Origin on every request.
 
     Accounts and homes live in the `_test` database, emptied before each test; the API cache is
-    in memory. `flood_postcodes` is empty there, so flood bands are unknown (null)."""
+    in memory. Reference data is seeded; `flood_postcodes` is empty, so flood bands are unknown."""
     import asyncio
 
     from fastapi.testclient import TestClient
@@ -137,7 +164,7 @@ def client(
 
     async def empty() -> None:
         async with eng.begin() as conn:
-            await conn.execute(text(f"TRUNCATE {', '.join(USER_TABLES)} CASCADE"))
+            await conn.execute(text(f"TRUNCATE {', '.join(USER_TABLES)}, llm_cache CASCADE"))
 
     async def test_session():
         async with make_sessionmaker(eng)() as s:

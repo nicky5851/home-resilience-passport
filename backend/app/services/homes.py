@@ -3,7 +3,7 @@ share links.
 
 Routes work on `StubHome` views, so the five demo homes (fixtures, in memory, readable by every
 logged-in user) and stored homes share one code path. Still not stored until their steps:
-plans and funding (fixture answers until N11 / L6) and certificate files (in memory until N14).
+funding (fixture answers until L6) and certificate files (in memory until N14).
 """
 
 import uuid
@@ -19,6 +19,7 @@ from app.schemas import (
     HazardInputs,
     Household,
     PassportEvent,
+    Plan,
     PropertyFacts,
     ResilienceScore,
     RiskProfile,
@@ -113,6 +114,20 @@ async def add_event(session: AsyncSession, home_id: uuid.UUID, event: PassportEv
             at=datetime.now(UTC),
             score_after=event.score_after,
             detail=event.detail,
+        )
+    )
+    await session.commit()
+
+
+async def save_plan(session: AsyncSession, home_id: uuid.UUID, budget_gbp: int, plan: Plan) -> None:
+    """Keep the latest plan only: the budget slider re-posts `/plan` on every move."""
+    await session.execute(delete(db.SavedPlan).where(db.SavedPlan.home_id == home_id))
+    session.add(
+        db.SavedPlan(
+            home_id=home_id,
+            budget_gbp=budget_gbp,
+            selected_ids=[i.measure.id for i in plan.items if i.selected],
+            plan=plan.model_dump(mode="json"),
         )
     )
     await session.commit()
