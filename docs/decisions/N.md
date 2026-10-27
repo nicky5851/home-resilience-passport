@@ -175,7 +175,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: `422` as written in spec §5's table and the N5 Check
 - Why: CONTRACT.md §3 converts every 422 to 400 `validation`; the contract wins over the spec text (rule 2). The spec wording needs a fix agreed with L
 - Files: backend/app/api/lookup.py
-- Commit: 5059a77
+- Commit: ff60142
 - Affects the other coder? yes (the front end shows `detail` under the postcode box for status 400; the spec text still says 422)
 
 ### 2026-10-27 · N5 · Country comes from postcodes.io, not a postcode-area list
@@ -183,7 +183,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: keep the regex as an offline pre-check
 - Why: the regex blocked English border postcodes such as TD15 (Berwick-upon-Tweed, Northumberland); the stub's own comment planned this switch
 - Files: backend/app/api/lookup.py, backend/app/adapters/postcodes.py
-- Commit: 5059a77
+- Commit: ff60142
 - Affects the other coder? no
 
 ### 2026-10-27 · N5 · `api_cache` is best-effort; demo postcodes fall back to their fixture
@@ -191,7 +191,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: fail the request when the cache fails; return 502 for demo postcodes too
 - Why: the app must keep working when any part is down (spec §5) and the 5 demo homes must work offline (rule 1, N9 check); a non-demo postcode has no fallback, which is exactly CONTRACT §3's 502 case
 - Files: backend/app/adapters/cache.py, backend/app/api/lookup.py, backend/app/api/deps.py
-- Commit: 5059a77
+- Commit: ff60142
 - Affects the other coder? no
 
 ### 2026-10-27 · N5 · Shared adapter plumbing and test fixtures
@@ -199,7 +199,7 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: per-adapter clients and caches; API tests against the dev database
 - Why: one pattern for every adapter (rule 6); tests stay offline and never touch the dev database
 - Files: backend/app/adapters/, backend/tests/conftest.py, backend/tests/adapters/
-- Commit: 5059a77
+- Commit: ff60142
 - Affects the other coder? no
 
 ### 2026-10-27 · N5 · New dev dependency `respx`
@@ -207,5 +207,5 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: hand-written `httpx.MockTransport`
 - Why: spec N5 names `respx` for recorded responses
 - Files: backend/pyproject.toml, backend/uv.lock
-- Commit: 5059a77
+- Commit: ff60142
 - Affects the other coder? no
