@@ -1,0 +1,518 @@
+{
+  "slug": "city-top-flat",
+  "hazard_shown": "overheating",
+  "address": {
+    "uprn": null,
+    "line1": "Flat 51, 8 Commercial Street",
+    "postcode": "E1 8NG",
+    "lat": 51.514481,
+    "lon": -0.069743,
+    "local_authority": "Tower Hamlets",
+    "country": "england"
+  },
+  "household": {
+    "tenure": "private_renter",
+    "income_band": "40k_60k",
+    "budget_gbp": 500,
+    "priorities": [
+      "comfort",
+      "lower_bills"
+    ],
+    "vulnerable": false,
+    "consent_lloyds_data": false
+  },
+  "property": {
+    "property_type": "flat",
+    "built_form": "Mid-Terrace",
+    "construction_age_band": "2007 onwards",
+    "floor_area_m2": 54.0,
+    "floor_level": 5,
+    "top_floor": true,
+    "main_heating": "Community heating",
+    "main_fuel": "mains gas",
+    "epc_rating": "B",
+    "epc_score": 82,
+    "co2_tonnes_per_year": 1.2,
+    "source": "demo"
+  },
+  "inputs": {
+    "rofrs_band": "very_low",
+    "active_flood_warnings": 0,
+    "hot_days_baseline": 6.0,
+    "hot_days_2050": 16.0,
+    "heavy_rain_days_baseline": 3.5,
+    "heavy_rain_days_2050": 4.5,
+    "max_wind_baseline_kmh": 38.0,
+    "max_wind_2050_kmh": 40.0,
+    "subsidence_signal": "unknown",
+    "property": {
+      "property_type": "flat",
+      "built_form": "Mid-Terrace",
+      "construction_age_band": "2007 onwards",
+      "floor_area_m2": 54.0,
+      "floor_level": 5,
+      "top_floor": true,
+      "main_heating": "Community heating",
+      "main_fuel": "mains gas",
+      "epc_rating": "B",
+      "epc_score": 82,
+      "co2_tonnes_per_year": 1.2,
+      "source": "demo"
+    }
+  },
+  "risk": {
+    "levels": [
+      {
+        "hazard": "river_sea_flood",
+        "today": "low",
+        "y2050": "low",
+        "why": "The Environment Agency rates flood risk here as very low.",
+        "data_source": "Environment Agency"
+      },
+      {
+        "hazard": "overheating",
+        "today": "high",
+        "y2050": "high",
+        "why": "About 16 hot days a year by 2050, up from 6 today.",
+        "data_source": "Open-Meteo (CMIP6)"
+      },
+      {
+        "hazard": "storm",
+        "today": "low",
+        "y2050": "low",
+        "why": "Strongest winds around 40 km/h by 2050, from 38 km/h today.",
+        "data_source": "Open-Meteo (CMIP6)"
+      },
+      {
+        "hazard": "subsidence",
+        "today": "medium",
+        "y2050": "medium",
+        "why": "Based on what you told us about your soil and walls.",
+        "data_source": "Your answer"
+      },
+      {
+        "hazard": "surface_water",
+        "today": "medium",
+        "y2050": "medium",
+        "why": "Surface-water data is coming in a later version",
+        "data_source": "Environment Agency"
+      }
+    ],
+    "generated_at": "2026-10-27T09:00:00Z"
+  },
+  "score": {
+    "value": 72,
+    "band": "B",
+    "components": [
+      {
+        "name": "flood",
+        "points": 30.0,
+        "max_points": 30.0,
+        "reason": "Your flood risk by 2050 sets these points."
+      },
+      {
+        "name": "heat",
+        "points": 2.0,
+        "max_points": 20.0,
+        "reason": "Your heat risk by 2050 sets these points."
+      },
+      {
+        "name": "storm",
+        "points": 10.0,
+        "max_points": 10.0,
+        "reason": "Your storm risk by 2050 sets these points."
+      },
+      {
+        "name": "subsidence",
+        "points": 5.0,
+        "max_points": 10.0,
+        "reason": "Your subsidence risk by 2050 sets these points."
+      },
+      {
+        "name": "carbon",
+        "points": 24.6,
+        "max_points": 30.0,
+        "reason": "Based on your EPC score of 82."
+      }
+    ],
+    "version": "v1"
+  },
+  "plan": {
+    "items": [
+      {
+        "measure": {
+          "id": "led-lighting",
+          "name": "LED lighting throughout",
+          "category": "carbon",
+          "hazards_reduced": [],
+          "cost_low_gbp": 50,
+          "cost_high_gbp": 200,
+          "annual_bill_saving_gbp": 60,
+          "co2_saved_kg_per_year": 80,
+          "resilience_points": 2,
+          "property_types": [],
+          "renter_ok": true,
+          "needs_landlord": false,
+          "source_url": "https://example.com/placeholder-source"
+        },
+        "rank": 1,
+        "score_uplift": 2,
+        "payback_years": 2.1,
+        "explanation": "LED lighting throughout reduces your carbon risk and adds about 2 points for £50–£200.",
+        "selected": true
+      },
+      {
+        "measure": {
+          "id": "reflective-blinds",
+          "name": "Thermal reflective blinds",
+          "category": "heat",
+          "hazards_reduced": [
+            "overheating"
+          ],
+          "cost_low_gbp": 100,
+          "cost_high_gbp": 400,
+          "annual_bill_saving_gbp": 20,
+          "co2_saved_kg_per_year": 30,
+          "resilience_points": 3,
+          "property_types": [],
+          "renter_ok": true,
+          "needs_landlord": false,
+          "source_url": "https://example.com/placeholder-source"
+        },
+        "rank": 2,
+        "score_uplift": 3,
+        "payback_years": 12.5,
+        "explanation": "Thermal reflective blinds reduces your overheating risk and adds about 3 points for £100–£400.",
+        "selected": true
+      },
+      {
+        "measure": {
+          "id": "flood-plan-kit",
+          "name": "Flood plan and grab bag",
+          "category": "flood",
+          "hazards_reduced": [
+            "river_sea_flood",
+            "surface_water"
+          ],
+          "cost_low_gbp": 50,
+          "cost_high_gbp": 150,
+          "annual_bill_saving_gbp": 0,
+          "co2_saved_kg_per_year": 0,
+          "resilience_points": 2,
+          "property_types": [],
+          "renter_ok": true,
+          "needs_landlord": false,
+          "source_url": "https://example.com/placeholder-source"
+        },
+        "rank": 3,
+        "score_uplift": 0,
+        "payback_years": null,
+        "explanation": "Flood plan and grab bag reduces your river sea flood risk and adds about 0 points for £50–£150.",
+        "selected": false
+      }
+    ],
+    "total_cost_low_gbp": 150,
+    "total_cost_high_gbp": 600,
+    "projected_score": {
+      "value": 77,
+      "band": "B",
+      "components": [
+        {
+          "name": "flood",
+          "points": 30.0,
+          "max_points": 30.0,
+          "reason": "Your flood risk by 2050 sets these points."
+        },
+        {
+          "name": "heat",
+          "points": 5.0,
+          "max_points": 20.0,
+          "reason": "Your heat risk by 2050 sets these points."
+        },
+        {
+          "name": "storm",
+          "points": 10.0,
+          "max_points": 10.0,
+          "reason": "Your storm risk by 2050 sets these points."
+        },
+        {
+          "name": "subsidence",
+          "points": 5.0,
+          "max_points": 10.0,
+          "reason": "Your subsidence risk by 2050 sets these points."
+        },
+        {
+          "name": "carbon",
+          "points": 26.6,
+          "max_points": 30.0,
+          "reason": "Based on your EPC score of 82."
+        }
+      ],
+      "version": "v1"
+    },
+    "explanation_source": "template"
+  },
+  "funding": {
+    "lines": [
+      {
+        "option": {
+          "id": "lloyds-home-improvement-loan",
+          "name": "Home improvement loan",
+          "provider": "Lloyds (illustrative)",
+          "kind": "loan",
+          "max_amount_gbp": 25000,
+          "apr_percent": 6.9,
+          "income_bands": [],
+          "tenures": [],
+          "categories": [],
+          "is_mock": true,
+          "source_url": ""
+        },
+        "amount_gbp": 150,
+        "note": "Illustrative loan over 5 years for the remaining cost."
+      }
+    ],
+    "covered_gbp": 0,
+    "gap_gbp": 150,
+    "monthly_cost_gbp": 3
+  },
+  "passport": {
+    "home_id": "c4143215-7942-5a8c-8546-bcea5544e508",
+    "address": {
+      "uprn": null,
+      "line1": "Flat 51, 8 Commercial Street",
+      "postcode": "E1 8NG",
+      "lat": 51.514481,
+      "lon": -0.069743,
+      "local_authority": "Tower Hamlets",
+      "country": "england"
+    },
+    "property": {
+      "property_type": "flat",
+      "built_form": "Mid-Terrace",
+      "construction_age_band": "2007 onwards",
+      "floor_area_m2": 54.0,
+      "floor_level": 5,
+      "top_floor": true,
+      "main_heating": "Community heating",
+      "main_fuel": "mains gas",
+      "epc_rating": "B",
+      "epc_score": 82,
+      "co2_tonnes_per_year": 1.2,
+      "source": "demo"
+    },
+    "latest_risk": {
+      "levels": [
+        {
+          "hazard": "river_sea_flood",
+          "today": "low",
+          "y2050": "low",
+          "why": "The Environment Agency rates flood risk here as very low.",
+          "data_source": "Environment Agency"
+        },
+        {
+          "hazard": "overheating",
+          "today": "high",
+          "y2050": "high",
+          "why": "About 16 hot days a year by 2050, up from 6 today.",
+          "data_source": "Open-Meteo (CMIP6)"
+        },
+        {
+          "hazard": "storm",
+          "today": "low",
+          "y2050": "low",
+          "why": "Strongest winds around 40 km/h by 2050, from 38 km/h today.",
+          "data_source": "Open-Meteo (CMIP6)"
+        },
+        {
+          "hazard": "subsidence",
+          "today": "medium",
+          "y2050": "medium",
+          "why": "Based on what you told us about your soil and walls.",
+          "data_source": "Your answer"
+        },
+        {
+          "hazard": "surface_water",
+          "today": "medium",
+          "y2050": "medium",
+          "why": "Surface-water data is coming in a later version",
+          "data_source": "Environment Agency"
+        }
+      ],
+      "generated_at": "2026-10-27T09:00:00Z"
+    },
+    "latest_score": {
+      "value": 72,
+      "band": "B",
+      "components": [
+        {
+          "name": "flood",
+          "points": 30.0,
+          "max_points": 30.0,
+          "reason": "Your flood risk by 2050 sets these points."
+        },
+        {
+          "name": "heat",
+          "points": 2.0,
+          "max_points": 20.0,
+          "reason": "Your heat risk by 2050 sets these points."
+        },
+        {
+          "name": "storm",
+          "points": 10.0,
+          "max_points": 10.0,
+          "reason": "Your storm risk by 2050 sets these points."
+        },
+        {
+          "name": "subsidence",
+          "points": 5.0,
+          "max_points": 10.0,
+          "reason": "Your subsidence risk by 2050 sets these points."
+        },
+        {
+          "name": "carbon",
+          "points": 24.6,
+          "max_points": 30.0,
+          "reason": "Based on your EPC score of 82."
+        }
+      ],
+      "version": "v1"
+    },
+    "plan": {
+      "items": [
+        {
+          "measure": {
+            "id": "led-lighting",
+            "name": "LED lighting throughout",
+            "category": "carbon",
+            "hazards_reduced": [],
+            "cost_low_gbp": 50,
+            "cost_high_gbp": 200,
+            "annual_bill_saving_gbp": 60,
+            "co2_saved_kg_per_year": 80,
+            "resilience_points": 2,
+            "property_types": [],
+            "renter_ok": true,
+            "needs_landlord": false,
+            "source_url": "https://example.com/placeholder-source"
+          },
+          "rank": 1,
+          "score_uplift": 2,
+          "payback_years": 2.1,
+          "explanation": "LED lighting throughout reduces your carbon risk and adds about 2 points for £50–£200.",
+          "selected": true
+        },
+        {
+          "measure": {
+            "id": "reflective-blinds",
+            "name": "Thermal reflective blinds",
+            "category": "heat",
+            "hazards_reduced": [
+              "overheating"
+            ],
+            "cost_low_gbp": 100,
+            "cost_high_gbp": 400,
+            "annual_bill_saving_gbp": 20,
+            "co2_saved_kg_per_year": 30,
+            "resilience_points": 3,
+            "property_types": [],
+            "renter_ok": true,
+            "needs_landlord": false,
+            "source_url": "https://example.com/placeholder-source"
+          },
+          "rank": 2,
+          "score_uplift": 3,
+          "payback_years": 12.5,
+          "explanation": "Thermal reflective blinds reduces your overheating risk and adds about 3 points for £100–£400.",
+          "selected": true
+        },
+        {
+          "measure": {
+            "id": "flood-plan-kit",
+            "name": "Flood plan and grab bag",
+            "category": "flood",
+            "hazards_reduced": [
+              "river_sea_flood",
+              "surface_water"
+            ],
+            "cost_low_gbp": 50,
+            "cost_high_gbp": 150,
+            "annual_bill_saving_gbp": 0,
+            "co2_saved_kg_per_year": 0,
+            "resilience_points": 2,
+            "property_types": [],
+            "renter_ok": true,
+            "needs_landlord": false,
+            "source_url": "https://example.com/placeholder-source"
+          },
+          "rank": 3,
+          "score_uplift": 0,
+          "payback_years": null,
+          "explanation": "Flood plan and grab bag reduces your river sea flood risk and adds about 0 points for £50–£150.",
+          "selected": false
+        }
+      ],
+      "total_cost_low_gbp": 150,
+      "total_cost_high_gbp": 600,
+      "projected_score": {
+        "value": 77,
+        "band": "B",
+        "components": [
+          {
+            "name": "flood",
+            "points": 30.0,
+            "max_points": 30.0,
+            "reason": "Your flood risk by 2050 sets these points."
+          },
+          {
+            "name": "heat",
+            "points": 5.0,
+            "max_points": 20.0,
+            "reason": "Your heat risk by 2050 sets these points."
+          },
+          {
+            "name": "storm",
+            "points": 10.0,
+            "max_points": 10.0,
+            "reason": "Your storm risk by 2050 sets these points."
+          },
+          {
+            "name": "subsidence",
+            "points": 5.0,
+            "max_points": 10.0,
+            "reason": "Your subsidence risk by 2050 sets these points."
+          },
+          {
+            "name": "carbon",
+            "points": 26.6,
+            "max_points": 30.0,
+            "reason": "Based on your EPC score of 82."
+          }
+        ],
+        "version": "v1"
+      },
+      "explanation_source": "template"
+    },
+    "events": [
+      {
+        "id": "dff8c694-a8c1-537f-903e-9a9dcb19d9bc",
+        "kind": "assessed",
+        "at": "2026-10-27T09:00:00Z",
+        "score_after": 72,
+        "detail": {}
+      }
+    ],
+    "household": {
+      "tenure": "private_renter",
+      "income_band": "40k_60k",
+      "budget_gbp": 500,
+      "priorities": [
+        "comfort",
+        "lower_bills"
+      ],
+      "vulnerable": false,
+      "consent_lloyds_data": false
+    },
+    "share_token": null
+  }
+}
