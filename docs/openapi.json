@@ -801,6 +801,16 @@
             "title": "Priorities",
             "type": "array"
           },
+          "subsidence_signal": {
+            "default": "unknown",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Subsidence Signal",
+            "type": "string"
+          },
           "tenure": {
             "enum": [
               "owner_occupier",
@@ -871,6 +881,16 @@
             "title": "Priorities",
             "type": "array"
           },
+          "subsidence_signal": {
+            "default": "unknown",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Subsidence Signal",
+            "type": "string"
+          },
           "tenure": {
             "enum": [
               "owner_occupier",
@@ -899,7 +919,8 @@
           "budget_gbp",
           "priorities",
           "vulnerable",
-          "consent_lloyds_data"
+          "consent_lloyds_data",
+          "subsidence_signal"
         ],
         "title": "Household",
         "type": "object"

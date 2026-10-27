@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import Field
 
 from app.schemas.base import Contract, IncomeBand, Priority, Tenure
@@ -13,3 +15,6 @@ class Household(Contract):
     vulnerable: bool | None = None
     # Stored only; nothing is ever sent to Lloyds.
     consent_lloyds_data: bool = False
+    # "Have you noticed new cracks in the walls, or been told the ground is clay?" (optional).
+    # Becomes HazardInputs.subsidence_signal: yes → cracks_reported, no → none_reported.
+    subsidence_signal: Literal["yes", "no", "unknown"] = "unknown"

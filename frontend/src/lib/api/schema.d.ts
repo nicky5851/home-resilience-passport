@@ -663,6 +663,12 @@ export interface components {
             /** Priorities */
             priorities?: ("lower_bills" | "comfort" | "flood_safety" | "lower_carbon" | "home_value")[];
             /**
+             * Subsidence Signal
+             * @default unknown
+             * @enum {string}
+             */
+            subsidence_signal: "yes" | "no" | "unknown";
+            /**
              * Tenure
              * @enum {string}
              */
@@ -686,6 +692,12 @@ export interface components {
             income_band: "under_20k" | "20k_40k" | "40k_60k" | "60k_100k" | "over_100k";
             /** Priorities */
             priorities: ("lower_bills" | "comfort" | "flood_safety" | "lower_carbon" | "home_value")[];
+            /**
+             * Subsidence Signal
+             * @default unknown
+             * @enum {string}
+             */
+            subsidence_signal: "yes" | "no" | "unknown";
             /**
              * Tenure
              * @enum {string}

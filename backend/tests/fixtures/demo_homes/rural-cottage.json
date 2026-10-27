@@ -19,7 +19,8 @@
       "home_value"
     ],
     "vulnerable": false,
-    "consent_lloyds_data": false
+    "consent_lloyds_data": false,
+    "subsidence_signal": "no"
   },
   "property": {
     "property_type": "detached",
@@ -784,7 +785,8 @@
         "home_value"
       ],
       "vulnerable": false,
-      "consent_lloyds_data": false
+      "consent_lloyds_data": false,
+      "subsidence_signal": "no"
     },
     "share_token": null
   }
