@@ -676,6 +676,6 @@ Format: spec §13. Newest at the bottom.
   backend/scripts/record_studio_fallbacks.py, backend/tests/studio/**, backend/app/main.py,
   backend/app/config.py, .env.example, Makefile, frontend/src/app/studio/**,
   frontend/src/features/studio/**, frontend/package.json
-- PR: #?
+- PR: #29
 - Affects the other coder? no — purely additive, verified `make test`/`make lint`/`pnpm build`
   all green and docs/openapi.json unchanged
