@@ -147,3 +147,11 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/app/scoring/score.py
 - Commit: 7427591
 - Affects the other coder? no
+
+### 2026-10-28 · L7 · `country` for a picked address is guessed client-side from the postcode area
+- Decision: `PostcodeLookup` (the lookup response) does not return `country`, even though `lookup_postcode` computes it server-side and `Address-Input` (needed for `POST /homes`) requires it. Rather than change the shared schema, `frontend/src/lib/journey/postcode.ts` guesses `england` vs `wales` from a short list of mostly-Welsh postcode areas (`CF`, `LD`, `LL`, `NP`, `SA`, `SY`)
+- Alternatives: add `country` to `PostcodeLookup` (shared schema/contract change, needs N's sign-off); always send `england` and let the backend overwrite it later
+- Why: rule 2 of §13 ("do not change the shared contract; work around it in your own paths") — this is cosmetic (it only affects the stored `Address.country` label, nothing in scoring or risk, which recompute hazard data from the postcode itself), so a client guess is an acceptable approximation. `SY` is genuinely split between England (Shropshire) and Wales (Ceredigion) and will sometimes guess wrong
+- Files: frontend/src/lib/journey/postcode.ts
+- Commit: PENDING
+- Affects the other coder? yes — N could close this properly by adding `country` to `PostcodeLookup` in a future `contract:` PR; flagging for the next sync meeting rather than blocking on it now
