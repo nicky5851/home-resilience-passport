@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/grid-carbon": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Grid Carbon */
+        get: operations["grid_carbon_api_v1_studio_homes__ref__grid_carbon_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/heat-pump-year": {
         parameters: {
             query?: never;
@@ -204,6 +221,29 @@ export interface components {
             /** Count */
             count: number;
         };
+        /** BestWindow */
+        BestWindow: {
+            /** Appliance Id */
+            appliance_id: string;
+            /** Avg Intensity G Per Kwh */
+            avg_intensity_g_per_kwh: number;
+            /**
+             * End At
+             * Format: date-time
+             */
+            end_at: string;
+            /** Label */
+            label: string;
+            /** Saving G */
+            saving_g: number;
+            /** Saving Pct Vs Now */
+            saving_pct_vs_now: number;
+            /**
+             * Start At
+             * Format: date-time
+             */
+            start_at: string;
+        };
         /** Body_meter_fingerprint_api_v1_studio_homes__ref__meter_fingerprint_post */
         Body_meter_fingerprint_api_v1_studio_homes__ref__meter_fingerprint_post: {
             /** File */
@@ -231,6 +271,18 @@ export interface components {
             hp_capacity_kw: number;
             /** Temp C */
             temp_c: number;
+        };
+        /** CurrentIntensity */
+        CurrentIntensity: {
+            /**
+             * Index
+             * @enum {string}
+             */
+            index: "very low" | "low" | "moderate" | "high" | "very high";
+            /** Intensity G Per Kwh */
+            intensity_g_per_kwh: number;
+            /** Mix */
+            mix: components["schemas"]["MixShare"][];
         };
         /** DailyHeatPump */
         DailyHeatPump: {
@@ -332,6 +384,42 @@ export interface components {
             scatter: components["schemas"]["ScatterPoint"][];
             /** Slope Kwh Per Degree Day */
             slope_kwh_per_degree_day: number;
+        };
+        /** ForecastSlot */
+        ForecastSlot: {
+            /**
+             * From At
+             * Format: date-time
+             */
+            from_at: string;
+            /**
+             * Index
+             * @enum {string}
+             */
+            index: "very low" | "low" | "moderate" | "high" | "very high";
+            /** Intensity G Per Kwh */
+            intensity_g_per_kwh: number;
+            /**
+             * To At
+             * Format: date-time
+             */
+            to_at: string;
+        };
+        /** GridCarbon */
+        GridCarbon: {
+            /** Best Windows */
+            best_windows: components["schemas"]["BestWindow"][];
+            dirtiest_slot: components["schemas"]["Slot"];
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Forecast */
+            forecast: components["schemas"]["ForecastSlot"][];
+            greenest_slot: components["schemas"]["Slot"];
+            now: components["schemas"]["CurrentIntensity"];
+            /** Region Name */
+            region_name: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -459,6 +547,13 @@ export interface components {
             resilience_points: number;
             /** Source Url */
             source_url: string;
+        };
+        /** MixShare */
+        MixShare: {
+            /** Fuel */
+            fuel: string;
+            /** Percent */
+            percent: number;
         };
         /** MonthlyHeatPump */
         MonthlyHeatPump: {
@@ -608,6 +703,16 @@ export interface components {
         SimulateRequest: {
             /** Measure Ids */
             measure_ids: string[];
+        };
+        /** Slot */
+        Slot: {
+            /**
+             * From At
+             * Format: date-time
+             */
+            from_at: string;
+            /** Intensity G Per Kwh */
+            intensity_g_per_kwh: number;
         };
         /** SolarRequest */
         SolarRequest: {
@@ -809,6 +914,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StudioHomeSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    grid_carbon_api_v1_studio_homes__ref__grid_carbon_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GridCarbon"];
                 };
             };
             /** @description Validation Error */
