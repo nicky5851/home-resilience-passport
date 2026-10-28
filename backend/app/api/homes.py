@@ -172,7 +172,7 @@ async def funding(
         home.assessment.risk,
         home.real["property"],
         home.real["household"],
-        _completed(home, measures),
+        passports.completed(home, measures),
         selected_ids=body.selected_ids,
     )
     return match_funding(plan_result, home.real["household"], options)
