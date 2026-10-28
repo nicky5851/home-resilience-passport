@@ -69,14 +69,19 @@ def test_real_postcode_end_to_end(user_client, online) -> None:
     a = Assessment.model_validate(res.json())
     assert (a.inputs.hot_days_baseline, a.inputs.hot_days_2050) == (2.6, 8.6)  # real, not defaults
     assert a.inputs.rofrs_band is None  # flood_postcodes is empty in tests: unknown, never "none"
-    assert a.inputs.property == PropertyFacts.model_validate(FLAT)
+    # No certificate band: our model fills it in (N13); the user's own facts are kept.
+    estimated = a.inputs.property
+    assert estimated.source == "model" and estimated.epc_rating is not None
+    assert estimated.model_dump(include=set(FLAT) - {"source"}) == {
+        k: v for k, v in FLAT.items() if k != "source"
+    }
     assert [lvl.hazard for lvl in a.risk.levels][:3] == ["river_sea_flood", "overheating", "storm"]
 
     assert abs(a.risk.generated_at - datetime.now(UTC)) < timedelta(minutes=1)  # not L's fixed time
     assert user_client.get(f"{API}/homes/{home_id}/risk").json() == res.json()
     p = Passport.model_validate(user_client.get(f"{API}/homes/{home_id}/passport").json())
     assert p.latest_score == a.score
-    assert p.address.postcode == "SW1A 1AA" and p.property.source == "user"
+    assert p.address.postcode == "SW1A 1AA" and p.property == estimated  # as assessed
     assert [e.kind for e in p.events][-1] == "assessed"
     assert p.events[-1].score_after == a.score.value
 

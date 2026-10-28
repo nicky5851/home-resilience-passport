@@ -252,3 +252,15 @@ async def engine(db_url: str):
     eng = create_async_engine(db_url, poolclass=NullPool)
     yield eng
     await eng.dispose()
+
+
+@pytest.fixture(autouse=True)
+def upload_dir(tmp_path, monkeypatch) -> Path:
+    """Certificates go to a temporary folder, never `backend/uploads/` (spec N14)."""
+    from app.services import storage
+
+    root = tmp_path / "uploads"
+    monkeypatch.setattr(storage, "UPLOAD_DIR", root)
+    storage.get_storage.cache_clear()
+    yield root
+    storage.get_storage.cache_clear()

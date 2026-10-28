@@ -219,6 +219,7 @@ def test_work_rejects_future_date(user_client) -> None:
 def test_share_public_and_revoke(user_client) -> None:
     c = user_client
     home_id = _new_home(c)
+    assert c.post(f"{API}/homes/{home_id}/assess").status_code == 200  # passports need one
     c.post(
         f"{API}/homes/{home_id}/work",
         data={"measure_id": "flood-door", "completed_on": "2026-01-01"},

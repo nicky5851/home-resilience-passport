@@ -497,3 +497,115 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/pyproject.toml, backend/uv.lock, Makefile
 - Commit: 7131404
 - Affects the other coder? no
+
+### 2026-10-28 · N13 · Estimates only fill gaps; `source` becomes "model"
+- Decision: when `epc_rating` is missing, the model fills the band, and CO2 only if it is missing too; `PropertyFacts.source` is set to `"model"` even when the other facts came from the user; a certificate's band is never replaced
+- Alternatives: keep `source="user"` and add a separate flag (needs a contract change); replace every EPC field
+- Why: spec N13 says set `source="model"`; the front end needs one field to show "Estimated by our model"
+- Files: backend/app/services/assessment.py
+- Commit: 2862ef2
+- Affects the other coder? yes (front-end label; scoring's "Our EPC model" data source)
+
+### 2026-10-28 · N13 · Estimate region from the postcode lookup
+- Decision: the region feature comes from postcodes.io (`PostcodeInfo.region`, cached), the same lookup the climate step uses; unknown region if the lookup fails
+- Alternatives: store a region on the home
+- Why: no new data or contract field; the training regions use the same names
+- Files: backend/app/services/assessment.py, backend/ml/features.py
+- Commit: 2862ef2
+- Affects the other coder? no
+
+### 2026-10-28 · N13 · The app works without the model file
+- Decision: if `ml/artifacts/epc_model.joblib` is missing or fails to load, it is logged once, there are no estimates (scoring handles a missing band) and `/model/info` returns `version: "unavailable"`
+- Alternatives: fail start-up
+- Why: spec §5 fallback rule: the app keeps working
+- Files: backend/ml/predict.py, backend/app/api/public.py
+- Commit: 2862ef2
+- Affects the other coder? no
+
+### 2026-10-28 · N13 · Predictions on one OpenMP thread
+- Decision: on model load the API process limits OpenMP to one thread (`threadpool_limits`)
+- Alternatives: default threads (17 ms typical, 46 ms worst); limiting per call (overhead made it slower)
+- Why: one home at a time is faster on one thread: 5.4 ms typical, 7.7 ms worst of 200 (spec limit 50 ms); the API has no other OpenMP work
+- Files: backend/ml/predict.py
+- Commit: 2862ef2
+- Affects the other coder? no
+
+### 2026-10-28 · N13 · Model loaded at start-up
+- Decision: a FastAPI lifespan in `app/main.py` loads the model once (cached) before the first request; about 1.3 s added to start-up
+- Alternatives: load on first use
+- Why: spec N13 says load once at start-up; the first assessment doesn't wait
+- Files: backend/app/main.py
+- Commit: 2862ef2
+- Affects the other coder? no
+
+### 2026-10-28 · N13 · `/model/info` metrics as flat dotted names
+- Decision: `metrics` holds `accuracy`, `within_one_band`, `macro_f1`, `co2_mae_tonnes`, `test_homes`, `train_homes`, plus `by_property_type.<type>.<metric>` and `by_region.<region>.<metric>` (38 values)
+- Alternatives: nested objects (contract says `dict[str, float]`)
+- Why: fits the contract unchanged; the Technology slide can pick the keys it needs
+- Files: backend/ml/predict.py
+- Commit: 2862ef2
+- Affects the other coder? yes (key names for the Technology slide)
+
+### 2026-10-28 · N14 · `/passport` is 404 before the first assessment
+- Decision: `GET /homes/{id}/passport` (and the public passport of a shared, unassessed home) answers `404 not_found` "This home has not been assessed yet." until the home is assessed
+- Alternatives: fall back to a demo fixture's risk and score (the M1 stub did this)
+- Why: `Passport.latest_risk` and `latest_score` are required, and a demo home's values are wrong data for a real home; same rule as `/risk` and `/plan`
+- Files: backend/app/services/passport.py, backend/app/api/homes.py, backend/app/api/public.py
+- Commit: 816970a
+- Affects the other coder? yes (front end assesses before showing the passport)
+
+### 2026-10-28 · N14 · Passport property is the assessed property
+- Decision: `Passport.property` is the latest assessment's `inputs.property`, so it carries our model's estimate (`source: "model"`) when the home had no EPC band
+- Alternatives: the facts as entered (`source: "user"`)
+- Why: the passport shows the band and CO2 the score was computed from, with the "Estimated by our model" label
+- Files: backend/app/services/passport.py
+- Commit: 816970a
+- Affects the other coder? yes (`property.source` can be `"model"` on the passport)
+
+### 2026-10-28 · N14 · Recorded work counts at once and in later assessments
+- Decision: the current score is `compute_score(latest risk, assessed property, completed measures)`; used for `Passport.latest_score`, the homes list, `score_after` of the work event (with the new measure) and every new assessment
+- Alternatives: count work only at the next assessment
+- Why: spec N14 "recomputes the score with completed measures"; re-assessing must not drop the uplift
+- Files: backend/app/services/passport.py, backend/app/services/assessment.py, backend/app/api/homes.py
+- Commit: 816970a
+- Affects the other coder? no
+
+### 2026-10-28 · N14 · Demo homes keep their fixture score until work is recorded
+- Decision: with no completed measures a demo home's score is its fixture score; after work it is `compute_score` with the fixture risk and the completed fixture-plan measures
+- Alternatives: always recompute (would differ from the fixtures once L5 lands and before `make fixtures`)
+- Why: keeps the five demo homes identical to their fixtures
+- Files: backend/app/services/passport.py
+- Commit: 816970a
+- Affects the other coder? no
+
+### 2026-10-28 · N14 · `score_after` is null for work on an unassessed home
+- Decision: work can be recorded before a stored home's first assessment; its event has `score_after: null`
+- Alternatives: refuse the work (400); use a fixture score
+- Why: there is no score yet; `PassportEvent.score_after` allows null
+- Files: backend/app/api/homes.py
+- Commit: 816970a
+- Affects the other coder? no
+
+### 2026-10-28 · N14 · File and row order for certificates
+- Decision: upload writes the file, then the event and `work_files` rows in one commit (the file is removed if the commit fails); deleting a home or account removes the rows first, then the files, and a file that fails to delete is logged, not raised
+- Alternatives: rows first on upload; files first on delete
+- Why: a row never points at a missing file; an orphan file is the only possible leftover and is logged
+- Files: backend/app/services/homes.py, backend/app/api/auth.py
+- Commit: 816970a
+- Affects the other coder? no
+
+### 2026-10-28 · N14 · Storage keys are only `<uuid>.<ext>`
+- Decision: `LocalStorage` accepts only keys matching `^[0-9a-f]{32}\.(pdf|jpg|png)$` (made by `new_key`), writes through a temporary file and renames it
+- Alternatives: accept any relative path
+- Why: a key can never leave the uploads folder, and a half-written file is never served
+- Files: backend/app/services/storage.py
+- Commit: 816970a
+- Affects the other coder? no
+
+### 2026-10-28 · N14 · Demo homes' certificates stay in memory
+- Decision: certificates recorded on the five demo homes are kept in memory, not in storage
+- Alternatives: store them like real homes
+- Why: demo homes are shared fixtures every logged-in user can open, with no owner or database row to delete them with
+- Files: backend/app/api/homes.py
+- Commit: 816970a
+- Affects the other coder? no
