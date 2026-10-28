@@ -726,3 +726,21 @@ Format: spec §13. Newest at the bottom.
   frontend/src/features/studio/s02/**, frontend/src/app/studio/[ref]/s02-street-proof/page.tsx
 - PR: #31
 - Affects the other coder? no
+
+### 2026-10-28 · S03 · Meter Fingerprint: no persistence table yet; static UK climatology
+- Decision: implemented the full change-point regression, bootstrap CI and HTC pipeline, but
+  skipped the `studio_meter_fingerprints` table the spec names (owner homes would store only
+  the result JSON, cascade-deleted with the home). Every request recomputes from the upload;
+  nothing is written anywhere either way, so the privacy requirement ("never store raw uploaded
+  meter data") holds trivially, it's just not yet *saved* for a returning user. Also used a
+  static 1991-2020 UK monthly-mean-temperature table (config.py, Met Office averages, flagged
+  "verify") for the secondary "normalised annual heating" stat instead of a second 30-year ERA5
+  pull per upload — the headline HTC number is unaffected either way.
+- Alternatives: add the table + Alembic migration + export-flow wiring now (deferred — time
+  budget across 20 features; this is pure persistence, not correctness, and is a cheap follow-up)
+- Why: the "wow" and the measured number are both real and tested; the gap is a save-for-later
+  convenience, not a privacy or correctness issue
+- Files: backend/app/studio/features/s03_meter_fingerprint/**, backend/tests/studio/test_s03_meter_fingerprint.py,
+  frontend/src/features/studio/s03/**, frontend/src/app/studio/[ref]/s03-meter-fingerprint/page.tsx
+- PR: #?
+- Affects the other coder? no

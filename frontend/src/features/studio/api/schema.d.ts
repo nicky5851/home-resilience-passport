@@ -38,6 +38,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/meter-fingerprint": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Meter Fingerprint */
+        post: operations["meter_fingerprint_api_v1_studio_homes__ref__meter_fingerprint_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/homes/{ref}/meter-fingerprint/sample": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Sample Fingerprint */
+        get: operations["sample_fingerprint_api_v1_studio_homes__ref__meter_fingerprint_sample_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/homes/{ref}/meter-fingerprint/sample.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Sample Csv */
+        get: operations["sample_csv_api_v1_studio_homes__ref__meter_fingerprint_sample_csv_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/sandbox": {
         parameters: {
             query?: never;
@@ -100,6 +151,21 @@ export interface components {
             /** Count */
             count: number;
         };
+        /** Body_meter_fingerprint_api_v1_studio_homes__ref__meter_fingerprint_post */
+        Body_meter_fingerprint_api_v1_studio_homes__ref__meter_fingerprint_post: {
+            /** File */
+            file: string;
+            /**
+             * Fuel
+             * @enum {string}
+             */
+            fuel: "gas" | "electric_heat_pump" | "electric_direct";
+            /**
+             * Unit
+             * @enum {string}
+             */
+            unit: "kwh" | "m3";
+        };
         /** Evidence */
         Evidence: {
             /**
@@ -140,6 +206,52 @@ export interface components {
             slug: string;
             /** Title */
             title: string;
+        };
+        /** Fingerprint */
+        Fingerprint: {
+            /** Base Temp C */
+            base_temp_c: number;
+            /** Baseload Kwh Per Day */
+            baseload_kwh_per_day: number;
+            /** Days Used */
+            days_used: number;
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Fit */
+            fit: components["schemas"]["ScatterPoint"][];
+            /** Hlp W Per M2K */
+            hlp_w_per_m2k: number | null;
+            /** Htc Ci High */
+            htc_ci_high: number;
+            /** Htc Ci Low */
+            htc_ci_low: number;
+            /** Htc W Per K */
+            htc_w_per_k: number;
+            /** Normalised Annual Heating Kwh */
+            normalised_annual_heating_kwh: number;
+            /**
+             * Period End
+             * Format: date
+             */
+            period_end: string;
+            /**
+             * Period Start
+             * Format: date
+             */
+            period_start: string;
+            /** R2 */
+            r2: number;
+            /**
+             * Rating
+             * @enum {string}
+             */
+            rating: "excellent" | "good" | "average" | "poor";
+            /** Scatter */
+            scatter: components["schemas"]["ScatterPoint"][];
+            /** Slope Kwh Per Degree Day */
+            slope_kwh_per_degree_day: number;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -290,6 +402,13 @@ export interface components {
             /** Payback Years */
             payback_years: number | null;
             score: components["schemas"]["ResilienceScore"];
+        };
+        /** ScatterPoint */
+        ScatterPoint: {
+            /** Kwh */
+            kwh: number;
+            /** T Mean C */
+            t_mean_c: number;
         };
         /** ScoreComponent */
         ScoreComponent: {
@@ -453,6 +572,105 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StudioHomeSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    meter_fingerprint_api_v1_studio_homes__ref__meter_fingerprint_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_meter_fingerprint_api_v1_studio_homes__ref__meter_fingerprint_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Fingerprint"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sample_fingerprint_api_v1_studio_homes__ref__meter_fingerprint_sample_get: {
+        parameters: {
+            query?: {
+                fuel?: "gas" | "electric_heat_pump" | "electric_direct";
+            };
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Fingerprint"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sample_csv_api_v1_studio_homes__ref__meter_fingerprint_sample_csv_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
                 };
             };
             /** @description Validation Error */
