@@ -49,6 +49,33 @@ def _perp_distance(point: Point, start: Point, end: Point) -> float:
     return num / den if den else 0.0
 
 
+def _point_to_segment_m(point: Point, a: Point, b: Point) -> float:
+    """Distance from `point` to segment a-b, metres, via an equirectangular projection around
+    `point` (accurate to metres at the scales these features use)."""
+    lat0 = math.radians(point[0])
+    kx, ky = math.cos(lat0) * _EARTH_RADIUS_M, _EARTH_RADIUS_M
+
+    def to_xy(p: Point) -> tuple[float, float]:
+        return (math.radians(p[1] - point[1]) * kx, math.radians(p[0] - point[0]) * ky)
+
+    px, py = 0.0, 0.0
+    ax, ay = to_xy(a)
+    bx, by = to_xy(b)
+    dx, dy = bx - ax, by - ay
+    if dx == 0 and dy == 0:
+        return math.hypot(px - ax, py - ay)
+    t = max(0.0, min(1.0, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)))
+    return math.hypot(px - (ax + t * dx), py - (ay + t * dy))
+
+
+def point_to_polygon_distance_m(point: Point, polygon: list[Point]) -> float:
+    """Minimum distance from `point` to any edge of `polygon` (open ring, no repeated first)."""
+    n = len(polygon)
+    return min(
+        _point_to_segment_m(point, polygon[i], polygon[(i + 1) % n]) for i in range(n)
+    )
+
+
 def douglas_peucker(points: list[Point], epsilon: float) -> list[Point]:
     """Simplify a line/outline to fewer points within tolerance `epsilon` (degrees)."""
     if len(points) < 3:

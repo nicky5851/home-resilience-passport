@@ -32,3 +32,7 @@ export type StormReplayIndex = components["schemas"]["StormReplayIndex"]
 export type Replay = components["schemas"]["Replay"]
 export type EventSummary = components["schemas"]["EventSummary"]
 export type HourlyReplayPoint = components["schemas"]["HourlyReplayPoint"]
+
+export type FloodMemory = components["schemas"]["FloodMemory"]
+export type FloodEvent = components["schemas"]["FloodEvent"]
+export type DecadeCount = components["schemas"]["DecadeCount"]

@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/flood-memory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Flood Memory */
+        get: operations["flood_memory_api_v1_studio_homes__ref__flood_memory_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/grid-carbon": {
         parameters: {
             query?: never;
@@ -332,6 +349,13 @@ export interface components {
             /** T Mean C */
             t_mean_c: number;
         };
+        /** DecadeCount */
+        DecadeCount: {
+            /** Count */
+            count: number;
+            /** Decade */
+            decade: number;
+        };
         /** EventSummary */
         EventSummary: {
             /**
@@ -445,6 +469,46 @@ export interface components {
             scatter: components["schemas"]["ScatterPoint"][];
             /** Slope Kwh Per Degree Day */
             slope_kwh_per_degree_day: number;
+        };
+        /** FloodEvent */
+        FloodEvent: {
+            /** Cause */
+            cause: string | null;
+            /** Contains Home */
+            contains_home: boolean;
+            /** Decade */
+            decade: number;
+            /** Distance M */
+            distance_m: number;
+            /** End Date */
+            end_date: string | null;
+            /** Name */
+            name: string | null;
+            /** Source */
+            source: string | null;
+            /** Start Date */
+            start_date: string | null;
+        };
+        /** FloodMemory */
+        FloodMemory: {
+            /** By Decade */
+            by_decade: components["schemas"]["DecadeCount"][];
+            /** Caveat */
+            caveat: string;
+            /** Events */
+            events: components["schemas"]["FloodEvent"][];
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Inside Any Outline */
+            inside_any_outline: boolean;
+            /** Nearest M */
+            nearest_m: number | null;
+            /** Outlines */
+            outlines: {
+                [key: string]: unknown;
+            };
         };
         /** ForecastSlot */
         ForecastSlot: {
@@ -1049,6 +1113,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StudioHomeSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    flood_memory_api_v1_studio_homes__ref__flood_memory_get: {
+        parameters: {
+            query?: {
+                radius_m?: number;
+            };
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FloodMemory"];
                 };
             };
             /** @description Validation Error */
