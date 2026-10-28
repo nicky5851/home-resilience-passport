@@ -22,6 +22,18 @@ curl localhost:8000/api/v1/health   # {"status":"ok"}
 
 API docs: http://localhost:8000/docs
 
+## Run the demo in 5 commands
+
+```bash
+cp .env.example .env   # add EPC_API_TOKEN if you have one (README "EPC API token")
+make install           # dependencies
+make flood-data        # once, online: EA flood bands for every postcode (about 5 MB)
+make seed              # reference data, plus the 5 demo homes' postcode and climate data
+make dev               # http://localhost:3000
+```
+
+After `make seed` the demo needs no internet. The five demo homes (`/demo/homes`) and any home added at a demo postcode (YO1 9TJ, TR18 3JA, E1 8NG, SE9 3AB, GL54 1HP) work end to end with Wi-Fi off. Offline differences: live flood warnings count as 0, the plan uses template explanations instead of the AI's, and other postcodes can't be looked up. `make seed` caches the demo data for 30 days (postcodes) and 90 days (climate), so run it again before a demo.
+
 ## EPC API token
 
 Address lists and property facts come from the EPC register. Without a token the app still

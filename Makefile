@@ -4,7 +4,7 @@ COMPOSE := docker compose -f infra/docker-compose.yml
 BACKEND := cd backend &&
 HAS_FRONTEND := $(wildcard frontend/package.json)
 
-.PHONY: help install db migrate dev api test lint format openapi openapi-check types seed flood-data validate-data fixtures fixtures-inputs epc-data train
+.PHONY: help install db migrate dev api test lint format openapi openapi-check types seed flood-data validate-data fixtures fixtures-inputs epc-data train coverage
 
 help: ## Show this list
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-15s %s\n", $$1, $$2}'
@@ -36,6 +36,9 @@ ifneq ($(HAS_FRONTEND),)
 	cd frontend && pnpm test
 endif
 
+coverage: ## Back-end tests with a line-coverage report per file (routes: app/api/)
+	$(BACKEND) uv run pytest -q --cov --cov-report=term-missing:skip-covered
+
 lint: ## All linters and type checks
 	$(BACKEND) uv run ruff check . && uv run ruff format --check .
 ifneq ($(HAS_FRONTEND),)
@@ -54,7 +57,7 @@ openapi-check: ## Fail if docs/openapi.json differs from the app's schema
 types: ## Regenerate frontend/src/lib/api/schema.d.ts from docs/openapi.json
 	cd frontend && pnpm types
 
-seed: migrate ## Load data/reference/*.csv into the database
+seed: migrate ## Load data/reference/*.csv and cache the 5 demo homes for offline demos
 	$(BACKEND) uv run python -m app.db.seed
 
 flood-data: migrate ## Download (if missing) and load EA RoFRS flood postcodes
