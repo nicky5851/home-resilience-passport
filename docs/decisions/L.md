@@ -129,3 +129,21 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/app/scoring/risk.py, backend/tests/scoring/expected/*.json
 - Commit: d26b0cf
 - Affects the other coder? no
+
+### 2026-10-28 · L5 · `surface_water` has no score component
+
+- Decision: `compute_score` only scores `flood`, `heat`, `storm`, `subsidence`, `carbon`; `surface_water` is left out even though it is one of the 5 `HAZARD_ORDER` hazards
+- Alternatives: fold it into `flood`'s points, or add a 6th component
+- Why: spec §6's score table only lists 4 hazard components totalling 70%, plus carbon 30%; `HAZARD_COMPONENT` in `config.py` (written at L3) already excludes `surface_water`, so this just follows the existing constant
+- Files: backend/app/scoring/score.py
+- Commit: 7427591
+- Affects the other coder? no
+
+### 2026-10-28 · L5 · 0–100 clamp on `ResilienceScore.value` is a safeguard, not a real limiter
+
+- Decision: `compute_score` clamps the summed value to `[0, 100]` even though each component is already bounded `[0, max_points]` by construction, so the sum is always in range
+- Alternatives: no clamp, relying on the per-component bounds
+- Why: CODING_SPEC.md's L5 Check explicitly requires "the score never goes above 100 or below 0"; a defensive clamp costs nothing and keeps that check true even if a future change to `LEVEL_FRACTION` or the carbon formula breaks the per-component bound
+- Files: backend/app/scoring/score.py
+- Commit: 7427591
+- Affects the other coder? no
