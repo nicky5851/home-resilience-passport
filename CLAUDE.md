@@ -3,6 +3,8 @@
 Read `docs/CODING_SPEC.md` and `docs/CONTRACT.md` before doing anything. It is the single source of truth: stack, folder
 ownership, shared contract, data sources, and the numbered steps for N and L.
 
+L: read docs/FOR_L.md first and tick items off.
+
 ## Who is working
 
 Ask the human at the start of the session: "Are you N or L, and which step?" Then work only on
