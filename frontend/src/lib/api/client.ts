@@ -40,3 +40,7 @@ export async function login(client: ApiClient, email: string, password: string):
     }),
   )
 }
+
+export async function logout(client: ApiClient): Promise<void> {
+  unwrap(await client.POST("/api/v1/auth/logout"))
+}

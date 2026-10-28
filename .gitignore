@@ -12,6 +12,9 @@ backend/uploads/
 # front-end mock fixtures (copied by `pnpm mocks:sync`)
 frontend/src/mocks/fixtures/
 
+# front-end privacy notice (copied by `pnpm privacy:sync`)
+frontend/src/content/
+
 # python
 __pycache__/
 *.py[cod]

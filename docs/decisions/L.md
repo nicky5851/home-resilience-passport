@@ -153,5 +153,13 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: add `country` to `PostcodeLookup` (shared schema/contract change, needs N's sign-off); always send `england` and let the backend overwrite it later
 - Why: rule 2 of §13 ("do not change the shared contract; work around it in your own paths") — this is cosmetic (it only affects the stored `Address.country` label, nothing in scoring or risk, which recompute hazard data from the postcode itself), so a client guess is an acceptable approximation. `SY` is genuinely split between England (Shropshire) and Wales (Ceredigion) and will sometimes guess wrong
 - Files: frontend/src/lib/journey/postcode.ts
-- Commit: PENDING
+- Commit: de67480
 - Affects the other coder? yes — N could close this properly by adding `country` to `PostcodeLookup` in a future `contract:` PR; flagging for the next sync meeting rather than blocking on it now
+
+### 2026-10-28 · L13 · Wrote a placeholder `docs/privacy.md` (shared file) since none existed
+- Decision: L13's `/privacy` page needs `docs/privacy.md` content to copy in at build time, but the file didn't exist yet (it's presumably A's or the team's to write properly). Wrote a draft from the facts already in CONTRACT.md §6 so the page isn't empty, with a visible "Draft — not yet reviewed" banner at the top of the rendered page and the file itself
+- Alternatives: leave `/privacy` broken/empty until the file exists; stop and wait for a human to write it
+- Why: `docs/privacy.md` is listed as a shared file in CLAUDE.md, so this is flagged rather than treated as settled; §13 rule 1 ("keep the demo path working") favours a real, working page over a blocked one, and the content is grounded only in what CONTRACT.md already commits to, not invented policy
+- Files: docs/privacy.md, frontend/scripts/privacy-sync.mjs, frontend/src/app/privacy/page.tsx
+- Commit: 993592e
+- Affects the other coder? yes — needs A/N sign-off on the actual wording before this is real; flag at the next sync meeting

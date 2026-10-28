@@ -1,3 +1,5 @@
+import { Suspense } from "react"
+
 import { HomeFunding } from "./home-funding"
 
 export const metadata = { title: "Your funding · Home Resilience Passport" }
@@ -7,7 +9,9 @@ export default async function FundingPage({ params }: { params: Promise<{ home_i
   return (
     <section className="space-y-6">
       <h1 className="text-deep text-2xl font-semibold">Your funding</h1>
-      <HomeFunding homeId={home_id} />
+      <Suspense>
+        <HomeFunding homeId={home_id} />
+      </Suspense>
     </section>
   )
 }

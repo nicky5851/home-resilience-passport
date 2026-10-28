@@ -3,15 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "pnpm mocks:sync && next dev",
-    "build": "pnpm mocks:sync && next build",
+    "dev": "pnpm mocks:sync && pnpm privacy:sync && next dev",
+    "build": "pnpm mocks:sync && pnpm privacy:sync && next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "pnpm mocks:sync && tsc --noEmit",
-    "test": "pnpm mocks:sync && vitest run",
+    "typecheck": "pnpm mocks:sync && pnpm privacy:sync && tsc --noEmit",
+    "test": "pnpm mocks:sync && pnpm privacy:sync && vitest run",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "mocks:sync": "node scripts/mocks-sync.mjs",
+    "privacy:sync": "node scripts/privacy-sync.mjs",
     "types": "openapi-typescript ../docs/openapi.json -o src/lib/api/schema.d.ts"
   },
   "dependencies": {
@@ -20,6 +21,7 @@
     "cn": "^0.5.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.61.0",
+    "marked": "^18.1.2",
     "next": "15.5.28",
     "openapi-fetch": "^0.17.0",
     "radix-ui": "^1.8.1",
