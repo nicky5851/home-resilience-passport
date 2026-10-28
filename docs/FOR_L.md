@@ -4,6 +4,21 @@ Newest first. Tick an item (`[x]`) when it is done or read, in any PR. N adds an
 step that affects L, with the PR or branch it came from. Branches without a PR are stacked on
 the one below and get their PR once that merges.
 
+## Review order (as of 28 Oct)
+
+N's work is a stack: each branch is built on the one before, and gets its PR once the one below merges.
+
+`main` ← **#14** `n/N8-climate` ← `n/N9-assessment` ← `n/N10-auth` ← `n/N11-planner` ← `n/N12-epc-model` ← `n/N13-epc-serving` ← `n/N14-passport` ← `n/N15-hardening`
+
+Review first, in this order:
+
+1. **#14 N8 climate.** The bottom of the stack: nothing above it can get a PR until it merges. It auto-merges on green after 24 h without review (spec §8); comments are welcome before that.
+2. **#16 contract: household subsidence.** Needs your approval and your yes/no/unknown vs four-option choice.
+3. **#18 fixtures: real data** (base `n/N8-climate`). Needs your approval, and your refreshed `tests/scoring/expected/` (see To do).
+4. **#15 decision log cites PR numbers** and **#17 this checklist.** Process and docs only.
+
+Each of N9–N15 then arrives as its own PR with `main` as the base, one at a time.
+
 ## To do
 
 - [ ] **Refresh `backend/tests/scoring/expected/` for #18 (fixtures: real data).** #18 replaces the demo homes' placeholder inputs with real flood bands and climate figures, so 5 of your tests fail there (`test_risk.py::test_demo_home_matches_expected[*]`): e.g. flood-terrace's heavy-rain days go from 4.0 to 2.1 and wind from 44 to 50 km/h, which changes some levels and `why` texts. Check the new levels make sense, then regenerate your expected files on that branch or in a follow-up. #18 needs your approval and is never auto-merged. *(#18)*
