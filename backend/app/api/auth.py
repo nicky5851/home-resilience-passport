@@ -172,8 +172,8 @@ async def delete_me(
     user: CurrentUserRow, manager: UserManagerDep, session: SessionDep, response: Response
 ) -> None:
     # Right to erasure: the user row goes, and every home with everything hanging off it
-    # (ON DELETE CASCADE). In-memory certificates are dropped first.
-    for home in await homes.owned_by(session, user.id):
-        homes.forget_certificates(home)
+    # (ON DELETE CASCADE); then the certificate files, which the database can't cascade to.
+    keys = await homes.storage_keys(session, db.Home.user_id == user.id)
     await manager.delete(user)
+    homes.remove_files(keys)
     clear_auth_cookie(response)

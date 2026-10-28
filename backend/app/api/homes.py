@@ -24,7 +24,7 @@ from app.config import (
     UPLOAD_MAX_BYTES,
     get_settings,
 )
-from app.schemas import FundingBundle, Measure, Passport, PassportEvent, Plan
+from app.schemas import FundingBundle, Passport, PassportEvent, Plan
 from app.schemas.api import (
     Assessment,
     FundingRequest,
@@ -35,6 +35,7 @@ from app.schemas.api import (
     ShareLink,
 )
 from app.services import assessment, homes, planner
+from app.services import passport as passports
 
 router = APIRouter(prefix="/homes", tags=["homes"])
 
@@ -80,12 +81,13 @@ async def create_home(
 
 @router.get("")
 async def list_homes(user: CurrentUser, session: SessionDep) -> list[HomeSummary]:
+    measures = await planner.load_measures(session)
     return [
         HomeSummary(
             home_id=h.home_id,
             line1=h.line1,
             postcode=h.postcode,
-            score=store.latest(h)[1] if h.assessed else None,
+            score=passports.score(h, measures) if h.assessed else None,
         )
         for h in await homes.owned_by(session, user.id)
     ]
@@ -107,7 +109,10 @@ async def assess(
     home = await _home(home_id, user, session)
     if not home.stored:
         return store.assess(home)  # the five demo homes answer from their fixtures, offline
-    result = await assessment.assess(home.real["address"], home.real["property"], session, cache)
+    done = passports.completed(home, await planner.load_measures(session))  # work keeps counting
+    result = await assessment.assess(
+        home.real["address"], home.real["property"], session, cache, completed=done
+    )
     event = PassportEvent(
         id=uuid.uuid4(), kind="assessed", at=now(), score_after=result.score.value, detail={}
     )
@@ -140,19 +145,13 @@ async def plan(
         home.assessment.risk,
         home.real["property"],
         home.real["household"],
-        _completed(home, measures),
+        passports.completed(home, measures),
         budget_gbp=body.budget_gbp,
         selected_ids=body.selected_ids,
     )
     budget = home.real["household"].budget_gbp if body.budget_gbp is None else body.budget_gbp
     await homes.save_plan(session, home.home_id, budget, result)
     return result
-
-
-def _completed(home: StubHome, measures: list[Measure]) -> list[Measure]:
-    """Measures the passport records as done (work_recorded events)."""
-    done = {e.detail.get("measure_id") for e in home.events if e.kind == "work_recorded"}
-    return [m for m in measures if m.id in done]
 
 
 @router.post("/{home_id}/funding")
@@ -164,7 +163,10 @@ async def funding(
 
 @router.get("/{home_id}/passport")
 async def passport(home_id: uuid.UUID, user: CurrentUser, session: SessionDep) -> Passport:
-    return store.passport(await _home(home_id, user, session))
+    result = await passports.build(session, await _home(home_id, user, session))
+    if result is None:
+        raise ApiError(404, "not_found", "This home has not been assessed yet.")
+    return result
 
 
 @router.post("/{home_id}/work")
@@ -178,19 +180,13 @@ async def record_work(
     certificate: Annotated[UploadFile | None, File()] = None,
 ) -> PassportEvent:
     home = await _home(home_id, user, session)
-    known = (
-        {m.id for m in await planner.load_measures(session)}
-        if home.stored
-        else {i.measure.id for i in store.plan(home).items}
-    )
-    if measure_id not in known:
+    measures = await passports.measures_for(session, home)
+    if measure_id not in {m.id for m in measures}:
         raise ApiError(400, "validation", "measure_id: unknown measure for this home.")
     if completed_on > date.today():
         raise ApiError(400, "validation", "completed_on: the date cannot be in the future.")
 
-    event_id = uuid.uuid4()
-    name = None
-    file: tuple[bytes, str] | None = None
+    cert: homes.Certificate | None = None
     if certificate is not None and certificate.filename:
         data = await certificate.read(UPLOAD_MAX_BYTES + 1)
         if len(data) > UPLOAD_MAX_BYTES:
@@ -199,24 +195,28 @@ async def record_work(
         if kind is None:
             raise ApiError(415, "unsupported_file", "Please upload a PDF, JPEG or PNG file.")
         name = certificate.filename[:CERTIFICATE_NAME_MAX_CHARS]
-        file = (data, kind[1])
+        cert = homes.Certificate(data=data, ext=kind[0], content_type=kind[1], name=name)
 
+    assessed = home.assessed or not home.stored  # demo homes always have their fixture
     event = PassportEvent(
-        id=event_id,
+        id=uuid.uuid4(),
         kind="work_recorded",
         at=now(),
-        score_after=store.latest(home)[1].value,
+        # The score with this measure done too (None before a stored home's first assessment).
+        score_after=passports.score(home, measures, extra=measure_id).value if assessed else None,
         detail={
             "measure_id": measure_id,
             "completed_on": completed_on.isoformat(),
             "cost_gbp": cost_gbp,
-            "has_certificate": name is not None,
-            "certificate_name": name,
+            "has_certificate": cert is not None,
+            "certificate_name": cert.name if cert else None,
         },
     )
-    if file is not None:
-        (homes.CERTIFICATES if home.stored else home.certificates)[event_id] = file
-    await _add_event(session, home, event)
+    if home.stored:
+        await homes.add_work(session, home.home_id, event, cert)
+    elif cert is not None:
+        home.certificates[event.id] = (cert.data, cert.content_type)  # demo homes: in memory
+    home.events.append(event)
     return event
 
 
@@ -228,11 +228,14 @@ async def record_work(
 async def certificate(
     home_id: uuid.UUID, event_id: uuid.UUID, user: CurrentUser, session: SessionDep
 ) -> Response:
-    home = await _home(home_id, user, session)
-    files = homes.CERTIFICATES if home.stored else home.certificates
-    if event_id not in {e.id for e in home.events} or event_id not in files:
+    home = await _home(home_id, user, session)  # someone else's home is 404 here
+    if home.stored:
+        found = await homes.certificate(session, home.home_id, event_id)
+    else:
+        found = home.certificates.get(event_id)
+    if found is None:
         raise ApiError(404, "not_found", "We couldn't find that certificate.")
-    data, content_type = files[event_id]
+    data, content_type = found
     return Response(content=data, media_type=content_type)
 
 

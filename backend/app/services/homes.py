@@ -2,11 +2,13 @@
 share links.
 
 Routes work on `StubHome` views, so the five demo homes (fixtures, in memory, readable by every
-logged-in user) and stored homes share one code path. Still not stored until their steps:
-funding (fixture answers until L6) and certificate files (in memory until N14).
+logged-in user) and stored homes share one code path. Certificates of stored homes are rows in
+`work_files` with the file in `services/storage.py` (N14). Funding is still the fixture's until L6.
 """
 
+import logging
 import uuid
+from dataclasses import dataclass
 from datetime import UTC, datetime
 
 from sqlalchemy import delete, select
@@ -26,10 +28,19 @@ from app.schemas import (
 )
 from app.schemas.api import Assessment
 from app.scoring import SCORING_VERSION
+from app.services.storage import get_storage, new_key
 
-# Uploaded certificates of stored homes by event id: (bytes, content type). Moves to storage
-# (`work_files`) in N14; lost when the API restarts.
-CERTIFICATES: dict[uuid.UUID, tuple[bytes, str]] = {}
+log = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class Certificate:
+    """An upload that passed the CONTRACT §6 checks."""
+
+    data: bytes
+    ext: str  # pdf, jpg, png
+    content_type: str
+    name: str  # the user's file name, metadata only (≤ 100 chars)
 
 
 async def create(
@@ -78,14 +89,79 @@ async def by_share_token(session: AsyncSession, token: str) -> StubHome | None:
 
 
 async def delete_home(session: AsyncSession, home: StubHome) -> None:
-    forget_certificates(home)
+    """The home, everything hanging off it (ON DELETE CASCADE) and its certificate files."""
+    keys = await storage_keys(session, db.Home.id == home.home_id)
     await session.execute(delete(db.Home).where(db.Home.id == home.home_id))
     await session.commit()
+    remove_files(keys)
 
 
-def forget_certificates(home: StubHome) -> None:
-    for event in home.events:
-        CERTIFICATES.pop(event.id, None)
+async def storage_keys(session: AsyncSession, where) -> list[str]:  # type: ignore[no-untyped-def]
+    """Storage keys of the certificates of the homes matching `where` (a `db.Home` filter)."""
+    stmt = (
+        select(db.WorkFile.storage_key)
+        .join(db.PassportEvent, db.PassportEvent.id == db.WorkFile.event_id)
+        .join(db.Home, db.Home.id == db.PassportEvent.home_id)
+        .where(where)
+    )
+    return list((await session.scalars(stmt)).all())
+
+
+def remove_files(keys: list[str]) -> None:
+    """After the rows are gone: a file left behind is logged, never a failed delete."""
+    storage = get_storage()
+    for key in keys:
+        try:
+            storage.delete(key)
+        except OSError:
+            log.exception("Could not delete certificate file %s", key)
+
+
+async def add_work(
+    session: AsyncSession, home_id: uuid.UUID, event: PassportEvent, cert: Certificate | None
+) -> None:
+    """The work_recorded event and, if any, its certificate (file first, then both rows)."""
+    key = None
+    try:
+        session.add(_event_row(home_id, event))
+        if cert is not None:
+            key = new_key(cert.ext)
+            get_storage().put(key, cert.data)
+            await session.flush()  # the event row first: the work file points at it
+            session.add(
+                db.WorkFile(
+                    event_id=event.id,
+                    storage_key=key,
+                    certificate_name=cert.name,
+                    content_type=cert.content_type,
+                    size_bytes=len(cert.data),
+                )
+            )
+        await session.commit()
+    except Exception:
+        if key is not None:
+            remove_files([key])  # no row points at it
+        raise
+
+
+async def certificate(
+    session: AsyncSession, home_id: uuid.UUID, event_id: uuid.UUID
+) -> tuple[bytes, str] | None:
+    """(bytes, content type) of an event's certificate, only if the event is this home's."""
+    row = await session.scalar(
+        select(db.WorkFile)
+        .join(db.PassportEvent, db.PassportEvent.id == db.WorkFile.event_id)
+        .where(db.WorkFile.event_id == event_id, db.PassportEvent.home_id == home_id)
+    )
+    if row is None:
+        return None
+    data = get_storage().get(row.storage_key)
+    return None if data is None else (data, row.content_type)
+
+
+async def latest_plan(session: AsyncSession, home_id: uuid.UUID) -> Plan | None:
+    row = await session.scalar(select(db.SavedPlan).where(db.SavedPlan.home_id == home_id))
+    return None if row is None else Plan.model_validate(row.plan)
 
 
 async def save_assessment(
@@ -105,18 +181,20 @@ async def save_assessment(
 
 
 async def add_event(session: AsyncSession, home_id: uuid.UUID, event: PassportEvent) -> None:
-    # Stored to the microsecond so events in the same second keep their order.
-    session.add(
-        db.PassportEvent(
-            id=event.id,
-            home_id=home_id,
-            kind=event.kind,
-            at=datetime.now(UTC),
-            score_after=event.score_after,
-            detail=event.detail,
-        )
-    )
+    session.add(_event_row(home_id, event))
     await session.commit()
+
+
+def _event_row(home_id: uuid.UUID, event: PassportEvent) -> db.PassportEvent:
+    # Stored to the microsecond so events in the same second keep their order.
+    return db.PassportEvent(
+        id=event.id,
+        home_id=home_id,
+        kind=event.kind,
+        at=datetime.now(UTC),
+        score_after=event.score_after,
+        detail=event.detail,
+    )
 
 
 async def save_plan(session: AsyncSession, home_id: uuid.UUID, budget_gbp: int, plan: Plan) -> None:

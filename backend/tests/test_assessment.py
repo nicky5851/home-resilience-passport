@@ -81,7 +81,7 @@ def test_real_postcode_end_to_end(user_client, online) -> None:
     assert user_client.get(f"{API}/homes/{home_id}/risk").json() == res.json()
     p = Passport.model_validate(user_client.get(f"{API}/homes/{home_id}/passport").json())
     assert p.latest_score == a.score
-    assert p.address.postcode == "SW1A 1AA" and p.property.source == "user"
+    assert p.address.postcode == "SW1A 1AA" and p.property == estimated  # as assessed
     assert [e.kind for e in p.events][-1] == "assessed"
     assert p.events[-1].score_after == a.score.value
 

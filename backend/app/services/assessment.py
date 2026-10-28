@@ -6,6 +6,7 @@ nulls, regional climate defaults, 0 warnings), and scoring handles the gaps.
 
 import asyncio
 import logging
+from collections.abc import Sequence
 from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,7 +15,7 @@ from app.adapters import climate, epc, flood, postcodes
 from app.adapters.cache import Cache
 from app.adapters.http import UpstreamUnavailable
 from app.config import ASSESS_WARNINGS_BUDGET_S
-from app.schemas import Address, HazardInputs, PropertyFacts
+from app.schemas import Address, HazardInputs, Measure, PropertyFacts
 from app.schemas.api import Assessment
 from app.scoring import assess_risk, compute_score
 from ml import predict
@@ -100,7 +101,11 @@ async def hazard_inputs(
 
 
 async def assess(
-    address: Address, prop: PropertyFacts, session: AsyncSession, cache: Cache
+    address: Address,
+    prop: PropertyFacts,
+    session: AsyncSession,
+    cache: Cache,
+    completed: Sequence[Measure] = (),
 ) -> Assessment:
     prop = await with_estimate(prop, address, cache)
     inputs = await hazard_inputs(address, prop, session, cache)
@@ -108,4 +113,4 @@ async def assess(
     risk = assess_risk(inputs).model_copy(
         update={"generated_at": datetime.now(UTC).replace(microsecond=0)}
     )
-    return Assessment(inputs=inputs, risk=risk, score=compute_score(risk, prop))
+    return Assessment(inputs=inputs, risk=risk, score=compute_score(risk, prop, completed))

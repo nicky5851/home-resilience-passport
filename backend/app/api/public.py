@@ -9,7 +9,7 @@ from app.api.errors import ApiError
 from app.api.stub_store import fixtures, store
 from app.schemas import DemoHome, PassportEvent, PublicPassport
 from app.schemas.api import ModelInfo
-from app.services import homes
+from app.services import homes, passport
 from ml import predict
 
 demo = APIRouter(prefix="/demo", tags=["demo"])
@@ -31,9 +31,9 @@ def _public_event(ev: PassportEvent) -> PassportEvent:
 @public.get("/passport/{share_token}")
 async def public_passport(share_token: str, session: SessionDep) -> PublicPassport:
     home = store.by_share_token(share_token) or await homes.by_share_token(session, share_token)
-    if home is None:
+    full = None if home is None else await passport.build(session, home)
+    if full is None:
         raise ApiError(404, "not_found", "This link is no longer active.")
-    full = store.passport(home)
     data = full.model_dump(exclude={"household", "share_token", "events"})
     return PublicPassport(**data, events=[_public_event(e) for e in full.events])
 

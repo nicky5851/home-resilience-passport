@@ -545,3 +545,67 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/ml/predict.py
 - Commit: 2862ef2
 - Affects the other coder? yes (key names for the Technology slide)
+
+### 2026-10-28 · N14 · `/passport` is 404 before the first assessment
+- Decision: `GET /homes/{id}/passport` (and the public passport of a shared, unassessed home) answers `404 not_found` "This home has not been assessed yet." until the home is assessed
+- Alternatives: fall back to a demo fixture's risk and score (the M1 stub did this)
+- Why: `Passport.latest_risk` and `latest_score` are required, and a demo home's values are wrong data for a real home; same rule as `/risk` and `/plan`
+- Files: backend/app/services/passport.py, backend/app/api/homes.py, backend/app/api/public.py
+- Commit: 816970a
+- Affects the other coder? yes (front end assesses before showing the passport)
+
+### 2026-10-28 · N14 · Passport property is the assessed property
+- Decision: `Passport.property` is the latest assessment's `inputs.property`, so it carries our model's estimate (`source: "model"`) when the home had no EPC band
+- Alternatives: the facts as entered (`source: "user"`)
+- Why: the passport shows the band and CO2 the score was computed from, with the "Estimated by our model" label
+- Files: backend/app/services/passport.py
+- Commit: 816970a
+- Affects the other coder? yes (`property.source` can be `"model"` on the passport)
+
+### 2026-10-28 · N14 · Recorded work counts at once and in later assessments
+- Decision: the current score is `compute_score(latest risk, assessed property, completed measures)`; used for `Passport.latest_score`, the homes list, `score_after` of the work event (with the new measure) and every new assessment
+- Alternatives: count work only at the next assessment
+- Why: spec N14 "recomputes the score with completed measures"; re-assessing must not drop the uplift
+- Files: backend/app/services/passport.py, backend/app/services/assessment.py, backend/app/api/homes.py
+- Commit: 816970a
+- Affects the other coder? no
+
+### 2026-10-28 · N14 · Demo homes keep their fixture score until work is recorded
+- Decision: with no completed measures a demo home's score is its fixture score; after work it is `compute_score` with the fixture risk and the completed fixture-plan measures
+- Alternatives: always recompute (would differ from the fixtures once L5 lands and before `make fixtures`)
+- Why: keeps the five demo homes identical to their fixtures
+- Files: backend/app/services/passport.py
+- Commit: 816970a
+- Affects the other coder? no
+
+### 2026-10-28 · N14 · `score_after` is null for work on an unassessed home
+- Decision: work can be recorded before a stored home's first assessment; its event has `score_after: null`
+- Alternatives: refuse the work (400); use a fixture score
+- Why: there is no score yet; `PassportEvent.score_after` allows null
+- Files: backend/app/api/homes.py
+- Commit: 816970a
+- Affects the other coder? no
+
+### 2026-10-28 · N14 · File and row order for certificates
+- Decision: upload writes the file, then the event and `work_files` rows in one commit (the file is removed if the commit fails); deleting a home or account removes the rows first, then the files, and a file that fails to delete is logged, not raised
+- Alternatives: rows first on upload; files first on delete
+- Why: a row never points at a missing file; an orphan file is the only possible leftover and is logged
+- Files: backend/app/services/homes.py, backend/app/api/auth.py
+- Commit: 816970a
+- Affects the other coder? no
+
+### 2026-10-28 · N14 · Storage keys are only `<uuid>.<ext>`
+- Decision: `LocalStorage` accepts only keys matching `^[0-9a-f]{32}\.(pdf|jpg|png)$` (made by `new_key`), writes through a temporary file and renames it
+- Alternatives: accept any relative path
+- Why: a key can never leave the uploads folder, and a half-written file is never served
+- Files: backend/app/services/storage.py
+- Commit: 816970a
+- Affects the other coder? no
+
+### 2026-10-28 · N14 · Demo homes' certificates stay in memory
+- Decision: certificates recorded on the five demo homes are kept in memory, not in storage
+- Alternatives: store them like real homes
+- Why: demo homes are shared fixtures every logged-in user can open, with no owner or database row to delete them with
+- Files: backend/app/api/homes.py
+- Commit: 816970a
+- Affects the other coder? no
