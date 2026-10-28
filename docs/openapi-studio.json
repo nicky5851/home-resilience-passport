@@ -1,6 +1,55 @@
 {
   "components": {
     "schemas": {
+      "AnnualHeatPump": {
+        "additionalProperties": false,
+        "properties": {
+          "co2_gas_kg": {
+            "title": "Co2 Gas Kg",
+            "type": "number"
+          },
+          "co2_hp_kg": {
+            "title": "Co2 Hp Kg",
+            "type": "number"
+          },
+          "gas_cost_gbp": {
+            "title": "Gas Cost Gbp",
+            "type": "number"
+          },
+          "gas_kwh_equivalent": {
+            "title": "Gas Kwh Equivalent",
+            "type": "number"
+          },
+          "heat_kwh": {
+            "title": "Heat Kwh",
+            "type": "number"
+          },
+          "hp_cost_gbp": {
+            "title": "Hp Cost Gbp",
+            "type": "number"
+          },
+          "hp_electricity_kwh": {
+            "title": "Hp Electricity Kwh",
+            "type": "number"
+          },
+          "saving_gbp": {
+            "title": "Saving Gbp",
+            "type": "number"
+          }
+        },
+        "required": [
+          "heat_kwh",
+          "hp_electricity_kwh",
+          "gas_kwh_equivalent",
+          "hp_cost_gbp",
+          "gas_cost_gbp",
+          "saving_gbp",
+          "co2_hp_kg",
+          "co2_gas_kg"
+        ],
+        "title": "AnnualHeatPump",
+        "type": "object"
+      },
       "BandCount": {
         "additionalProperties": false,
         "properties": {
@@ -51,6 +100,70 @@
           "unit"
         ],
         "title": "Body_meter_fingerprint_api_v1_studio_homes__ref__meter_fingerprint_post",
+        "type": "object"
+      },
+      "ColdestHour": {
+        "additionalProperties": false,
+        "properties": {
+          "at": {
+            "title": "At",
+            "type": "string"
+          },
+          "coped": {
+            "title": "Coped",
+            "type": "boolean"
+          },
+          "demand_kw": {
+            "title": "Demand Kw",
+            "type": "number"
+          },
+          "hp_capacity_kw": {
+            "title": "Hp Capacity Kw",
+            "type": "number"
+          },
+          "temp_c": {
+            "title": "Temp C",
+            "type": "number"
+          }
+        },
+        "required": [
+          "at",
+          "temp_c",
+          "demand_kw",
+          "hp_capacity_kw",
+          "coped"
+        ],
+        "title": "ColdestHour",
+        "type": "object"
+      },
+      "DailyHeatPump": {
+        "additionalProperties": false,
+        "properties": {
+          "cop_mean": {
+            "title": "Cop Mean",
+            "type": "number"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "heat_kwh": {
+            "title": "Heat Kwh",
+            "type": "number"
+          },
+          "t_mean_c": {
+            "title": "T Mean C",
+            "type": "number"
+          }
+        },
+        "required": [
+          "date",
+          "t_mean_c",
+          "heat_kwh",
+          "cop_mean"
+        ],
+        "title": "DailyHeatPump",
         "type": "object"
       },
       "Evidence": {
@@ -288,6 +401,180 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "HeatPumpPrices": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date",
+            "title": "As Of",
+            "type": "string"
+          },
+          "elec_p_per_kwh": {
+            "title": "Elec P Per Kwh",
+            "type": "number"
+          },
+          "elec_standing_p_per_day": {
+            "title": "Elec Standing P Per Day",
+            "type": "number"
+          },
+          "gas_p_per_kwh": {
+            "title": "Gas P Per Kwh",
+            "type": "number"
+          },
+          "gas_standing_p_per_day": {
+            "title": "Gas Standing P Per Day",
+            "type": "number"
+          }
+        },
+        "required": [
+          "gas_p_per_kwh",
+          "elec_p_per_kwh",
+          "gas_standing_p_per_day",
+          "elec_standing_p_per_day",
+          "as_of"
+        ],
+        "title": "HeatPumpPrices",
+        "type": "object"
+      },
+      "HeatPumpYear": {
+        "additionalProperties": false,
+        "properties": {
+          "annual": {
+            "$ref": "#/components/schemas/AnnualHeatPump"
+          },
+          "bus_grant_gbp": {
+            "title": "Bus Grant Gbp",
+            "type": "integer"
+          },
+          "coldest_hour": {
+            "$ref": "#/components/schemas/ColdestHour"
+          },
+          "daily": {
+            "items": {
+              "$ref": "#/components/schemas/DailyHeatPump"
+            },
+            "title": "Daily",
+            "type": "array"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "fallback_used": {
+            "title": "Fallback Used",
+            "type": "boolean"
+          },
+          "htc_source": {
+            "enum": [
+              "user",
+              "estimated_from_age_band"
+            ],
+            "title": "Htc Source",
+            "type": "string"
+          },
+          "htc_used_w_per_k": {
+            "title": "Htc Used W Per K",
+            "type": "integer"
+          },
+          "install_cost_high_gbp": {
+            "title": "Install Cost High Gbp",
+            "type": "integer"
+          },
+          "install_cost_low_gbp": {
+            "title": "Install Cost Low Gbp",
+            "type": "integer"
+          },
+          "monthly": {
+            "items": {
+              "$ref": "#/components/schemas/MonthlyHeatPump"
+            },
+            "maxItems": 12,
+            "minItems": 12,
+            "title": "Monthly",
+            "type": "array"
+          },
+          "net_cost_high_gbp": {
+            "title": "Net Cost High Gbp",
+            "type": "integer"
+          },
+          "net_cost_low_gbp": {
+            "title": "Net Cost Low Gbp",
+            "type": "integer"
+          },
+          "prices": {
+            "$ref": "#/components/schemas/HeatPumpPrices"
+          },
+          "recommended_kw": {
+            "title": "Recommended Kw",
+            "type": "integer"
+          },
+          "scop": {
+            "title": "Scop",
+            "type": "number"
+          },
+          "year": {
+            "title": "Year",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "year",
+          "htc_used_w_per_k",
+          "htc_source",
+          "recommended_kw",
+          "scop",
+          "annual",
+          "monthly",
+          "daily",
+          "coldest_hour",
+          "bus_grant_gbp",
+          "install_cost_low_gbp",
+          "install_cost_high_gbp",
+          "net_cost_low_gbp",
+          "net_cost_high_gbp",
+          "prices",
+          "evidence",
+          "fallback_used"
+        ],
+        "title": "HeatPumpYear",
+        "type": "object"
+      },
+      "HeatPumpYearRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "flow_temp_c": {
+            "default": 45,
+            "enum": [
+              35,
+              45,
+              55
+            ],
+            "title": "Flow Temp C",
+            "type": "integer"
+          },
+          "htc_w_per_k": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Htc W Per K"
+          },
+          "keep_gas_standing_charge": {
+            "default": false,
+            "title": "Keep Gas Standing Charge",
+            "type": "boolean"
+          }
+        },
+        "title": "HeatPumpYearRequest",
+        "type": "object"
+      },
       "Hotspot": {
         "additionalProperties": false,
         "properties": {
@@ -411,6 +698,40 @@
           "source_url"
         ],
         "title": "Measure",
+        "type": "object"
+      },
+      "MonthlyHeatPump": {
+        "additionalProperties": false,
+        "properties": {
+          "cop_mean": {
+            "title": "Cop Mean",
+            "type": "number"
+          },
+          "gas_cost_gbp": {
+            "title": "Gas Cost Gbp",
+            "type": "number"
+          },
+          "heat_kwh": {
+            "title": "Heat Kwh",
+            "type": "number"
+          },
+          "hp_cost_gbp": {
+            "title": "Hp Cost Gbp",
+            "type": "number"
+          },
+          "month": {
+            "title": "Month",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "month",
+          "heat_kwh",
+          "hp_cost_gbp",
+          "gas_cost_gbp",
+          "cop_mean"
+        ],
+        "title": "MonthlyHeatPump",
         "type": "object"
       },
       "PropertyFacts": {
@@ -1214,6 +1535,59 @@
         "summary": "Home Summary",
         "tags": [
           "studio"
+        ]
+      }
+    },
+    "/api/v1/studio/homes/{ref}/heat-pump-year": {
+      "post": {
+        "operationId": "heat_pump_year_api_v1_studio_homes__ref__heat_pump_year_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HeatPumpYearRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HeatPumpYear"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Heat Pump Year",
+        "tags": [
+          "studio",
+          "studio:s04"
         ]
       }
     },
