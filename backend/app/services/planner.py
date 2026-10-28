@@ -11,7 +11,15 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import models as db
-from app.schemas import Household, Measure, Plan, PlanItem, PropertyFacts, RiskProfile
+from app.schemas import (
+    FundingOption,
+    Household,
+    Measure,
+    Plan,
+    PlanItem,
+    PropertyFacts,
+    RiskProfile,
+)
 from app.scoring import compute_score
 from app.services import llm
 
@@ -180,3 +188,9 @@ async def load_measures(session: AsyncSession) -> list[Measure]:
     """A's `measures.csv`, loaded into Postgres by `make seed`."""
     rows = (await session.scalars(select(db.Measure).order_by(db.Measure.id))).all()
     return [Measure.model_validate(r, from_attributes=True) for r in rows]
+
+
+async def load_funding_options(session: AsyncSession) -> list[FundingOption]:
+    """A's `funding.csv`, loaded into Postgres by `make seed` (L6's `match_funding` input)."""
+    rows = (await session.scalars(select(db.FundingOption).order_by(db.FundingOption.id))).all()
+    return [FundingOption.model_validate(r, from_attributes=True) for r in rows]
