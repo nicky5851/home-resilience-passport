@@ -11,6 +11,7 @@ Ask the human at the start of the session: "Are you N or L, and which step?" The
 that person's step and only inside the paths they own (spec §3).
 
 - **N** owns `backend/` (except `backend/app/scoring/` and `backend/tests/scoring/`), `backend/ml/`, `infra/`, `.github/`, `Makefile`, `README.md`, `docs/model_card.md`, `docs/decisions/N.md`, and committing/loading `data/reference/` (A owns the values in those CSVs: never change one, only report problems).
+- **N** also owns Resilience Studio (docs/studio/N_20_function.md): `backend/app/studio/`, `backend/tests/studio/`, `docs/studio/`, `docs/openapi-studio.json`, `frontend/src/app/studio/`, `frontend/src/features/studio/`. Studio is purely additive and never touches the shared contract, L's scoring, or any other existing file.
 - **L** owns `frontend/`, `backend/app/scoring/` (risk, score, funding), `backend/tests/scoring/`, `docs/scoring.md`, `docs/decisions/L.md`.
 - **Shared** (do not edit without the human confirming the other coder agreed): `docs/CONTRACT.md`, `docs/openapi.json`, `backend/app/schemas/`, `backend/tests/fixtures/` (except the output parts, spec §3.3), `docs/CODING_SPEC.md`, `docs/DECISIONS.md`, `docs/privacy.md`, `CLAUDE.md`, `.env.example`.
 
