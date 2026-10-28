@@ -246,6 +246,61 @@
         "title": "DailyHeatPump",
         "type": "object"
       },
+      "EventSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "end_date": {
+            "format": "date",
+            "title": "End Date",
+            "type": "string"
+          },
+          "headline": {
+            "title": "Headline",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "wind",
+              "rain",
+              "heat"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "local_peak": {
+            "$ref": "#/components/schemas/LocalPeak"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "severity": {
+            "title": "Severity",
+            "type": "number"
+          },
+          "start_date": {
+            "format": "date",
+            "title": "Start Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "start_date",
+          "end_date",
+          "local_peak",
+          "severity",
+          "headline"
+        ],
+        "title": "EventSummary",
+        "type": "object"
+      },
       "Evidence": {
         "additionalProperties": false,
         "properties": {
@@ -783,6 +838,116 @@
         "title": "Hotspot",
         "type": "object"
       },
+      "HourlyReplayPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "gust_kmh": {
+            "title": "Gust Kmh",
+            "type": "number"
+          },
+          "indoor_now_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Indoor Now C"
+          },
+          "indoor_with_measures_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Indoor With Measures C"
+          },
+          "rain_mm": {
+            "title": "Rain Mm",
+            "type": "number"
+          },
+          "temp_c": {
+            "title": "Temp C",
+            "type": "number"
+          },
+          "wind_kmh": {
+            "title": "Wind Kmh",
+            "type": "number"
+          }
+        },
+        "required": [
+          "at",
+          "temp_c",
+          "gust_kmh",
+          "wind_kmh",
+          "rain_mm",
+          "indoor_now_c",
+          "indoor_with_measures_c"
+        ],
+        "title": "HourlyReplayPoint",
+        "type": "object"
+      },
+      "Lesson": {
+        "additionalProperties": false,
+        "properties": {
+          "measure_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Measure Id"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "measure_id"
+        ],
+        "title": "Lesson",
+        "type": "object"
+      },
+      "LocalPeak": {
+        "additionalProperties": false,
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "unit",
+          "at"
+        ],
+        "title": "LocalPeak",
+        "type": "object"
+      },
       "Measure": {
         "additionalProperties": false,
         "description": "One row of data/reference/measures.csv (CONTRACT §5).",
@@ -945,6 +1110,26 @@
         "title": "OrientationPoint",
         "type": "object"
       },
+      "PeakMoment": {
+        "additionalProperties": false,
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "at",
+          "label"
+        ],
+        "title": "PeakMoment",
+        "type": "object"
+      },
       "PropertyFacts": {
         "additionalProperties": false,
         "properties": {
@@ -1105,6 +1290,56 @@
           "source"
         ],
         "title": "PropertyFacts",
+        "type": "object"
+      },
+      "Replay": {
+        "additionalProperties": false,
+        "properties": {
+          "event": {
+            "$ref": "#/components/schemas/EventSummary"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "fallback_used": {
+            "title": "Fallback Used",
+            "type": "boolean"
+          },
+          "hourly": {
+            "items": {
+              "$ref": "#/components/schemas/HourlyReplayPoint"
+            },
+            "title": "Hourly",
+            "type": "array"
+          },
+          "lessons": {
+            "items": {
+              "$ref": "#/components/schemas/Lesson"
+            },
+            "title": "Lessons",
+            "type": "array"
+          },
+          "peak_moments": {
+            "items": {
+              "$ref": "#/components/schemas/PeakMoment"
+            },
+            "title": "Peak Moments",
+            "type": "array"
+          }
+        },
+        "required": [
+          "event",
+          "hourly",
+          "peak_moments",
+          "lessons",
+          "evidence",
+          "fallback_used"
+        ],
+        "title": "Replay",
         "type": "object"
       },
       "ResilienceScore": {
@@ -1587,6 +1822,41 @@
           "fallback_used"
         ],
         "title": "SolarResult",
+        "type": "object"
+      },
+      "StormReplayIndex": {
+        "additionalProperties": false,
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/EventSummary"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "fallback_used": {
+            "title": "Fallback Used",
+            "type": "boolean"
+          },
+          "hardest_event_id": {
+            "title": "Hardest Event Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "events",
+          "hardest_event_id",
+          "evidence",
+          "fallback_used"
+        ],
+        "title": "StormReplayIndex",
         "type": "object"
       },
       "Story": {
@@ -2346,6 +2616,101 @@
         "tags": [
           "studio",
           "studio:s05"
+        ]
+      }
+    },
+    "/api/v1/studio/homes/{ref}/storm-replay": {
+      "get": {
+        "operationId": "storm_replay_index_api_v1_studio_homes__ref__storm_replay_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StormReplayIndex"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Storm Replay Index",
+        "tags": [
+          "studio",
+          "studio:s07"
+        ]
+      }
+    },
+    "/api/v1/studio/homes/{ref}/storm-replay/{event_id}": {
+      "get": {
+        "operationId": "storm_replay_api_v1_studio_homes__ref__storm_replay__event_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Replay"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Storm Replay",
+        "tags": [
+          "studio",
+          "studio:s07"
         ]
       }
     },

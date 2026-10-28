@@ -174,6 +174,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/storm-replay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Storm Replay Index */
+        get: operations["storm_replay_index_api_v1_studio_homes__ref__storm_replay_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/homes/{ref}/storm-replay/{event_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Storm Replay */
+        get: operations["storm_replay_api_v1_studio_homes__ref__storm_replay__event_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/street-proof": {
         parameters: {
             query?: never;
@@ -297,6 +331,33 @@ export interface components {
             heat_kwh: number;
             /** T Mean C */
             t_mean_c: number;
+        };
+        /** EventSummary */
+        EventSummary: {
+            /**
+             * End Date
+             * Format: date
+             */
+            end_date: string;
+            /** Headline */
+            headline: string;
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "wind" | "rain" | "heat";
+            local_peak: components["schemas"]["LocalPeak"];
+            /** Name */
+            name: string;
+            /** Severity */
+            severity: number;
+            /**
+             * Start Date
+             * Format: date
+             */
+            start_date: string;
         };
         /** Evidence */
         Evidence: {
@@ -507,6 +568,45 @@ export interface components {
             /** Measure Ids */
             measure_ids: string[];
         };
+        /** HourlyReplayPoint */
+        HourlyReplayPoint: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Gust Kmh */
+            gust_kmh: number;
+            /** Indoor Now C */
+            indoor_now_c: number | null;
+            /** Indoor With Measures C */
+            indoor_with_measures_c: number | null;
+            /** Rain Mm */
+            rain_mm: number;
+            /** Temp C */
+            temp_c: number;
+            /** Wind Kmh */
+            wind_kmh: number;
+        };
+        /** Lesson */
+        Lesson: {
+            /** Measure Id */
+            measure_id: string | null;
+            /** Text */
+            text: string;
+        };
+        /** LocalPeak */
+        LocalPeak: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Unit */
+            unit: string;
+            /** Value */
+            value: number;
+        };
         /**
          * Measure
          * @description One row of data/reference/measures.csv (CONTRACT §5).
@@ -575,6 +675,16 @@ export interface components {
             /** Aspect Deg */
             aspect_deg: number;
         };
+        /** PeakMoment */
+        PeakMoment: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Label */
+            label: string;
+        };
         /** PropertyFacts */
         PropertyFacts: {
             /** Built Form */
@@ -607,6 +717,20 @@ export interface components {
             source: "epc_api" | "model" | "user" | "demo";
             /** Top Floor */
             top_floor: boolean | null;
+        };
+        /** Replay */
+        Replay: {
+            event: components["schemas"]["EventSummary"];
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Hourly */
+            hourly: components["schemas"]["HourlyReplayPoint"][];
+            /** Lessons */
+            lessons: components["schemas"]["Lesson"][];
+            /** Peak Moments */
+            peak_moments: components["schemas"]["PeakMoment"][];
         };
         /** ResilienceScore */
         ResilienceScore: {
@@ -781,6 +905,17 @@ export interface components {
             suitability: "good" | "fair" | "poor" | "freeholder_needed";
             /** Suitability Note */
             suitability_note: string;
+        };
+        /** StormReplayIndex */
+        StormReplayIndex: {
+            /** Events */
+            events: components["schemas"]["EventSummary"][];
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Hardest Event Id */
+            hardest_event_id: string;
         };
         /** Story */
         Story: {
@@ -1180,6 +1315,69 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SolarResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    storm_replay_index_api_v1_studio_homes__ref__storm_replay_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StormReplayIndex"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    storm_replay_api_v1_studio_homes__ref__storm_replay__event_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+                event_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Replay"];
                 };
             };
             /** @description Validation Error */

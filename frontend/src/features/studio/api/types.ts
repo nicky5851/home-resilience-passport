@@ -27,3 +27,8 @@ export type GridCarbon = components["schemas"]["GridCarbon"]
 export type BestWindow = components["schemas"]["BestWindow"]
 export type ForecastSlot = components["schemas"]["ForecastSlot"]
 export type MixShare = components["schemas"]["MixShare"]
+
+export type StormReplayIndex = components["schemas"]["StormReplayIndex"]
+export type Replay = components["schemas"]["Replay"]
+export type EventSummary = components["schemas"]["EventSummary"]
+export type HourlyReplayPoint = components["schemas"]["HourlyReplayPoint"]
