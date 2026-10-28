@@ -38,5 +38,42 @@
       }
     ],
     "generated_at": "2026-10-27T09:00:00Z"
+  },
+  "score": {
+    "value": 60,
+    "band": "C",
+    "components": [
+      {
+        "name": "flood",
+        "points": 3.0,
+        "max_points": 30.0,
+        "reason": "Your flood risk is high by 2050, worth 3 of 30 points."
+      },
+      {
+        "name": "heat",
+        "points": 20.0,
+        "max_points": 20.0,
+        "reason": "Your heat risk is low by 2050, worth 20 of 20 points."
+      },
+      {
+        "name": "storm",
+        "points": 10.0,
+        "max_points": 10.0,
+        "reason": "Your storm risk is low by 2050, worth 10 of 10 points."
+      },
+      {
+        "name": "subsidence",
+        "points": 10.0,
+        "max_points": 10.0,
+        "reason": "Your subsidence risk is low by 2050, worth 10 of 10 points."
+      },
+      {
+        "name": "carbon",
+        "points": 17.4,
+        "max_points": 30.0,
+        "reason": "Based on your EPC score of 58."
+      }
+    ],
+    "version": "v1"
   }
 }
