@@ -742,5 +742,5 @@ Format: spec §13. Newest at the bottom.
   convenience, not a privacy or correctness issue
 - Files: backend/app/studio/features/s03_meter_fingerprint/**, backend/tests/studio/test_s03_meter_fingerprint.py,
   frontend/src/features/studio/s03/**, frontend/src/app/studio/[ref]/s03-meter-fingerprint/page.tsx
-- PR: #?
+- PR: #32
 - Affects the other coder? no
