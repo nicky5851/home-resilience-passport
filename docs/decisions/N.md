@@ -763,5 +763,5 @@ Format: spec §13. Newest at the bottom.
   prettier one that risks shipping late or wrong
 - Files: backend/app/studio/features/s04_heat_pump_year/**, backend/tests/studio/test_s04_heat_pump_year.py,
   frontend/src/features/studio/s04/**, frontend/src/app/studio/[ref]/s04-heat-pump-year/page.tsx
-- PR: #?
+- PR: #33
 - Affects the other coder? no
