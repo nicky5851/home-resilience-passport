@@ -401,3 +401,43 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/app/services/assessment.py
 - Commit: 5f0f5e4
 - Affects the other coder? no
+
+### 2026-10-28 · N11 · Household priorities → measures
+- Decision: a measure gets the +20% priority weight when it serves one of the household's priorities: `lower_bills` = bill saving > 0; `comfort` = category `heat`; `flood_safety` = category `flood`; `lower_carbon` = CO2 saving > 0; `home_value` = measures that raise the EPC rating, i.e. a bill saving or a CO2 saving > 0 (the EPC rating is set by energy cost and CO2)
+- Alternatives: `home_value` matches nothing; `home_value` = every measure
+- Why: spec §7 rule 3 names the boost but not the mapping; `home_value` mapping chosen by N (the human)
+- Files: backend/app/services/planner.py
+- Commit: 0aa9ab8
+- Affects the other coder? no
+
+### 2026-10-28 · N11 · Renters' landlord group is part of `items`
+- Decision: for renters (`private_renter`, `social_renter`), measures with `needs_landlord` are ranked after every other measure and are never selected (not by default, not through `selected_ids`); the front end shows items with `measure.needs_landlord` as the "Ask your landlord" group. Owners and landlords get them in the main list
+- Alternatives: a separate `landlord_items` field in `Plan` (contract change)
+- Why: spec §7 rule 1 asks for a separate group but `Plan` has only `items`; no contract change needed
+- Files: backend/app/services/planner.py
+- Commit: 0aa9ab8
+- Affects the other coder? yes (L11 splits the list by `measure.needs_landlord`)
+
+### 2026-10-28 · N11 · LLM explanations: top 8, mixed sources, no server-side fallback
+- Decision: one call per plan for the top 8 ranked measures (Messages API, `ANTHROPIC_MODEL`, 8 s timeout, no SDK retries, `effort: low`, JSON schema output); sentences over 30 words or 200 characters are dropped; every other item gets the template. `explanation_source` is `llm` when at least one item's text came from the LLM. Refusals and every error use the template, so Anthropic's server-side fallback model is not enabled
+- Alternatives: explain every measure; label mixed plans `template`
+- Why: spec §7 rule 5 (top 8, one call); the template already covers every failure
+- Files: backend/app/services/llm.py, backend/app/services/planner.py
+- Commit: 0aa9ab8
+- Affects the other coder? yes (an `llm` plan can still contain template sentences)
+
+### 2026-10-28 · N11 · LLM cache and daily cap
+- Decision: `llm_cache` rows never expire (key = sha256 of property facts, hazard levels, measure ids, `SCORING_VERSION`, model); only successful answers are cached. The daily cap (`LLM_DAILY_CALL_LIMIT`) counts call attempts per UTC day in memory, so it resets when the API restarts
+- Alternatives: count cache rows created today (would not count failed calls)
+- Why: one API instance; failed calls must count towards the cap too
+- Files: backend/app/services/llm.py
+- Commit: 0aa9ab8
+- Affects the other coder? no
+
+### 2026-10-28 · N11 · Plans: latest only, demo homes keep fixtures
+- Decision: `POST /homes/{id}/plan` for a stored home stores only the latest plan (`plans`, with the budget actually used); before an assessment it returns 404 `not_found`. Demo homes return their fixture plan. Done measures (`work_recorded` events) leave the plan and count towards the projected score; recording work on a stored home accepts any measure in `measures`
+- Alternatives: keep every plan (the slider would add a row per move)
+- Why: the slider re-posts `/plan` on every move (CONTRACT §3)
+- Files: backend/app/api/homes.py, backend/app/services/homes.py
+- Commit: 0aa9ab8
+- Affects the other coder? yes (plan before assessment is 404)

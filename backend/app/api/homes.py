@@ -2,7 +2,8 @@
 
 A user's own homes are stored in Postgres (`app/services/homes.py`, N10) and assessed with real
 data (`app/services/assessment.py`, N9). The five demo homes answer from their fixtures and are
-readable by every logged-in user. Plans and funding still come from the fixtures (N11 / L6);
+readable by every logged-in user. Plans are built by `app/services/planner.py` (N11); funding
+still comes from the fixtures (L6);
 certificate files are kept in memory until N14.
 """
 
@@ -23,7 +24,7 @@ from app.config import (
     UPLOAD_MAX_BYTES,
     get_settings,
 )
-from app.schemas import FundingBundle, Passport, PassportEvent, Plan
+from app.schemas import FundingBundle, Measure, Passport, PassportEvent, Plan
 from app.schemas.api import (
     Assessment,
     FundingRequest,
@@ -33,7 +34,7 @@ from app.schemas.api import (
     PlanRequest,
     ShareLink,
 )
-from app.services import assessment, homes
+from app.services import assessment, homes, planner
 
 router = APIRouter(prefix="/homes", tags=["homes"])
 
@@ -126,7 +127,32 @@ async def latest_risk(home_id: uuid.UUID, user: CurrentUser, session: SessionDep
 async def plan(
     home_id: uuid.UUID, user: CurrentUser, session: SessionDep, body: PlanRequest | None = None
 ) -> Plan:
-    return store.plan(await _home(home_id, user, session))
+    home = await _home(home_id, user, session)
+    if not home.stored:
+        return store.plan(home)  # demo homes: the fixture's plan, offline
+    if home.assessment is None:
+        raise ApiError(404, "not_found", "This home has not been assessed yet.")
+    measures = await planner.load_measures(session)
+    body = body or PlanRequest()
+    result = await planner.build_plan(
+        session,
+        measures,
+        home.assessment.risk,
+        home.real["property"],
+        home.real["household"],
+        _completed(home, measures),
+        budget_gbp=body.budget_gbp,
+        selected_ids=body.selected_ids,
+    )
+    budget = home.real["household"].budget_gbp if body.budget_gbp is None else body.budget_gbp
+    await homes.save_plan(session, home.home_id, budget, result)
+    return result
+
+
+def _completed(home: StubHome, measures: list[Measure]) -> list[Measure]:
+    """Measures the passport records as done (work_recorded events)."""
+    done = {e.detail.get("measure_id") for e in home.events if e.kind == "work_recorded"}
+    return [m for m in measures if m.id in done]
 
 
 @router.post("/{home_id}/funding")
@@ -152,7 +178,12 @@ async def record_work(
     certificate: Annotated[UploadFile | None, File()] = None,
 ) -> PassportEvent:
     home = await _home(home_id, user, session)
-    if measure_id not in {i.measure.id for i in store.plan(home).items}:
+    known = (
+        {m.id for m in await planner.load_measures(session)}
+        if home.stored
+        else {i.measure.id for i in store.plan(home).items}
+    )
+    if measure_id not in known:
         raise ApiError(400, "validation", "measure_id: unknown measure for this home.")
     if completed_on > date.today():
         raise ApiError(400, "validation", "completed_on: the date cannot be in the future.")
