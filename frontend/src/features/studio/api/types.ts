@@ -15,3 +15,7 @@ export type UpgradeRow = components["schemas"]["UpgradeRow"]
 export type BandCount = components["schemas"]["BandCount"]
 
 export type Fingerprint = components["schemas"]["Fingerprint"]
+
+export type HeatPumpYear = components["schemas"]["HeatPumpYear"]
+export type MonthlyHeatPump = components["schemas"]["MonthlyHeatPump"]
+export type DailyHeatPump = components["schemas"]["DailyHeatPump"]

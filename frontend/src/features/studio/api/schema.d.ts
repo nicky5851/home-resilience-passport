@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/heat-pump-year": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Heat Pump Year */
+        post: operations["heat_pump_year_api_v1_studio_homes__ref__heat_pump_year_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/meter-fingerprint": {
         parameters: {
             query?: never;
@@ -144,6 +161,25 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AnnualHeatPump */
+        AnnualHeatPump: {
+            /** Co2 Gas Kg */
+            co2_gas_kg: number;
+            /** Co2 Hp Kg */
+            co2_hp_kg: number;
+            /** Gas Cost Gbp */
+            gas_cost_gbp: number;
+            /** Gas Kwh Equivalent */
+            gas_kwh_equivalent: number;
+            /** Heat Kwh */
+            heat_kwh: number;
+            /** Hp Cost Gbp */
+            hp_cost_gbp: number;
+            /** Hp Electricity Kwh */
+            hp_electricity_kwh: number;
+            /** Saving Gbp */
+            saving_gbp: number;
+        };
         /** BandCount */
         BandCount: {
             /** Band */
@@ -165,6 +201,33 @@ export interface components {
              * @enum {string}
              */
             unit: "kwh" | "m3";
+        };
+        /** ColdestHour */
+        ColdestHour: {
+            /** At */
+            at: string;
+            /** Coped */
+            coped: boolean;
+            /** Demand Kw */
+            demand_kw: number;
+            /** Hp Capacity Kw */
+            hp_capacity_kw: number;
+            /** Temp C */
+            temp_c: number;
+        };
+        /** DailyHeatPump */
+        DailyHeatPump: {
+            /** Cop Mean */
+            cop_mean: number;
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Heat Kwh */
+            heat_kwh: number;
+            /** T Mean C */
+            t_mean_c: number;
         };
         /** Evidence */
         Evidence: {
@@ -258,6 +321,75 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /** HeatPumpPrices */
+        HeatPumpPrices: {
+            /**
+             * As Of
+             * Format: date
+             */
+            as_of: string;
+            /** Elec P Per Kwh */
+            elec_p_per_kwh: number;
+            /** Elec Standing P Per Day */
+            elec_standing_p_per_day: number;
+            /** Gas P Per Kwh */
+            gas_p_per_kwh: number;
+            /** Gas Standing P Per Day */
+            gas_standing_p_per_day: number;
+        };
+        /** HeatPumpYear */
+        HeatPumpYear: {
+            annual: components["schemas"]["AnnualHeatPump"];
+            /** Bus Grant Gbp */
+            bus_grant_gbp: number;
+            coldest_hour: components["schemas"]["ColdestHour"];
+            /** Daily */
+            daily: components["schemas"]["DailyHeatPump"][];
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /**
+             * Htc Source
+             * @enum {string}
+             */
+            htc_source: "user" | "estimated_from_age_band";
+            /** Htc Used W Per K */
+            htc_used_w_per_k: number;
+            /** Install Cost High Gbp */
+            install_cost_high_gbp: number;
+            /** Install Cost Low Gbp */
+            install_cost_low_gbp: number;
+            /** Monthly */
+            monthly: components["schemas"]["MonthlyHeatPump"][];
+            /** Net Cost High Gbp */
+            net_cost_high_gbp: number;
+            /** Net Cost Low Gbp */
+            net_cost_low_gbp: number;
+            prices: components["schemas"]["HeatPumpPrices"];
+            /** Recommended Kw */
+            recommended_kw: number;
+            /** Scop */
+            scop: number;
+            /** Year */
+            year: number;
+        };
+        /** HeatPumpYearRequest */
+        HeatPumpYearRequest: {
+            /**
+             * Flow Temp C
+             * @default 45
+             * @enum {integer}
+             */
+            flow_temp_c: 35 | 45 | 55;
+            /** Htc W Per K */
+            htc_w_per_k?: number | null;
+            /**
+             * Keep Gas Standing Charge
+             * @default false
+             */
+            keep_gas_standing_charge: boolean;
+        };
         /** Hotspot */
         Hotspot: {
             /**
@@ -310,6 +442,19 @@ export interface components {
             resilience_points: number;
             /** Source Url */
             source_url: string;
+        };
+        /** MonthlyHeatPump */
+        MonthlyHeatPump: {
+            /** Cop Mean */
+            cop_mean: number;
+            /** Gas Cost Gbp */
+            gas_cost_gbp: number;
+            /** Heat Kwh */
+            heat_kwh: number;
+            /** Hp Cost Gbp */
+            hp_cost_gbp: number;
+            /** Month */
+            month: number;
         };
         /** PropertyFacts */
         PropertyFacts: {
@@ -572,6 +717,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StudioHomeSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    heat_pump_year_api_v1_studio_homes__ref__heat_pump_year_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HeatPumpYearRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HeatPumpYear"];
                 };
             };
             /** @description Validation Error */

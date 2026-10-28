@@ -744,3 +744,24 @@ Format: spec §13. Newest at the bottom.
   frontend/src/features/studio/s03/**, frontend/src/app/studio/[ref]/s03-meter-fingerprint/page.tsx
 - PR: #32
 - Affects the other coder? no
+
+### 2026-10-28 · S04 · Heat Pump Year: radial calendar simplified; sourced figures logged
+- Decision: built the full hour-by-hour change-point heat demand + COP simulation over a real
+  ERA5 year, sizing, and cost/CO2/grant maths exactly per spec, but replaced the bespoke SVG
+  "radial year" clock with two Recharts charts (monthly HP-vs-gas cost bars, daily mean-COP
+  line) - same data, same interactivity (flow-temp switch re-simulates), simpler chrome, per the
+  frontend-effort calibration agreed for this batch of features.
+- Also: looked up and recorded the **verify**-flagged figures live on 2026-10-28 rather than
+  inventing them - Ofgem Direct Debit cap Oct-Dec 2026 (26.32p/kWh elec, 7.97p/kWh gas; 54.83p
+  and 29.68p standing charges), Boiler Upgrade Scheme £7,500 standard grant, and DESNZ 2026 CO2
+  factors (0.13096 kg/kWh elec, 0.18231 kg/kWh gas) via a third-party citation of the official
+  workbook cells (not the workbook itself - flagged for re-verification). No heat-pump row exists
+  yet in `measures.csv`, so install cost uses a config range (£8,000-£14,000) sourced to the MCS
+  dashboard's reported 2025 average and 2026 trade-guide ranges.
+- Why: the "wow" the spec describes is the per-home simulation and the coldest-hour callout, not
+  the clock widget specifically; a correct, tested simulation with an honest chart beats a
+  prettier one that risks shipping late or wrong
+- Files: backend/app/studio/features/s04_heat_pump_year/**, backend/tests/studio/test_s04_heat_pump_year.py,
+  frontend/src/features/studio/s04/**, frontend/src/app/studio/[ref]/s04-heat-pump-year/page.tsx
+- PR: #?
+- Affects the other coder? no
