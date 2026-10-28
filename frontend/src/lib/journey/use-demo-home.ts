@@ -24,7 +24,11 @@ export function useDemoHome(slug: string): State {
       .then((homes) => {
         if (cancelled) return
         const home = homes.find((h) => h.slug === slug)
-        setState(home ? { status: "ready", home, error: null } : { status: "not_found", home: null, error: null })
+        setState(
+          home
+            ? { status: "ready", home, error: null }
+            : { status: "not_found", home: null, error: null },
+        )
       })
       .catch((e: unknown) => {
         if (cancelled) return

@@ -18,7 +18,7 @@ export default function PrivacyPage() {
   const html = marked.parse(readPrivacyMarkdown(), { async: false })
   return (
     <section
-      className="prose max-w-2xl [&_h1]:text-deep [&_h1]:text-2xl [&_h1]:font-semibold [&_h2]:text-deep [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-semibold [&_li]:ml-4 [&_ul]:list-disc [&_p]:my-3"
+      className="prose [&_h1]:text-deep [&_h2]:text-deep max-w-2xl [&_h1]:text-2xl [&_h1]:font-semibold [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-semibold [&_li]:ml-4 [&_p]:my-3 [&_ul]:list-disc"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   )

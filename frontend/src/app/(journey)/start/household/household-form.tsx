@@ -52,7 +52,9 @@ const schema = z.object({
     .number({ message: "Enter a budget in pounds." })
     .int("Enter a whole number of pounds.")
     .min(0, "Enter a budget of £0 or more."),
-  priorities: z.array(z.enum(["lower_bills", "comfort", "flood_safety", "lower_carbon", "home_value"])),
+  priorities: z.array(
+    z.enum(["lower_bills", "comfort", "flood_safety", "lower_carbon", "home_value"]),
+  ),
   vulnerable: z.boolean().nullable(),
   consent_lloyds_data: z.boolean(),
 })
@@ -267,8 +269,8 @@ export function HouseholdForm() {
       <label className="flex items-start gap-2 text-sm">
         <input type="checkbox" {...register("consent_lloyds_data")} />
         <span>
-          I would like to be matched against Lloyds Banking Group funding products using the
-          answers above (optional).
+          I would like to be matched against Lloyds Banking Group funding products using the answers
+          above (optional).
         </span>
       </label>
 

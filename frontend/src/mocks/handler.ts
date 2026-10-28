@@ -267,7 +267,11 @@ export async function mockFetch(input: RequestInfo | URL, init?: RequestInit): P
       let hasCertificate = false
       if (file instanceof File) {
         if (file.size > MAX_CERTIFICATE_BYTES)
-          return error(413, "file_too_large", "That file is over 5 MB. Please choose a smaller one.")
+          return error(
+            413,
+            "file_too_large",
+            "That file is over 5 MB. Please choose a smaller one.",
+          )
         const bytes = new Uint8Array(await file.arrayBuffer())
         if (!isAllowedCertificate(bytes))
           return error(415, "unsupported_file", "Please upload a PDF, JPEG or PNG file.")

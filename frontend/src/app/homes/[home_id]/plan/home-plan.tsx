@@ -73,9 +73,7 @@ function PlanBody({ homeId }: { homeId: string }) {
   const landlord = isRenter ? plan.items.filter((i) => i.measure.needs_landlord) : []
 
   function toggle(id: string) {
-    setSelectedIds((ids) =>
-      ids!.includes(id) ? ids!.filter((x) => x !== id) : [...ids!, id],
-    )
+    setSelectedIds((ids) => (ids!.includes(id) ? ids!.filter((x) => x !== id) : [...ids!, id]))
   }
 
   return (

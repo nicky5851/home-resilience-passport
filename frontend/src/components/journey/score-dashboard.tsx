@@ -63,7 +63,8 @@ export function ScoreDashboard({
             <span className="text-muted-foreground text-sm">out of 100</span>
           </div>
           <p role="status" className="sr-only">
-            Resilience score {score.value} out of 100, band {score.band}: {BAND_EXPLAINER[score.band]}
+            Resilience score {score.value} out of 100, band {score.band}:{" "}
+            {BAND_EXPLAINER[score.band]}
           </p>
         </div>
 

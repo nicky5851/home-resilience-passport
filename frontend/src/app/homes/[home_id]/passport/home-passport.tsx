@@ -46,7 +46,8 @@ function PassportBody({ homeId }: { homeId: string }) {
     setPassport(p)
   }
 
-  if (state.status === "loading" || !passport) return <p className="text-muted-foreground">Loading…</p>
+  if (state.status === "loading" || !passport)
+    return <p className="text-muted-foreground">Loading…</p>
   if (state.status === "error") return <p role="alert">{state.error.detail}</p>
 
   return (

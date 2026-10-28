@@ -6,10 +6,10 @@ import { useState } from "react"
 import { HazardCard } from "@/components/journey/hazard-card"
 import type { RiskProfile } from "@/lib/api/types"
 
-const HomeMap = dynamic(
-  () => import("@/components/journey/home-map").then((m) => m.HomeMap),
-  { ssr: false, loading: () => <div className="bg-mint h-64 w-full animate-pulse rounded-lg" /> },
-)
+const HomeMap = dynamic(() => import("@/components/journey/home-map").then((m) => m.HomeMap), {
+  ssr: false,
+  loading: () => <div className="bg-mint h-64 w-full animate-pulse rounded-lg" />,
+})
 
 /** The risk page body (spec L9): map, hazard cards, Today / 2050 toggle. */
 export function RiskView({

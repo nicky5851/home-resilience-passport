@@ -29,9 +29,7 @@ export function HazardCard({ level, when }: { level: HazardLevel; when: "today" 
     <article className="border-border space-y-2 rounded-lg border p-4">
       <div className="flex items-center justify-between gap-2">
         <h3 className="font-medium">{HAZARD_LABEL[level.hazard]}</h3>
-        <span
-          className={`rounded-full px-2.5 py-0.5 text-sm font-semibold ${LEVEL_CLASS[value]}`}
-        >
+        <span className={`rounded-full px-2.5 py-0.5 text-sm font-semibold ${LEVEL_CLASS[value]}`}>
           {LEVEL_LABEL[value]}
         </span>
       </div>

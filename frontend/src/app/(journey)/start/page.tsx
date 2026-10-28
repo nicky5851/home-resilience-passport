@@ -18,9 +18,7 @@ export default function StartPage() {
         <StartForm />
       </Suspense>
       <div className="border-border border-t pt-6">
-        <p className="text-muted-foreground mb-3 text-sm">
-          Not ready to enter your own address?
-        </p>
+        <p className="text-muted-foreground mb-3 text-sm">Not ready to enter your own address?</p>
         <Suspense>
           <DemoHomesButton />
         </Suspense>

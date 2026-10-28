@@ -6,7 +6,12 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { api, unwrap } from "@/lib/api/client"
 import { isApiError } from "@/lib/api/errors"
-import type { AddressInput, LookupAddress, PostcodeLookup, PropertyFactsInput } from "@/lib/api/types"
+import type {
+  AddressInput,
+  LookupAddress,
+  PostcodeLookup,
+  PropertyFactsInput,
+} from "@/lib/api/types"
 import { saveDraft } from "@/lib/journey/draft"
 import { guessCountry, isPlausiblePostcode, normalisePostcode } from "@/lib/journey/postcode"
 
@@ -113,7 +118,9 @@ export function StartForm() {
           {busy ? "Looking up…" : "Find my address"}
         </Button>
         {postcode.trim() !== "" && !isPlausiblePostcode(postcode) && !error && (
-          <p className="text-muted-foreground text-sm">That doesn&apos;t look like a full postcode yet.</p>
+          <p className="text-muted-foreground text-sm">
+            That doesn&apos;t look like a full postcode yet.
+          </p>
         )}
       </form>
     )
