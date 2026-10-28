@@ -22,3 +22,8 @@ export type DailyHeatPump = components["schemas"]["DailyHeatPump"]
 
 export type SolarResult = components["schemas"]["SolarResult"]
 export type OrientationPoint = components["schemas"]["OrientationPoint"]
+
+export type GridCarbon = components["schemas"]["GridCarbon"]
+export type BestWindow = components["schemas"]["BestWindow"]
+export type ForecastSlot = components["schemas"]["ForecastSlot"]
+export type MixShare = components["schemas"]["MixShare"]

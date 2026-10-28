@@ -783,3 +783,22 @@ Format: spec §13. Newest at the bottom.
   frontend/src/features/studio/s05/**, frontend/src/app/studio/[ref]/s05-solar-roof-studio/page.tsx
 - PR: #34
 - Affects the other coder? no
+
+### 2026-10-28 · S06 · Grid Carbon Clock: no bespoke SVG clock face
+- Decision: built the full window-search algorithm (slide each appliance's duration over the
+  96-slot 48h forecast, minimise mean intensity, saving vs now in g and %), the Carbon Intensity
+  adapter (current mix + 48h forecast by outcode), and a seeded synthetic day/night fallback
+  exactly per spec, but used a Recharts area chart for the 48h forecast and a donut (PieChart)
+  for the generation mix instead of the spec's 48-arc SVG clock face with a moving "now" hand -
+  same data, same real-time auto-refresh (15 min), simpler chrome, per the calibration already
+  applied to S01/S04/S05.
+- Noted in passing: the live Carbon Intensity API's two endpoints have different JSON shapes -
+  `/regional/postcode/{outcode}` wraps one region object in a list (`data: [...]`), while
+  `/regional/intensity/{from}/fw48h/postcode/{outcode}` returns the region object directly
+  (`data: {...}`) - verified against the live API on 2026-10-28, not guessed.
+- Why: the per-appliance savings and the forecast shape are the substance; the clock face is
+  presentation on top of the same numbers
+- Files: backend/app/studio/features/s06_grid_carbon_clock/**, backend/tests/studio/test_s06_grid_carbon_clock.py,
+  frontend/src/features/studio/s06/**, frontend/src/app/studio/[ref]/s06-grid-carbon-clock/page.tsx
+- PR: #?
+- Affects the other coder? no
