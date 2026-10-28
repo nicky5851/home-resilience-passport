@@ -140,6 +140,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/solar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Solar */
+        post: operations["solar_api_v1_studio_homes__ref__solar_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/street-proof": {
         parameters: {
             query?: never;
@@ -456,6 +473,13 @@ export interface components {
             /** Month */
             month: number;
         };
+        /** OrientationPoint */
+        OrientationPoint: {
+            /** Annual Kwh */
+            annual_kwh: number;
+            /** Aspect Deg */
+            aspect_deg: number;
+        };
         /** PropertyFacts */
         PropertyFacts: {
             /** Built Form */
@@ -584,6 +608,74 @@ export interface components {
         SimulateRequest: {
             /** Measure Ids */
             measure_ids: string[];
+        };
+        /** SolarRequest */
+        SolarRequest: {
+            /**
+             * Aspect Deg
+             * @default 0
+             */
+            aspect_deg: number;
+            /**
+             * Battery Kwh
+             * @default 0
+             * @enum {integer}
+             */
+            battery_kwh: 0 | 5 | 10;
+            /** Export P Per Kwh */
+            export_p_per_kwh?: number | null;
+            /** Kwp */
+            kwp?: number | null;
+            /**
+             * Pitch Deg
+             * @default 35
+             */
+            pitch_deg: number;
+        };
+        /** SolarResult */
+        SolarResult: {
+            /** Annual Kwh */
+            annual_kwh: number;
+            /** Annual Saving Gbp */
+            annual_saving_gbp: number;
+            /** Breakeven Year */
+            breakeven_year: number | null;
+            /** Co2 Saved Kg Per Year */
+            co2_saved_kg_per_year: number;
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Export Kwh */
+            export_kwh: number;
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Install Cost High Gbp */
+            install_cost_high_gbp: number;
+            /** Install Cost Low Gbp */
+            install_cost_low_gbp: number;
+            /** Kwp */
+            kwp: number;
+            /**
+             * Kwp Source
+             * @enum {string}
+             */
+            kwp_source: "user" | "estimated_from_roof";
+            /** Lifetime Saving Gbp */
+            lifetime_saving_gbp: number;
+            /** Monthly Kwh */
+            monthly_kwh: number[];
+            /** Orientation Rose */
+            orientation_rose: components["schemas"]["OrientationPoint"][];
+            /** Payback Years */
+            payback_years: number | null;
+            /** Self Use Kwh */
+            self_use_kwh: number;
+            /**
+             * Suitability
+             * @enum {string}
+             */
+            suitability: "good" | "fair" | "poor" | "freeholder_needed";
+            /** Suitability Note */
+            suitability_note: string;
         };
         /** Story */
         Story: {
@@ -917,6 +1009,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SandboxState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    solar_api_v1_studio_homes__ref__solar_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SolarRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SolarResult"];
                 };
             };
             /** @description Validation Error */
