@@ -87,19 +87,45 @@ def epc_api(mock_http, monkeypatch):
 
 
 @pytest.fixture
-def client(origin: str, memory_cache: MemoryCache, postcodes_io, epc_api):
-    """A logged-out client that sends an allowed Origin on every request."""
+def offline_hazards(mock_http):
+    """Open-Meteo and the EA warnings feed unreachable: the pipeline's own fallbacks answer."""
+    import httpx
+
+    from app.adapters.climate import CLIMATE_URL
+    from app.adapters.flood import FLOOD_WARNINGS_URL
+
+    for url in (CLIMATE_URL, FLOOD_WARNINGS_URL):
+        mock_http.get(url__startswith=url).mock(side_effect=httpx.ConnectError("offline"))
+
+
+@pytest.fixture
+def client(origin: str, memory_cache: MemoryCache, postcodes_io, epc_api, offline_hazards):
+    """A logged-out client that sends an allowed Origin on every request.
+
+    No Postgres: the cache is in memory and the session points at a closed port, so the
+    flood band is unknown (null), as when the database is down."""
     from fastapi.testclient import TestClient
+    from sqlalchemy.ext.asyncio import create_async_engine
+    from sqlalchemy.pool import NullPool
 
     from app.api.deps import get_api_cache
+    from app.db.session import get_session, make_sessionmaker
     from app.main import app
 
+    down = create_async_engine("postgresql+asyncpg://hrp:hrp@127.0.0.1:1/none", poolclass=NullPool)
+
+    async def no_database():
+        async with make_sessionmaker(down)() as s:
+            yield s
+
     app.dependency_overrides[get_api_cache] = lambda: memory_cache
+    app.dependency_overrides[get_session] = no_database
     try:
         with TestClient(app, headers={"Origin": origin}) as c:
             yield c
     finally:
         app.dependency_overrides.pop(get_api_cache, None)
+        app.dependency_overrides.pop(get_session, None)
 
 
 @pytest.fixture
