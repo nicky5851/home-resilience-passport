@@ -22,6 +22,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest>=8.3",
+    "pytest-cov>=7.1.0",
     "respx>=0.23.1",
     "ruff>=0.7",
 ]
@@ -42,3 +43,9 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+
+[tool.coverage.run]
+# SQLAlchemy's async engine resumes code inside greenlets; without this, lines after a database
+# call look untested.
+concurrency = ["greenlet", "thread"]
+source = ["app"]

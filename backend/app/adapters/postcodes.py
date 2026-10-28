@@ -41,12 +41,16 @@ class PostcodeInfo(BaseModel):
 
 async def lookup_postcode(postcode: str, cache: Cache) -> PostcodeInfo:
     """`postcode` must already be normalised (`SW1A 1AA`, CONTRACT §1 rule 7)."""
-    key = f"{SOURCE}:{postcode}"
+    key = cache_key(postcode)
     if (hit := await cache.get(key)) is not None:
         return PostcodeInfo.model_validate(hit)
     info = await _fetch(postcode)
     await cache.put(key, SOURCE, info.model_dump(mode="json"), POSTCODE_CACHE_TTL)
     return info
+
+
+def cache_key(postcode: str) -> str:
+    return f"{SOURCE}:{postcode}"
 
 
 async def _fetch(postcode: str) -> PostcodeInfo:

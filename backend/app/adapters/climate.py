@@ -89,17 +89,23 @@ async def climate_stats(
 async def _period(
     lat: float, lon: float, years: tuple[int, int], cache: Cache
 ) -> PeriodStats | None:
-    lat_r = round(lat, CLIMATE_CACHE_ROUND_DEGREES)
-    lon_r = round(lon, CLIMATE_CACHE_ROUND_DEGREES)
-    key = f"open-meteo:{CLIMATE_MODEL}:{lat_r:.1f},{lon_r:.1f}:{years[0]}-{years[1]}"
+    key = period_key(lat, lon, years)
     if (hit := await cache.get(key)) is not None:
         return PeriodStats.model_validate(hit)
+    lat_r = round(lat, CLIMATE_CACHE_ROUND_DEGREES)
+    lon_r = round(lon, CLIMATE_CACHE_ROUND_DEGREES)
     try:
         stats = await fetch_period(lat_r, lon_r, years)
     except UpstreamUnavailable:
         return None
     await cache.put(key, "open-meteo", stats.model_dump(), CLIMATE_CACHE_TTL)
     return stats
+
+
+def period_key(lat: float, lon: float, years: tuple[int, int]) -> str:
+    lat_r = round(lat, CLIMATE_CACHE_ROUND_DEGREES)
+    lon_r = round(lon, CLIMATE_CACHE_ROUND_DEGREES)
+    return f"open-meteo:{CLIMATE_MODEL}:{lat_r:.1f},{lon_r:.1f}:{years[0]}-{years[1]}"
 
 
 async def fetch_period(lat: float, lon: float, years: tuple[int, int]) -> PeriodStats:

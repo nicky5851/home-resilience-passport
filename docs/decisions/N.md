@@ -609,3 +609,43 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/app/api/homes.py
 - Commit: 816970a
 - Affects the other coder? no
+
+### 2026-10-28 · N15 · "Seed the demo homes with full data" = cache their upstream data
+- Decision: `make seed` writes each demo home's postcode details and both climate periods (from its fixture) into `api_cache`; no demo rows in the user tables, and the five demo homes stay fixture-served
+- Alternatives: a demo user owning five database homes (needs a shared password)
+- Why: meets the N15 check (Wi-Fi off, demo homes end to end) for both the demo list and a typed demo postcode, and never waits on a network timeout
+- Files: backend/app/db/seed.py, backend/app/adapters/postcodes.py, backend/app/adapters/climate.py, README.md
+- Commit: 60663c7
+- Affects the other coder? no
+
+### 2026-10-28 · N15 · Seeded entries use the normal cache lifetimes
+- Decision: seeded postcode entries last 30 days and climate entries 90 days, like fetched ones; README says to run `make seed` before a demo
+- Alternatives: never-expiring entries
+- Why: no special case in the cache; a re-seed refreshes them from the fixtures
+- Files: backend/app/db/seed.py, README.md
+- Commit: 60663c7
+- Affects the other coder? no
+
+### 2026-10-28 · N15 · Seeded region from the nearest regional default
+- Decision: a demo home's cached `PostcodeInfo.region` is `default_region(lat, lon).name`
+- Alternatives: add a region to the fixtures (shared file)
+- Why: the five demo homes sit well inside one region, and the fixtures stay unchanged
+- Files: backend/app/db/seed.py
+- Commit: 60663c7
+- Affects the other coder? no
+
+### 2026-10-28 · N15 · Live flood warnings are never seeded
+- Decision: the EA warnings feed is not cached by the seed; offline it counts 0
+- Alternatives: seed the fixture's warning count
+- Why: a seeded count would hide real warnings when online
+- Files: backend/app/db/seed.py
+- Commit: 60663c7
+- Affects the other coder? no
+
+### 2026-10-28 · N15 · Coverage with greenlet tracing; `pytest-cov` dev dependency
+- Decision: `pytest-cov` in the dev group, `[tool.coverage.run] concurrency = ["greenlet", "thread"]`, and `make coverage`
+- Alternatives: no coverage tool
+- Why: spec N15 "test coverage of every route"; without greenlet tracing, lines after an async database call look untested (homes routes showed 55% instead of 99%)
+- Files: backend/pyproject.toml, backend/uv.lock, Makefile
+- Commit: 60663c7
+- Affects the other coder? no
