@@ -4,7 +4,7 @@ COMPOSE := docker compose -f infra/docker-compose.yml
 BACKEND := cd backend &&
 HAS_FRONTEND := $(wildcard frontend/package.json)
 
-.PHONY: help install db migrate dev api test lint format openapi openapi-check types seed flood-data validate-data fixtures fixtures-inputs epc-data train coverage
+.PHONY: help install db migrate dev api test lint format openapi openapi-check types seed flood-data validate-data fixtures fixtures-inputs epc-data train coverage studio-openapi studio-openapi-check studio-types studio-record studio-test
 
 help: ## Show this list
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-15s %s\n", $$1, $$2}'
@@ -56,6 +56,21 @@ openapi-check: ## Fail if docs/openapi.json differs from the app's schema
 
 types: ## Regenerate frontend/src/lib/api/schema.d.ts from docs/openapi.json
 	cd frontend && pnpm types
+
+studio-openapi: ## Write docs/openapi-studio.json from Studio's own routers (no server needed)
+	$(BACKEND) uv run python -m scripts.export_openapi_studio
+
+studio-openapi-check: ## Fail if docs/openapi-studio.json differs from Studio's schema
+	$(BACKEND) uv run python -m scripts.export_openapi_studio --check
+
+studio-types: ## Regenerate frontend/src/features/studio/api/schema.d.ts from docs/openapi-studio.json
+	cd frontend && pnpm studio:types
+
+studio-record: migrate ## Record live-API fallbacks for the 5 demo homes (needs real network)
+	$(BACKEND) uv run python -m scripts.record_studio_fallbacks
+
+studio-test: ## Studio's own backend tests only
+	$(BACKEND) uv run pytest -q tests/studio
 
 seed: migrate ## Load data/reference/*.csv and cache the 5 demo homes for offline demos
 	$(BACKEND) uv run python -m app.db.seed

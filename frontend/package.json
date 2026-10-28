@@ -13,7 +13,8 @@
     "format:check": "prettier --check .",
     "mocks:sync": "node scripts/mocks-sync.mjs",
     "privacy:sync": "node scripts/privacy-sync.mjs",
-    "types": "openapi-typescript ../docs/openapi.json -o src/lib/api/schema.d.ts"
+    "types": "openapi-typescript ../docs/openapi.json -o src/lib/api/schema.d.ts",
+    "studio:types": "openapi-typescript ../docs/openapi-studio.json -o src/features/studio/api/schema.d.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^6.0.1",

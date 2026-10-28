@@ -1,0 +1,489 @@
+{
+  "components": {
+    "schemas": {
+      "FeatureMeta": {
+        "additionalProperties": false,
+        "properties": {
+          "chapter": {
+            "enum": [
+              "understand",
+              "measure",
+              "plan",
+              "live",
+              "money",
+              "ask"
+            ],
+            "title": "Chapter",
+            "type": "string"
+          },
+          "demo_ok": {
+            "title": "Demo Ok",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "needs_login": {
+            "title": "Needs Login",
+            "type": "boolean"
+          },
+          "pitch": {
+            "title": "Pitch",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "title",
+          "chapter",
+          "pitch",
+          "needs_login",
+          "demo_ok"
+        ],
+        "title": "FeatureMeta",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "PropertyFacts": {
+        "additionalProperties": false,
+        "properties": {
+          "built_form": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Built Form"
+          },
+          "co2_tonnes_per_year": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Co2 Tonnes Per Year"
+          },
+          "construction_age_band": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Construction Age Band"
+          },
+          "epc_rating": {
+            "anyOf": [
+              {
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  "D",
+                  "E",
+                  "F",
+                  "G"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Epc Rating"
+          },
+          "epc_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Epc Score"
+          },
+          "floor_area_m2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Floor Area M2"
+          },
+          "floor_level": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Floor Level"
+          },
+          "main_fuel": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Main Fuel"
+          },
+          "main_heating": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Main Heating"
+          },
+          "property_type": {
+            "enum": [
+              "detached",
+              "semi_detached",
+              "terraced",
+              "flat",
+              "bungalow",
+              "other"
+            ],
+            "title": "Property Type",
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "epc_api",
+              "model",
+              "user",
+              "demo"
+            ],
+            "title": "Source",
+            "type": "string"
+          },
+          "top_floor": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Top Floor"
+          }
+        },
+        "required": [
+          "property_type",
+          "built_form",
+          "construction_age_band",
+          "floor_area_m2",
+          "floor_level",
+          "top_floor",
+          "main_heating",
+          "main_fuel",
+          "epc_rating",
+          "epc_score",
+          "co2_tonnes_per_year",
+          "source"
+        ],
+        "title": "PropertyFacts",
+        "type": "object"
+      },
+      "ResilienceScore": {
+        "additionalProperties": false,
+        "properties": {
+          "band": {
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "E",
+              "F",
+              "G"
+            ],
+            "title": "Band",
+            "type": "string"
+          },
+          "components": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ScoreComponent"
+            },
+            "title": "Components",
+            "type": "array"
+          },
+          "value": {
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Value",
+            "type": "integer"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "value",
+          "band",
+          "components",
+          "version"
+        ],
+        "title": "ResilienceScore",
+        "type": "object"
+      },
+      "ScoreComponent": {
+        "additionalProperties": false,
+        "properties": {
+          "max_points": {
+            "title": "Max Points",
+            "type": "number"
+          },
+          "name": {
+            "enum": [
+              "flood",
+              "heat",
+              "storm",
+              "subsidence",
+              "carbon"
+            ],
+            "title": "Name",
+            "type": "string"
+          },
+          "points": {
+            "title": "Points",
+            "type": "number"
+          },
+          "reason": {
+            "maxLength": 140,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "points",
+          "max_points",
+          "reason"
+        ],
+        "title": "ScoreComponent",
+        "type": "object"
+      },
+      "StudioHomeSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "is_demo": {
+            "title": "Is Demo",
+            "type": "boolean"
+          },
+          "lat": {
+            "title": "Lat",
+            "type": "number"
+          },
+          "line1": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Line1"
+          },
+          "lon": {
+            "title": "Lon",
+            "type": "number"
+          },
+          "postcode_district": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Postcode District"
+          },
+          "property": {
+            "$ref": "#/components/schemas/PropertyFacts"
+          },
+          "ref": {
+            "title": "Ref",
+            "type": "string"
+          },
+          "score": {
+            "$ref": "#/components/schemas/ResilienceScore"
+          }
+        },
+        "required": [
+          "ref",
+          "is_demo",
+          "line1",
+          "postcode_district",
+          "lat",
+          "lon",
+          "property",
+          "score"
+        ],
+        "title": "StudioHomeSummary",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Resilience Studio API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/studio/features": {
+      "get": {
+        "operationId": "list_features_api_v1_studio_features_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FeatureMeta"
+                  },
+                  "title": "Response List Features Api V1 Studio Features Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Features",
+        "tags": [
+          "studio"
+        ]
+      }
+    },
+    "/api/v1/studio/homes/{ref}": {
+      "get": {
+        "operationId": "home_summary_api_v1_studio_homes__ref__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudioHomeSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Home Summary",
+        "tags": [
+          "studio"
+        ]
+      }
+    }
+  }
+}

@@ -649,3 +649,33 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/pyproject.toml, backend/uv.lock, Makefile
 - Commit: 60663c7
 - Affects the other coder? no
+
+### 2026-10-28 · S00 · Studio foundation: resolve_home, auto-discovery, dual OpenAPI
+- Decision: `resolve_home(ref, session, user)` in `app/studio/common/home_ref.py` accepts either
+  a home UUID (owner-only, login required, same 404/401 shape as `/homes/{id}`) or a
+  `demo-<slug>` ref (public, no login, same source as `GET /demo/homes`). Every feature calls it
+  the same way. `app/studio/router.py` auto-discovers `app/studio/features/<id>_*` packages at
+  import time (skipping ids in `STUDIO_DISABLED`) and mounts them on the main app with
+  `include_in_schema=False`, so `docs/openapi.json` stays byte-identical — proven by a test that
+  diffs the file's own `paths` for a `/studio` prefix. Studio's own schema is snapshotted
+  separately by `backend/scripts/export_openapi_studio.py` into `docs/openapi-studio.json` (a
+  throwaway `FastAPI()` with only the Studio routers, included normally) and typed into
+  `frontend/src/features/studio/api/schema.d.ts` via `make studio-types`.
+- Also: demo refs get a human label (`demo_label()`) instead of exposing nothing, matching the
+  HomeChip spec ("Demo · Flood-zone terrace"); `completed_measure_ids` reuses `passports.completed`
+  for both demo and real homes via `store.homes[...]` rather than re-deriving it.
+- Alternatives: a single `GET /studio/homes/{ref}` dependency wired through FastAPI `Depends`
+  end-to-end (rejected — `resolve_home` is called directly inside handlers, not just declared on
+  routes, so the optional-login dependency (`MaybeUser`) only resolves when a route itself
+  declares it, not when a function calling `resolve_home` is invoked manually); including Studio
+  in the main `docs/openapi.json` (rejected by spec §1.4 — would force L's generated types to
+  carry 20 features' worth of schemas)
+- Why: spec §1.1–§1.4, §3; keeps Studio fully isolated from L's contract surface while reusing
+  the same auth/ownership rules as the real journey
+- Files: backend/app/studio/**, backend/scripts/export_openapi_studio.py,
+  backend/scripts/record_studio_fallbacks.py, backend/tests/studio/**, backend/app/main.py,
+  backend/app/config.py, .env.example, Makefile, frontend/src/app/studio/**,
+  frontend/src/features/studio/**, frontend/package.json
+- PR: #?
+- Affects the other coder? no — purely additive, verified `make test`/`make lint`/`pnpm build`
+  all green and docs/openapi.json unchanged
