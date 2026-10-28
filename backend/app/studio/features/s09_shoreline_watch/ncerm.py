@@ -19,7 +19,9 @@ def _bbox_from_radius(center: Point, radius_m: float) -> tuple[float, float, flo
     return (lon - dlon, lat - dlat, lon + dlon, lat + dlat)
 
 
-async def fetch_collection(collection: str, center: Point, radius_m: float, cache: Cache) -> list[dict]:
+async def fetch_collection(
+    collection: str, center: Point, radius_m: float, cache: Cache
+) -> list[dict]:
     min_lon, min_lat, max_lon, max_lat = _bbox_from_radius(center, radius_m)
     key = studio_key(
         "s09", collection, f"{round(center[0], 3)}", f"{round(center[1], 3)}", str(round(radius_m))

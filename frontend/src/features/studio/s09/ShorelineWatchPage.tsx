@@ -49,7 +49,9 @@ export function ShorelineWatchPage({ homeRef }: { homeRef: string }) {
             <>
               <div className="s-card">
                 <p className="s-display text-xl">
-                  {result.smp_policy ? `Shoreline policy: ${result.smp_policy}` : "Coastal erosion projections for your home"}
+                  {result.smp_policy
+                    ? `Shoreline policy: ${result.smp_policy}`
+                    : "Coastal erosion projections for your home"}
                 </p>
                 <p className="mt-2">{result.insurance_note}</p>
               </div>
@@ -59,7 +61,9 @@ export function ShorelineWatchPage({ homeRef }: { homeRef: string }) {
                   <StatTile
                     key={i}
                     eyebrow={`${p.epoch} - ${SCENARIO_LABEL[p.scenario]}`}
-                    value={p.home_inside_zone ? "Inside projected zone" : `${p.distance_m ?? "—"} m away`}
+                    value={
+                      p.home_inside_zone ? "Inside projected zone" : `${p.distance_m ?? "—"} m away`
+                    }
                     unit={p.climate}
                   />
                 ))}

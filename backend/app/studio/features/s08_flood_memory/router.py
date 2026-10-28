@@ -58,7 +58,9 @@ async def flood_memory(
         Evidence(
             label="Recorded flood outlines",
             evidence="estimated" if fallback_used else "observed",
-            source="Live records were unreachable" if fallback_used else "EA Recorded Flood Outlines",
+            source="Live records were unreachable"
+            if fallback_used
+            else "EA Recorded Flood Outlines",
             source_url="https://environment.data.gov.uk/spatialdata/recorded-flood-outlines/ogc/features/v1",
             retrieved_at=now,
         )

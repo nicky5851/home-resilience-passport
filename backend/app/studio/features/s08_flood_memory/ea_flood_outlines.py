@@ -7,7 +7,12 @@ from datetime import timedelta
 from app.studio.common.cache import Cache, studio_key
 from app.studio.common.geo import Point
 from app.studio.common.http import get_json
-from app.studio.features.s08_flood_memory.config import CACHE_DAYS, EA_BASE, EA_COLLECTION, EA_ITEMS_LIMIT
+from app.studio.features.s08_flood_memory.config import (
+    CACHE_DAYS,
+    EA_BASE,
+    EA_COLLECTION,
+    EA_ITEMS_LIMIT,
+)
 
 SOURCE = "EA Recorded Flood Outlines"
 

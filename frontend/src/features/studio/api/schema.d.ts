@@ -140,6 +140,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/permission-radar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Permission Radar */
+        get: operations["permission_radar_api_v1_studio_homes__ref__permission_radar_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/sandbox": {
         parameters: {
             query?: never;
@@ -346,6 +363,21 @@ export interface components {
             hp_capacity_kw: number;
             /** Temp C */
             temp_c: number;
+        };
+        /** Constraint */
+        Constraint: {
+            /** Applies */
+            applies: boolean | null;
+            /** Dataset */
+            dataset: string;
+            /** Entity Url */
+            entity_url: string | null;
+            /** Label */
+            label: string;
+            /** Name */
+            name: string | null;
+            /** Reference */
+            reference: string | null;
         };
         /** CurrentIntensity */
         CurrentIntensity: {
@@ -736,6 +768,22 @@ export interface components {
             /** Source Url */
             source_url: string;
         };
+        /** MeasureVerdict */
+        MeasureVerdict: {
+            /** Guidance Url */
+            guidance_url: string;
+            /** Measure Id */
+            measure_id: string;
+            /** Name */
+            name: string;
+            /** Reasons */
+            reasons: string[];
+            /**
+             * Verdict
+             * @enum {string}
+             */
+            verdict: "likely_permitted" | "check_council" | "consent_needed" | "not_applicable";
+        };
         /** MixShare */
         MixShare: {
             /** Fuel */
@@ -772,6 +820,21 @@ export interface components {
             at: string;
             /** Label */
             label: string;
+        };
+        /** PermissionRadar */
+        PermissionRadar: {
+            /** Constraints */
+            constraints: components["schemas"]["Constraint"][];
+            /** Disclaimer */
+            disclaimer: string;
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Local Planning Authority */
+            local_planning_authority: string | null;
+            /** Measures */
+            measures: components["schemas"]["MeasureVerdict"][];
         };
         /** Projection */
         Projection: {
@@ -1377,6 +1440,37 @@ export interface operations {
                 };
                 content: {
                     "text/plain": string;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    permission_radar_api_v1_studio_homes__ref__permission_radar_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PermissionRadar"];
                 };
             };
             /** @description Validation Error */

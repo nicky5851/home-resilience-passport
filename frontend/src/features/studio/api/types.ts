@@ -39,3 +39,7 @@ export type DecadeCount = components["schemas"]["DecadeCount"]
 
 export type Shoreline = components["schemas"]["Shoreline"]
 export type Projection = components["schemas"]["Projection"]
+
+export type PermissionRadar = components["schemas"]["PermissionRadar"]
+export type Constraint = components["schemas"]["Constraint"]
+export type MeasureVerdict = components["schemas"]["MeasureVerdict"]

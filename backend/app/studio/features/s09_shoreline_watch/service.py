@@ -87,9 +87,7 @@ def synthetic_shoreline(home: Point) -> Shoreline:
     )
 
 
-def build_shoreline(
-    home: Point, features_by_collection: dict[str, list[dict]]
-) -> Shoreline:
+def build_shoreline(home: Point, features_by_collection: dict[str, list[dict]]) -> Shoreline:
     any_feature = any(features_by_collection.values())
     if not any_feature:
         return Shoreline(
@@ -136,13 +134,17 @@ def build_shoreline(
 
         for feature in collection_features[: MAX_FEATURES // len(COLLECTIONS) or 1]:
             geometry = feature.get("geometry") or {}
-            simplified_rings = [douglas_peucker(ring, SIMPLIFY_TOLERANCE_DEG) for ring in polygon_rings(geometry)]
+            simplified_rings = [
+                douglas_peucker(ring, SIMPLIFY_TOLERANCE_DEG) for ring in polygon_rings(geometry)
+            ]
             outline_features.append(
                 {
                     "type": "Feature",
                     "geometry": {
                         "type": "MultiPolygon",
-                        "coordinates": [[[[lon, lat] for lat, lon in ring]] for ring in simplified_rings],
+                        "coordinates": [
+                            [[[lon, lat] for lat, lon in ring]] for ring in simplified_rings
+                        ],
                     },
                     "properties": {
                         "epoch": entry["epoch"],

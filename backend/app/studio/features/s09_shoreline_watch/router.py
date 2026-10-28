@@ -15,7 +15,9 @@ router = APIRouter(prefix="/homes/{ref}/shoreline", tags=["studio:s09"])
 
 
 @router.get("")
-async def shoreline(ref: str, session: SessionDep, user: MaybeUser, cache: ApiCacheDep) -> Shoreline:
+async def shoreline(
+    ref: str, session: SessionDep, user: MaybeUser, cache: ApiCacheDep
+) -> Shoreline:
     home = await resolve_home(ref, session, user)
     center = (home.address.lat, home.address.lon)
     now = datetime.now(UTC)

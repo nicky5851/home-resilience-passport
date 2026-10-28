@@ -49,7 +49,10 @@ export function FloodMemoryPage({ homeRef }: { homeRef: string }) {
             <div className="s-card" style={{ height: 220 }}>
               <p className="s-eyebrow">Recorded floods by decade</p>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={result.by_decade} margin={{ top: 20, right: 10, bottom: 10, left: 0 }}>
+                <BarChart
+                  data={result.by_decade}
+                  margin={{ top: 20, right: 10, bottom: 10, left: 0 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="decade" />
                   <YAxis allowDecimals={false} />

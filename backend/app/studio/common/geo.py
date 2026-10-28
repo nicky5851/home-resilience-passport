@@ -71,9 +71,7 @@ def _point_to_segment_m(point: Point, a: Point, b: Point) -> float:
 def point_to_polygon_distance_m(point: Point, polygon: list[Point]) -> float:
     """Minimum distance from `point` to any edge of `polygon` (open ring, no repeated first)."""
     n = len(polygon)
-    return min(
-        _point_to_segment_m(point, polygon[i], polygon[(i + 1) % n]) for i in range(n)
-    )
+    return min(_point_to_segment_m(point, polygon[i], polygon[(i + 1) % n]) for i in range(n))
 
 
 def douglas_peucker(points: list[Point], epsilon: float) -> list[Point]:

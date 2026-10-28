@@ -90,10 +90,7 @@ export function StormReplayPage({ homeRef }: { homeRef: string }) {
                   ) : null}
                 </p>
                 <p>{e.headline}</p>
-                <div
-                  className="mt-2 h-2 rounded-full"
-                  style={{ background: "var(--s-stone-200)" }}
-                >
+                <div className="mt-2 h-2 rounded-full" style={{ background: "var(--s-stone-200)" }}>
                   <div
                     className="h-2 rounded-full"
                     style={{
@@ -119,20 +116,59 @@ export function StormReplayPage({ homeRef }: { homeRef: string }) {
                     margin={{ top: 20, right: 10, bottom: 10, left: 0 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="at" tickFormatter={(v) => timeLabel(v)} interval={Math.max(0, Math.floor(replay.hourly.length / 6))} />
+                    <XAxis
+                      dataKey="at"
+                      tickFormatter={(v) => timeLabel(v)}
+                      interval={Math.max(0, Math.floor(replay.hourly.length / 6))}
+                    />
                     <YAxis />
                     <Tooltip labelFormatter={(v) => (typeof v === "string" ? timeLabel(v) : "")} />
                     {replay.event.kind === "wind" && (
-                      <Line type="monotone" dataKey="gust_kmh" stroke="var(--s-green-700)" dot={false} isAnimationActive={false} name="Gust (km/h)" />
+                      <Line
+                        type="monotone"
+                        dataKey="gust_kmh"
+                        stroke="var(--s-green-700)"
+                        dot={false}
+                        isAnimationActive={false}
+                        name="Gust (km/h)"
+                      />
                     )}
                     {replay.event.kind === "rain" && (
-                      <Line type="monotone" dataKey="rain_mm" stroke="#1F5F8B" dot={false} isAnimationActive={false} name="Rain (mm)" />
+                      <Line
+                        type="monotone"
+                        dataKey="rain_mm"
+                        stroke="#1F5F8B"
+                        dot={false}
+                        isAnimationActive={false}
+                        name="Rain (mm)"
+                      />
                     )}
                     {replay.event.kind === "heat" && (
                       <>
-                        <Line type="monotone" dataKey="temp_c" stroke="var(--s-stone-500)" dot={false} isAnimationActive={false} name="Outside" />
-                        <Line type="monotone" dataKey="indoor_now_c" stroke="#A86200" dot={false} isAnimationActive={false} name="Inside now" />
-                        <Line type="monotone" dataKey="indoor_with_measures_c" stroke="var(--s-green-700)" dot={false} isAnimationActive={false} name="Inside with measures" />
+                        <Line
+                          type="monotone"
+                          dataKey="temp_c"
+                          stroke="var(--s-stone-500)"
+                          dot={false}
+                          isAnimationActive={false}
+                          name="Outside"
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="indoor_now_c"
+                          stroke="#A86200"
+                          dot={false}
+                          isAnimationActive={false}
+                          name="Inside now"
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="indoor_with_measures_c"
+                          stroke="var(--s-green-700)"
+                          dot={false}
+                          isAnimationActive={false}
+                          name="Inside with measures"
+                        />
                       </>
                     )}
                   </LineChart>
