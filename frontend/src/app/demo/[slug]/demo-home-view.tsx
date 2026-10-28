@@ -1,6 +1,7 @@
 "use client"
 
 import { RiskView } from "@/components/journey/risk-view"
+import { ScoreDashboard } from "@/components/journey/score-dashboard"
 import { useDemoHome } from "@/lib/journey/use-demo-home"
 
 import { MakeMyHomeButton } from "./make-my-home-button"
@@ -26,6 +27,7 @@ export function DemoHomeView({ slug }: { slug: string }) {
         <MakeMyHomeButton home={home} />
       </div>
       <RiskView risk={home.risk} address={home.address} />
+      <ScoreDashboard score={home.score} property={home.property} />
     </>
   )
 }
