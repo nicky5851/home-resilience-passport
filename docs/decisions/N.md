@@ -781,5 +781,5 @@ Format: spec §13. Newest at the bottom.
   animation is presentation on top of the same numbers
 - Files: backend/app/studio/features/s05_solar_roof_studio/**, backend/tests/studio/test_s05_solar_roof_studio.py,
   frontend/src/features/studio/s05/**, frontend/src/app/studio/[ref]/s05-solar-roof-studio/page.tsx
-- PR: #?
+- PR: #34
 - Affects the other coder? no
