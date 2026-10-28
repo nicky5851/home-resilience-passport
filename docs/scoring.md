@@ -63,4 +63,24 @@ points total: flood 30, heat 20, storm 10, subsidence 10 (resilience = 70%), car
 
 ## Funding matcher (`app/scoring/funding.py`, step L6)
 
-Not yet implemented (still the L3 stub). Will follow CODING_SPEC.md §7 Funding.
+`match_funding` is a pure function of `(Plan, Household, options)`. Only the plan's **selected**
+items count — `hazards_reduced` plays no part here, only each measure's `category`.
+
+1. Filter `options` to those where `income_bands` is empty or contains the household's
+   `income_band`, `tenures` is empty or contains the household's `tenure`, and `categories` is
+   empty or overlaps the selected measures' categories (an empty list on either side means "all").
+2. Order the eligible options: `grant` → `cashback` → `insurance_discount` → `loan` /
+   `mortgage_further_advance` (`FUNDING_KIND_ORDER` in `config.py`), then lowest APR, then `id`.
+3. Walk the non-loan options in that order, allocating each up to
+   `min(remaining plan cost, cost of the measures that option's categories cover, the option's
+   max_amount_gbp)`. `covered_gbp` is the sum of these lines; `gap_gbp = plan.total_cost_low_gbp -
+   covered_gbp`.
+4. If `gap_gbp > 0` and at least one loan/further-advance option is eligible, put the whole gap on
+   the lowest-APR one and add it as a line (its `amount_gbp` is the gap, but it does **not** count
+   towards `covered_gbp` — a loan finances the gap, it doesn't remove it). `monthly_cost_gbp` is
+   the standard amortised payment over `LOAN_TERM_MONTHS` (60, spec §7 rule 3); a 0% APR option
+   splits the gap evenly over the term instead of dividing by zero.
+5. **Fairness rule:** nothing above reads `RiskProfile` or `ResilienceScore` — the same household
+   and plan always get the same terms, whatever their score. Mock Lloyds rows (`is_mock=true`)
+   get the note "Illustrative product." / "Illustrative loan over 5 years for the remaining
+   cost."; real rows get "You appear to qualify." / "A loan over 5 years for the remaining cost."
