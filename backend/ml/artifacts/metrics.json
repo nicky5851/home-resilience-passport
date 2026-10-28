@@ -1,0 +1,60 @@
+{
+  "accuracy": 0.652,
+  "within_one_band": 0.97,
+  "macro_f1": 0.476,
+  "co2_mae_tonnes": 0.65,
+  "test_homes": 89079,
+  "by_property_type": {
+    "bungalow": {
+      "accuracy": 0.615,
+      "within_one_band": 0.953,
+      "macro_f1": 0.473,
+      "homes": 6823
+    },
+    "detached": {
+      "accuracy": 0.619,
+      "within_one_band": 0.954,
+      "macro_f1": 0.505,
+      "homes": 9610
+    },
+    "flat": {
+      "accuracy": 0.667,
+      "within_one_band": 0.973,
+      "macro_f1": 0.345,
+      "homes": 38413
+    },
+    "semi_detached": {
+      "accuracy": 0.646,
+      "within_one_band": 0.965,
+      "macro_f1": 0.474,
+      "homes": 12469
+    },
+    "terraced": {
+      "accuracy": 0.657,
+      "within_one_band": 0.981,
+      "macro_f1": 0.48,
+      "homes": 21715
+    }
+  },
+  "by_region": {
+    "London": {
+      "accuracy": 0.654,
+      "within_one_band": 0.979,
+      "macro_f1": 0.411,
+      "homes": 43874
+    },
+    "South West": {
+      "accuracy": 0.629,
+      "within_one_band": 0.952,
+      "macro_f1": 0.478,
+      "homes": 28317
+    },
+    "Yorkshire and The Humber": {
+      "accuracy": 0.689,
+      "within_one_band": 0.979,
+      "macro_f1": 0.508,
+      "homes": 16888
+    }
+  },
+  "train_homes": 448829
+}

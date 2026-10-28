@@ -163,3 +163,11 @@ Format: spec §13. Newest at the bottom.
 - Files: docs/privacy.md, frontend/scripts/privacy-sync.mjs, frontend/src/app/privacy/page.tsx
 - Commit: 993592e
 - Affects the other coder? yes — needs A/N sign-off on the actual wording before this is real; flag at the next sync meeting
+
+### 2026-10-28 · integration · `POST /homes/{id}/funding` never called `match_funding` for real homes
+- Decision: found via local end-to-end smoke testing (real postcode → assess → plan → funding) that `backend/app/api/homes.py`'s `funding` endpoint always returned `store.funding(home)` — the matched demo fixture's static bundle — for every home, real or demo, ignoring `selected_ids` and the home's actual plan entirely. `covered_gbp + gap_gbp` didn't equal the plan's `total_cost_low_gbp`, violating my own L6 test invariant. Fixed it to mirror the already-correct `plan` endpoint: for a real (`home.stored`) home, load measures + funding options, call `planner.build_plan` with the given `selected_ids` to get a consistent `Plan`, then call my `match_funding(plan, household, options)`. Added `planner.load_funding_options` next to the existing `load_measures`
+- Alternatives: leave it until N9/N11's own follow-up noticed it; write a separate funding-service module instead of extending `planner.py`
+- Why: §13 rule 1 ("keep the demo path working" extends to the real path once it exists) — this blocked the real (non-demo) journey end to end, discovered only by actually running the app locally rather than trusting unit tests alone; mirroring the existing `plan` endpoint's pattern is the smallest correct fix and needed no new design decisions, both pieces (`match_funding`, `build_plan`) already existed and were already approved
+- Files: backend/app/api/homes.py, backend/app/services/planner.py (both N-owned; flagging since I edited outside my usual paths)
+- PR: #27
+- Affects the other coder? yes — N should sanity-check this wiring, it touches `homes.py` and `planner.py` which are N's files

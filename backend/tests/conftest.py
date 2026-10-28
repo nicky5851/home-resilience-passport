@@ -87,26 +87,105 @@ def epc_api(mock_http, monkeypatch):
 
 
 @pytest.fixture
-def client(origin: str, memory_cache: MemoryCache, postcodes_io, epc_api):
-    """A logged-out client that sends an allowed Origin on every request."""
+def offline_hazards(mock_http):
+    """Open-Meteo and the EA warnings feed unreachable: the pipeline's own fallbacks answer."""
+    import httpx
+
+    from app.adapters.climate import CLIMATE_URL
+    from app.adapters.flood import FLOOD_WARNINGS_URL
+
+    for url in (CLIMATE_URL, FLOOD_WARNINGS_URL):
+        mock_http.get(url__startswith=url).mock(side_effect=httpx.ConnectError("offline"))
+
+
+PASSWORD = "long-enough-pw"
+
+
+def log_in(client, email: str, password: str = PASSWORD) -> None:
+    """Register (if needed) and log in, so `client` carries that user's cookie."""
+    body = {"email": email, "password": password, "accept_privacy": True}
+    assert client.post("/api/v1/auth/register", json=body).status_code in (201, 409)
+    res = client.post("/api/v1/auth/login", data={"username": email, "password": password})
+    assert res.status_code == 204, res.text
+
+
+USER_TABLES = ("users", "homes", "households", "assessments", "plans", "passport_events",
+               "work_files", "share_links")  # fmt: skip
+
+
+@pytest.fixture(scope="session")
+def seeded(db_url: str) -> str:
+    """The test database with A's reference CSVs loaded (`make seed`), once per session."""
+    import asyncio
+
+    from sqlalchemy.ext.asyncio import create_async_engine
+    from sqlalchemy.pool import NullPool
+
+    from app.db.seed import seed
+
+    async def run() -> None:
+        eng = create_async_engine(db_url, poolclass=NullPool)
+        try:
+            await seed(eng)
+        finally:
+            await eng.dispose()
+
+    asyncio.run(run())
+    return db_url
+
+
+@pytest.fixture
+def client(
+    origin: str,
+    seeded: str,
+    db_url: str,
+    memory_cache: MemoryCache,
+    postcodes_io,
+    epc_api,
+    offline_hazards,
+):
+    """A logged-out client that sends an allowed Origin on every request.
+
+    Accounts and homes live in the `_test` database, emptied before each test; the API cache is
+    in memory. Reference data is seeded; `flood_postcodes` is empty, so flood bands are unknown."""
+    import asyncio
+
     from fastapi.testclient import TestClient
+    from sqlalchemy import text
+    from sqlalchemy.ext.asyncio import create_async_engine
+    from sqlalchemy.pool import NullPool
 
     from app.api.deps import get_api_cache
+    from app.core.ratelimit import limiter
+    from app.db.session import get_session, make_sessionmaker
     from app.main import app
 
+    eng = create_async_engine(db_url, poolclass=NullPool)
+
+    async def empty() -> None:
+        async with eng.begin() as conn:
+            await conn.execute(text(f"TRUNCATE {', '.join(USER_TABLES)}, llm_cache CASCADE"))
+
+    async def test_session():
+        async with make_sessionmaker(eng)() as s:
+            yield s
+
+    asyncio.run(empty())
+    limiter.reset()
     app.dependency_overrides[get_api_cache] = lambda: memory_cache
+    app.dependency_overrides[get_session] = test_session
     try:
         with TestClient(app, headers={"Origin": origin}) as c:
             yield c
     finally:
         app.dependency_overrides.pop(get_api_cache, None)
+        app.dependency_overrides.pop(get_session, None)
 
 
 @pytest.fixture
 def user_client(client):
-    """A client logged in through the auth stub."""
-    res = client.post("/api/v1/auth/login", data={"username": "a@example.com", "password": "x"})
-    assert res.status_code == 204
+    """A client logged in as a@example.com."""
+    log_in(client, "a@example.com")
     return client
 
 

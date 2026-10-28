@@ -4,10 +4,12 @@ from typing import Any
 
 from fastapi import APIRouter
 
+from app.api.deps import SessionDep
 from app.api.errors import ApiError
 from app.api.stub_store import fixtures, store
 from app.schemas import DemoHome, PassportEvent, PublicPassport
 from app.schemas.api import ModelInfo
+from app.services import homes
 
 demo = APIRouter(prefix="/demo", tags=["demo"])
 public = APIRouter(prefix="/public", tags=["public"])
@@ -26,8 +28,8 @@ def _public_event(ev: PassportEvent) -> PassportEvent:
 
 
 @public.get("/passport/{share_token}")
-def public_passport(share_token: str) -> PublicPassport:
-    home = store.by_share_token(share_token)
+async def public_passport(share_token: str, session: SessionDep) -> PublicPassport:
+    home = store.by_share_token(share_token) or await homes.by_share_token(session, share_token)
     if home is None:
         raise ApiError(404, "not_found", "This link is no longer active.")
     full = store.passport(home)

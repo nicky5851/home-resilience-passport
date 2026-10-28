@@ -1,7 +1,8 @@
-"""Foundation stub (spec N3): answers from the demo fixtures and keeps state in memory.
+"""The five demo homes (spec N3): answered from the fixtures, state kept in memory.
 
-Replaced piece by piece by the real services (N4 database, N9 assessment, N10 auth, N11 planner,
-N14 passport). Everything here is lost when the API restarts.
+Users' own homes live in Postgres since N10 (`app/services/homes.py`), shown to the routes as
+`StubHome` views. Plans and funding still come from the fixtures until N11 / L6. Demo-home
+events and share links here are lost when the API restarts.
 """
 
 import json
@@ -26,7 +27,6 @@ from app.schemas import (
 from app.schemas.api import Assessment
 
 FIXTURES_DIR = Path(__file__).resolve().parents[2] / "tests" / "fixtures" / "demo_homes"
-STUB_USER_ID = uuid.UUID("00000000-0000-0000-0000-000000000001")  # CONTRACT §4
 DEFAULT_SLUG = "flood-terrace"
 
 
@@ -64,11 +64,16 @@ def fixture_by_postcode(postcode: str) -> Fixture | None:
 @dataclass
 class StubHome:
     home_id: uuid.UUID
-    owner: str | None  # email; None = demo home any logged-in user can open
+    owner: str | None  # user id of a stored home; None = demo home any logged-in user can open
     slug: str
     line1: str
     postcode: str
     assessed: bool = False
+    # N9: the real latest assessment for homes stored in the database (None = use the fixture).
+    assessment: Assessment | None = None
+    # A stored home's address, property and household for its passport.
+    real: dict | None = None
+    stored: bool = False  # True: a view of a Postgres home (N10); changes go through the service
     share_token: str | None = None
     events: list[PassportEvent] = field(default_factory=list)
     certificates: dict[uuid.UUID, tuple[bytes, str]] = field(default_factory=dict)
@@ -92,30 +97,9 @@ class StubStore:
                 events=list(f.passport.events),
             )
 
-    def create_home(self, owner: str, line1: str, postcode: str) -> StubHome:
-        match = fixture_by_postcode(postcode)
-        home = StubHome(
-            home_id=uuid.uuid4(),
-            owner=owner,
-            slug=match.slug if match else DEFAULT_SLUG,
-            line1=line1,
-            postcode=postcode,
-        )
-        self.homes[home.home_id] = home
-        return home
-
-    def get(self, home_id: uuid.UUID, user: str) -> StubHome | None:
-        home = self.homes.get(home_id)
-        if home is None or (home.owner is not None and home.owner != user):
-            return None
-        return home
-
-    def owned_by(self, user: str) -> list[StubHome]:
-        return [h for h in self.homes.values() if h.owner == user]
-
-    def delete_user(self, user: str) -> None:
-        for home in self.owned_by(user):
-            del self.homes[home.home_id]
+    def get(self, home_id: uuid.UUID) -> StubHome | None:
+        """A demo home; users' own homes are in Postgres."""
+        return self.homes.get(home_id)
 
     def by_share_token(self, token: str) -> StubHome | None:
         return next((h for h in self.homes.values() if h.share_token == token), None)
@@ -139,14 +123,18 @@ class StubStore:
 
     def passport(self, home: StubHome) -> Passport:
         f = home.fixture
-        return f.passport.model_copy(
-            update={
-                "home_id": home.home_id,
-                "address": f.demo.address.model_copy(update={"line1": home.line1}),
-                "events": home.events,
-                "share_token": home.share_token,
-            }
-        )
+        risk, score = self.latest(home)
+        update = {
+            "home_id": home.home_id,
+            "address": f.demo.address.model_copy(update={"line1": home.line1}),
+            "latest_risk": risk,
+            "latest_score": score,
+            "events": home.events,
+            "share_token": home.share_token,
+        }
+        if home.real is not None:  # N9: a database home's own address, property and household
+            update |= home.real
+        return f.passport.model_copy(update=update)
 
     def plan(self, home: StubHome) -> Plan:
         return home.fixture.demo.plan
@@ -155,7 +143,12 @@ class StubStore:
         return home.fixture.demo.funding
 
     def latest(self, home: StubHome) -> tuple[RiskProfile, ResilienceScore]:
+        if home.assessment is not None:
+            return home.assessment.risk, home.assessment.score
         return home.fixture.demo.risk, home.fixture.demo.score
+
+    def latest_assessment(self, home: StubHome) -> Assessment:
+        return home.assessment or home.fixture.assessment
 
 
 def now() -> datetime:

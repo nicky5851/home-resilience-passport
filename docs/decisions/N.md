@@ -313,3 +313,187 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/scripts/make_fixtures.py, Makefile
 - Commit: 6b5caec
 - Affects the other coder? yes (until L5 merges, `compute_score` is the stub, so refreshed scores are all 50)
+
+### 2026-10-27 · N9 · Homes and assessments stay in the in-memory store until N10
+- Decision: `POST /homes` and `POST /homes/{id}/assess` run the real pipeline, but the home, its real address/property/household and its latest assessment are kept in the stub store (`StubHome.real`, `StubHome.assessment`), not in Postgres. They are lost on restart. N10 moves homes and assessments into the database together with real users
+- Alternatives: insert placeholder `users` rows for stub-cookie emails so homes can be stored now
+- Why: `homes.user_id` needs a `users` row, which only exists with real accounts (N10); placeholder users would have to be migrated or deleted again
+- Files: backend/app/api/homes.py, backend/app/api/stub_store.py
+- Commit: c5ce465
+- Affects the other coder? yes (assessments vanish when the API restarts until N10)
+
+### 2026-10-27 · N9 · Property facts when creating a home
+- Decision: `property_override` wins; else the latest EPC for `address.uprn`; else, for a demo postcode, the demo home's property; else 400 `validation` with detail starting `property_override:` (also when the EPC register is down)
+- Alternatives: 502 `upstream_unavailable` when the register is down
+- Why: the user can always carry on by entering the details (spec §5: the app keeps working)
+- Files: backend/app/services/assessment.py, backend/app/api/homes.py
+- Commit: c5ce465
+- Affects the other coder? yes (front end shows the property form on that 400)
+
+### 2026-10-27 · N9 · Live warnings have a 3 s budget inside an assessment
+- Decision: `active_flood_warnings` is given `ASSESS_WARNINGS_BUDGET_S = 3.0`; slower counts as 0, the same as the feed being down (N7). The flood band is read before the parallel network calls because it uses the request's session directly
+- Alternatives: keep the 10 s outbound timeout and miss the < 5 s cold target
+- Why: the EA feed took 1.6–5.6 s cold in the N9 check; everything else took under 0.3 s
+- Files: backend/app/services/assessment.py, backend/app/config.py
+- Commit: c5ce465
+- Affects the other coder? no
+
+### 2026-10-27 · N9 · `subsidence_signal` is always `unknown` for now
+- Decision: no request field carries the user's subsidence answer, so new homes get the contract default `unknown`; a separate `contract:` PR proposes an optional household field
+- Alternatives: none without a contract change
+- Why: CONTRACT §2 says the value comes from the household form, but neither `Household` nor `HomeCreate` has it
+- Files: backend/app/services/assessment.py
+- Commit: c5ce465
+- Affects the other coder? yes
+
+### 2026-10-28 · N10 · Our own user store instead of fastapi-users-db-sqlalchemy
+- Decision: `app/auth/users.py` has a five-method `UserStore` (get, get_by_email, create, update, delete) over `app.db.models.User`; only the core `fastapi-users` package is installed
+- Alternatives: `fastapi-users[sqlalchemy]`
+- Why: its SQLAlchemy adapter pins SQLAlchemy below 2.1 and would downgrade 2.1.6 → 2.0.55 for the whole back end; the adapter is ~30 lines
+- Files: backend/app/auth/users.py, backend/pyproject.toml, backend/uv.lock
+- Commit: 5f0f5e4
+- Affects the other coder? no
+
+### 2026-10-28 · N10 · Our routes call fastapi-users; its routers are not mounted
+- Decision: register/login/logout/forgot/reset/me keep the stub's route functions and call `UserManager` and `JWTStrategy`; every fastapi-users error is mapped to CONTRACT §3 there (duplicate → 409 `conflict`; bad password rule → 400 with the rule in plain English; bad login → 400 "Email or password is incorrect"; bad reset token → 400). Email lookups ignore case
+- Alternatives: mount `fastapi_users.get_auth_router()` etc.
+- Why: keeps `docs/openapi.json` byte-identical, so the front end and the contract do not change
+- Files: backend/app/api/auth.py, backend/app/api/deps.py
+- Commit: 5f0f5e4
+- Affects the other coder? no
+
+### 2026-10-28 · N10 · Reset link opens `/reset-password?token=…`
+- Decision: with `RESEND_API_KEY` unset (M1), forgot-password logs `Password reset link for user <id>: <NEXT_PUBLIC_APP_URL>/reset-password?token=<token>` (no email address in the log). Tokens last 1 hour (fastapi-users default). With the key set it logs that email arrives in M2 and does not log the link
+- Alternatives: `/login/reset?token=`
+- Why: the spec names forgot/reset pages but no path
+- Files: backend/app/auth/users.py, backend/app/config.py
+- Commit: 5f0f5e4
+- Affects the other coder? yes (L builds the page at that path; see docs/FOR_L.md)
+
+### 2026-10-28 · N10 · Users' homes in Postgres; demo homes stay in memory
+- Decision: homes, households, assessments, passport events and share links are stored (`app/services/homes.py`) and shown to routes as `StubHome` views; the five demo homes still answer from fixtures, readable by every logged-in user. Plans and funding still come from the fixture matched by postcode (N11 / L6); certificate files of stored homes stay in memory (`homes.CERTIFICATES`) until N14. Events are stored to the microsecond for ordering and shown to the second. Replaces the N9 in-memory decision
+- Alternatives: store demo homes per user
+- Why: demo homes are read-only showcases (CONTRACT §3); the user approved moving homes and assessments into the database in N10
+- Files: backend/app/services/homes.py, backend/app/api/homes.py, backend/app/api/public.py, backend/app/api/stub_store.py
+- Commit: 5f0f5e4
+- Affects the other coder? yes (certificates are lost when the API restarts until N14)
+
+### 2026-10-28 · N10 · Rate limits count every attempt; production needs a real secret
+- Decision: login and register limits count every request, successful or not, per client IP (`X-Forwarded-For` first entry only when `ENV=production`); assess counts per user. `Retry-After` is rounded up to whole seconds. Settings refuse to load in production with the dev `AUTH_SECRET` or one under 32 characters
+- Alternatives: count only failed logins
+- Why: simplest reading of CONTRACT §3; a weak secret lets anyone forge login cookies
+- Files: backend/app/core/ratelimit.py, backend/app/api/deps.py, backend/app/config.py
+- Commit: 5f0f5e4
+- Affects the other coder? no
+
+### 2026-10-28 · N10 · Export shape
+- Decision: `/users/me/export` is `{"user": {UserRead + created_at, last_seen_at, privacy_accepted_at, privacy_version}, "homes": [{"passport": Passport, "assessments": [...], "plans": [...]}]}`; never the password hash; certificates by file name only (in passport events)
+- Alternatives: one flat list per table
+- Why: readable by a person, and contains every row CONTRACT §4 lists
+- Files: backend/app/api/auth.py
+- Commit: 5f0f5e4
+- Affects the other coder? no
+
+### 2026-10-28 · N10 · Risk `generated_at` is the assessment's time
+- Decision: the assessment service overwrites `RiskProfile.generated_at` from L's pure `assess_risk` with the current UTC time (to the second)
+- Alternatives: pass the time into `assess_risk`
+- Why: keeps L's function pure (spec §4.3); missed in N9
+- Files: backend/app/services/assessment.py
+- Commit: 5f0f5e4
+- Affects the other coder? no
+
+### 2026-10-28 · N11 · Household priorities → measures
+- Decision: a measure gets the +20% priority weight when it serves one of the household's priorities: `lower_bills` = bill saving > 0; `comfort` = category `heat`; `flood_safety` = category `flood`; `lower_carbon` = CO2 saving > 0; `home_value` = measures that raise the EPC rating, i.e. a bill saving or a CO2 saving > 0 (the EPC rating is set by energy cost and CO2)
+- Alternatives: `home_value` matches nothing; `home_value` = every measure
+- Why: spec §7 rule 3 names the boost but not the mapping; `home_value` mapping chosen by N (the human)
+- Files: backend/app/services/planner.py
+- Commit: 0aa9ab8
+- Affects the other coder? no
+
+### 2026-10-28 · N11 · Renters' landlord group is part of `items`
+- Decision: for renters (`private_renter`, `social_renter`), measures with `needs_landlord` are ranked after every other measure and are never selected (not by default, not through `selected_ids`); the front end shows items with `measure.needs_landlord` as the "Ask your landlord" group. Owners and landlords get them in the main list
+- Alternatives: a separate `landlord_items` field in `Plan` (contract change)
+- Why: spec §7 rule 1 asks for a separate group but `Plan` has only `items`; no contract change needed
+- Files: backend/app/services/planner.py
+- Commit: 0aa9ab8
+- Affects the other coder? yes (L11 splits the list by `measure.needs_landlord`)
+
+### 2026-10-28 · N11 · LLM explanations: top 8, mixed sources, no server-side fallback
+- Decision: one call per plan for the top 8 ranked measures (Messages API, `ANTHROPIC_MODEL`, 8 s timeout, no SDK retries, `effort: low`, JSON schema output); sentences over 30 words or 200 characters are dropped; every other item gets the template. `explanation_source` is `llm` when at least one item's text came from the LLM. Refusals and every error use the template, so Anthropic's server-side fallback model is not enabled
+- Alternatives: explain every measure; label mixed plans `template`
+- Why: spec §7 rule 5 (top 8, one call); the template already covers every failure
+- Files: backend/app/services/llm.py, backend/app/services/planner.py
+- Commit: 0aa9ab8
+- Affects the other coder? yes (an `llm` plan can still contain template sentences)
+
+### 2026-10-28 · N11 · LLM cache and daily cap
+- Decision: `llm_cache` rows never expire (key = sha256 of property facts, hazard levels, measure ids, `SCORING_VERSION`, model); only successful answers are cached. The daily cap (`LLM_DAILY_CALL_LIMIT`) counts call attempts per UTC day in memory, so it resets when the API restarts
+- Alternatives: count cache rows created today (would not count failed calls)
+- Why: one API instance; failed calls must count towards the cap too
+- Files: backend/app/services/llm.py
+- Commit: 0aa9ab8
+- Affects the other coder? no
+
+### 2026-10-28 · N11 · Plans: latest only, demo homes keep fixtures
+- Decision: `POST /homes/{id}/plan` for a stored home stores only the latest plan (`plans`, with the budget actually used); before an assessment it returns 404 `not_found`. Demo homes return their fixture plan. Done measures (`work_recorded` events) leave the plan and count towards the projected score; recording work on a stored home accepts any measure in `measures`
+- Alternatives: keep every plan (the slider would add a row per move)
+- Why: the slider re-posts `/plan` on every move (CONTRACT §3)
+- Files: backend/app/api/homes.py, backend/app/services/homes.py
+- Commit: 0aa9ab8
+- Affects the other coder? yes (plan before assessment is 404)
+
+### 2026-10-28 · N12 · EPC bulk data read in place with HTTP range requests
+- Decision: `ml/download.py` asks the register API for the domestic bulk file (`/api/files/domestic/csv`, bearer token; 302 to a signed S3 link that expires after 30 s), reads the 8.3 GB zip's index and only the chosen year's member through `Range` requests, renewing the link on every 403, and never prints the signed link
+- Alternatives: download the whole 8.3 GB zip; sign in to the website and download by hand
+- Why: about 270 MB transferred instead of 8.3 GB (20 GB of free disk), no manual step, reproducible from `make epc-data`
+- Files: backend/ml/download.py, Makefile
+- Commit: 7131404
+- Affects the other coder? no
+
+### 2026-10-28 · N12 · Training subset: 2024 certificates in London, Yorkshire and the South West
+- Decision: one lodgement year (2024) and three regions (E12000007, E12000003, E12000009): 553,640 certificates, 537,908 homes after cleaning
+- Alternatives: several years; other regions
+- Why: spec asks for about 3 regions and 500k certificates; these hold the five demo homes and mix city flats, terraces and rural houses
+- Files: backend/ml/download.py, docs/model_card.md
+- Commit: 7131404
+- Affects the other coder? no
+
+### 2026-10-28 · N12 · Seven features built by one module for training and serving
+- Decision: `ml/features.py` builds property type (EPC adapter's rule), built form, age band (prefix removed), floor area, region (ONS code → postcodes.io name), heating type (from the description) and fuel (description first, coded fuel second, as the adapter) from both a bulk row and `PropertyFacts`
+- Alternatives: separate code for training and serving
+- Why: the model must never see a value the app cannot produce
+- Files: backend/ml/features.py
+- Commit: 7131404
+- Affects the other coder? no
+
+### 2026-10-28 · N12 · Cleaning rules
+- Decision: latest certificate per UPRN (rows without UPRN kept); drop rows without a valid band A–G or with CO2 outside 0–50 t/yr; floor area outside 10–1000 m² becomes unknown; categories under 0.2% of homes become "other"; split unit = postcode area (letters of the outward code)
+- Alternatives: drop rows with any missing feature
+- Why: the model handles missing values natively, and the app often lacks some facts
+- Files: backend/ml/prepare.py
+- Commit: 7131404
+- Affects the other coder? no
+
+### 2026-10-28 · N12 · Early stopping with 30 rounds of patience
+- Decision: both models use early stopping with `n_iter_no_change=30` (max 300 rounds, learning rate 0.1, seed 42)
+- Alternatives: default patience 10 (stopped after 11 rounds); 300 fixed rounds
+- Why: on a validation split of the training areas (not the test set) accuracy was 66.0% vs 65.3% (patience 10) and 64.1% (300 rounds)
+- Files: backend/ml/train.py
+- Commit: 7131404
+- Affects the other coder? no
+
+### 2026-10-28 · N12 · Model artefact committed to git
+- Decision: `backend/ml/artifacts/epc_model.joblib` (0.7 MB, both models, kept categories, metrics, version) is committed with `metrics.json` and `confusion_matrix.png`
+- Alternatives: Git LFS; train on deploy
+- Why: spec §2 commits artefacts under 25 MB; the app needs the model without the training data
+- Files: backend/ml/artifacts/
+- Commit: 7131404
+- Affects the other coder? no
+
+### 2026-10-28 · N12 · scikit-learn and pandas are runtime dependencies; matplotlib training-only
+- Decision: `scikit-learn` and `pandas` in the back end's main dependencies (N13 predicts inside the API); `matplotlib` in the `ml` dependency group (`uv run --group ml`), used only for the confusion matrix
+- Alternatives: everything in the `ml` group
+- Why: the API loads the model at start-up; CI and the API image need not install plotting
+- Files: backend/pyproject.toml, backend/uv.lock, Makefile
+- Commit: 7131404
+- Affects the other coder? no

@@ -19,7 +19,7 @@ from app.schemas.api import (
     PostcodeLookup,
     ShareLink,
 )
-from tests.conftest import load_fixture
+from tests.conftest import load_fixture, log_in
 
 API = "/api/v1"
 PDF = b"%PDF-1.4\n%stub\n"
@@ -148,9 +148,9 @@ def test_unknown_home_404(user_client) -> None:
 
 
 def test_other_users_home_404(client) -> None:
-    client.post(f"{API}/auth/login", data={"username": "owner@example.com", "password": "x"})
+    log_in(client, "owner@example.com")
     home_id = _new_home(client)
-    client.post(f"{API}/auth/login", data={"username": "other@example.com", "password": "x"})
+    log_in(client, "other@example.com")
     assert client.get(f"{API}/homes/{home_id}/passport").status_code == 404
 
 
@@ -237,7 +237,7 @@ def test_share_public_and_revoke(user_client) -> None:
     assert work and work[0]["detail"]["has_certificate"] is True
     assert "certificate_name" not in work[0]["detail"]
 
-    c.post(f"{API}/auth/login", data={"username": "a@example.com", "password": "x"})
+    log_in(c, "a@example.com")
     assert c.delete(f"{API}/homes/{home_id}/share").status_code == 204
     res = c.get(f"{API}/public/passport/{link.share_token}")
     assert res.status_code == 404
