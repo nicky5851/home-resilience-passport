@@ -13,3 +13,5 @@ export type StreetProof = components["schemas"]["StreetProof"]
 export type Story = components["schemas"]["Story"]
 export type UpgradeRow = components["schemas"]["UpgradeRow"]
 export type BandCount = components["schemas"]["BandCount"]
+
+export type Fingerprint = components["schemas"]["Fingerprint"]
