@@ -701,3 +701,28 @@ Format: spec §13. Newest at the bottom.
   frontend/src/app/studio/[ref]/s01-retrofit-sandbox/page.tsx
 - PR: #30
 - Affects the other coder? no
+
+### 2026-10-28 · S02 · Street Proof: new adapter primitives, earliest/latest only
+- Decision: added `search_postcode_rows`, `certificate_by_number`, `decode_field` and
+  `property_type_from_certificate` to N6's `app/adapters/epc.py`, and `nearest_postcodes` to
+  N5's `app/adapters/postcodes.py` — new exported functions, no existing signature changed.
+  To bound the number of EPC certificate fetches per request (concurrency 5, 12s budget), only
+  the earliest and latest certificate per address are fetched in full, not every certificate in
+  an address's history — the spec's own algorithm only ever compares earliest vs latest, so
+  nothing is lost.
+- Also: fixed a real inference bug while testing against hand-written RdSAP wording — `"no
+  insulation"` contains the substring `"insulat"`, so a naive `"insulat" in earliest and
+  "insulat" in latest"` check never fires; `_newly_insulated()` checks the negative phrase is
+  gone instead.
+- Alternatives: fetching every certificate in a group's history (rejected — unbounded fetch
+  count for a popular street); keyword rules tuned to the SAP-Schema test fixture's U-value
+  wording (rejected — real-world homes are almost all on RdSAP, which uses the spec's assumed
+  "no insulation (assumed)" / "as built, insulated" wording; the newer SAP schema's numeric
+  U-value descriptions aren't matchable by text either way)
+- Why: §1.7 (bounded external calls, tests never touch network); the acceptance test needs real
+  RdSAP-shaped fixtures, which is how the substring bug was caught
+- Files: backend/app/adapters/epc.py, backend/app/adapters/postcodes.py,
+  backend/app/studio/features/s02_street_proof/**, backend/tests/studio/test_s02_street_proof.py,
+  frontend/src/features/studio/s02/**, frontend/src/app/studio/[ref]/s02-street-proof/page.tsx
+- PR: #?
+- Affects the other coder? no

@@ -1,6 +1,25 @@
 {
   "components": {
     "schemas": {
+      "BandCount": {
+        "additionalProperties": false,
+        "properties": {
+          "band": {
+            "title": "Band",
+            "type": "string"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "band",
+          "count"
+        ],
+        "title": "BandCount",
+        "type": "object"
+      },
       "Evidence": {
         "additionalProperties": false,
         "properties": {
@@ -667,6 +686,160 @@
         "title": "SimulateRequest",
         "type": "object"
       },
+      "Story": {
+        "additionalProperties": false,
+        "properties": {
+          "distance_m": {
+            "title": "Distance M",
+            "type": "integer"
+          },
+          "from_band": {
+            "title": "From Band",
+            "type": "string"
+          },
+          "from_sap": {
+            "title": "From Sap",
+            "type": "integer"
+          },
+          "to_band": {
+            "title": "To Band",
+            "type": "string"
+          },
+          "to_sap": {
+            "title": "To Sap",
+            "type": "integer"
+          },
+          "upgrades": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Upgrades",
+            "type": "array"
+          },
+          "year_from": {
+            "title": "Year From",
+            "type": "integer"
+          },
+          "year_to": {
+            "title": "Year To",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "distance_m",
+          "from_band",
+          "to_band",
+          "from_sap",
+          "to_sap",
+          "year_from",
+          "year_to",
+          "upgrades"
+        ],
+        "title": "Story",
+        "type": "object"
+      },
+      "StreetProof": {
+        "additionalProperties": false,
+        "properties": {
+          "band_distribution": {
+            "items": {
+              "$ref": "#/components/schemas/BandCount"
+            },
+            "title": "Band Distribution",
+            "type": "array"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "fallback_used": {
+            "title": "Fallback Used",
+            "type": "boolean"
+          },
+          "improvers_count": {
+            "title": "Improvers Count",
+            "type": "integer"
+          },
+          "median_sap_gain": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Sap Gain"
+          },
+          "partial": {
+            "title": "Partial",
+            "type": "boolean"
+          },
+          "peer_definition": {
+            "title": "Peer Definition",
+            "type": "string"
+          },
+          "peers_count": {
+            "title": "Peers Count",
+            "type": "integer"
+          },
+          "stories": {
+            "items": {
+              "$ref": "#/components/schemas/Story"
+            },
+            "title": "Stories",
+            "type": "array"
+          },
+          "top_upgrades": {
+            "items": {
+              "$ref": "#/components/schemas/UpgradeRow"
+            },
+            "title": "Top Upgrades",
+            "type": "array"
+          },
+          "your_percentile": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Your Percentile"
+          },
+          "your_sap": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Your Sap"
+          }
+        },
+        "required": [
+          "peer_definition",
+          "peers_count",
+          "band_distribution",
+          "your_sap",
+          "your_percentile",
+          "improvers_count",
+          "median_sap_gain",
+          "top_upgrades",
+          "stories",
+          "partial",
+          "evidence",
+          "fallback_used"
+        ],
+        "title": "StreetProof",
+        "type": "object"
+      },
       "StudioHomeSummary": {
         "additionalProperties": false,
         "properties": {
@@ -726,6 +899,37 @@
           "score"
         ],
         "title": "StudioHomeSummary",
+        "type": "object"
+      },
+      "UpgradeRow": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "median_sap_gain": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Sap Gain"
+          },
+          "share_pct": {
+            "title": "Share Pct",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "label",
+          "share_pct",
+          "median_sap_gain"
+        ],
+        "title": "UpgradeRow",
         "type": "object"
       },
       "ValidationError": {
@@ -936,6 +1140,61 @@
         "tags": [
           "studio",
           "studio:s01"
+        ]
+      }
+    },
+    "/api/v1/studio/homes/{ref}/street-proof": {
+      "get": {
+        "operationId": "street_proof_api_v1_studio_homes__ref__street_proof_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "radius_m",
+            "required": false,
+            "schema": {
+              "default": 1000,
+              "maximum": 2000,
+              "minimum": 250,
+              "title": "Radius M",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreetProof"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Street Proof",
+        "tags": [
+          "studio",
+          "studio:s02"
         ]
       }
     }
