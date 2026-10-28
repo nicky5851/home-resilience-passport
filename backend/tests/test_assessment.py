@@ -2,6 +2,7 @@
 
 import json
 import uuid
+from datetime import UTC, datetime, timedelta
 
 import httpx
 import pytest
@@ -14,7 +15,7 @@ from app.db.session import make_sessionmaker
 from app.schemas import Address, Passport, PropertyFacts
 from app.schemas.api import Assessment
 from app.services import assessment
-from tests.conftest import DEMO_SLUGS, RECORDED_DIR, load_fixture
+from tests.conftest import DEMO_SLUGS, RECORDED_DIR, load_fixture, log_in
 
 API = "/api/v1"
 pytestmark = pytest.mark.anyio
@@ -67,16 +68,43 @@ def test_real_postcode_end_to_end(user_client, online) -> None:
     assert res.status_code == 200, res.text
     a = Assessment.model_validate(res.json())
     assert (a.inputs.hot_days_baseline, a.inputs.hot_days_2050) == (2.6, 8.6)  # real, not defaults
-    assert a.inputs.rofrs_band is None  # the test client has no database: unknown, never "none"
+    assert a.inputs.rofrs_band is None  # flood_postcodes is empty in tests: unknown, never "none"
     assert a.inputs.property == PropertyFacts.model_validate(FLAT)
     assert [lvl.hazard for lvl in a.risk.levels][:3] == ["river_sea_flood", "overheating", "storm"]
 
+    assert abs(a.risk.generated_at - datetime.now(UTC)) < timedelta(minutes=1)  # not L's fixed time
     assert user_client.get(f"{API}/homes/{home_id}/risk").json() == res.json()
     p = Passport.model_validate(user_client.get(f"{API}/homes/{home_id}/passport").json())
     assert p.latest_score == a.score
     assert p.address.postcode == "SW1A 1AA" and p.property.source == "user"
     assert [e.kind for e in p.events][-1] == "assessed"
     assert p.events[-1].score_after == a.score.value
+
+
+def test_homes_and_assessments_are_stored(user_client, online, db_url) -> None:
+    from sqlalchemy import text
+    from sqlalchemy.ext.asyncio import create_async_engine
+    from sqlalchemy.pool import NullPool
+
+    home_id = _create(user_client, WESTMINSTER).json()["home_id"]
+    user_client.post(f"{API}/homes/{home_id}/assess")
+
+    async def counts() -> list[int]:
+        eng = create_async_engine(db_url, poolclass=NullPool)
+        async with eng.connect() as conn:
+            out = [
+                (await conn.execute(text(f"SELECT count(*) FROM {t} WHERE {col} = :id"),
+                                    {"id": home_id})).scalar_one()
+                for t, col in (("homes", "id"), ("households", "home_id"),
+                               ("assessments", "home_id"), ("passport_events", "home_id"))
+            ]  # fmt: skip
+        await eng.dispose()
+        return out
+
+    import asyncio
+
+    assert asyncio.run(counts()) == [1, 1, 1, 1]
+    assert [h["home_id"] for h in user_client.get(f"{API}/homes").json()] == [home_id]
 
 
 def test_second_assessment_is_served_from_the_cache(user_client, online) -> None:
@@ -128,9 +156,9 @@ def test_no_certificate_and_no_details_asks_for_them(user_client) -> None:
 
 
 def test_other_users_cannot_assess(client) -> None:
-    client.post(f"{API}/auth/login", data={"username": "owner@example.com", "password": "x"})
+    log_in(client, "owner@example.com")
     home_id = _create(client, WESTMINSTER).json()["home_id"]
-    client.post(f"{API}/auth/login", data={"username": "other@example.com", "password": "x"})
+    log_in(client, "other@example.com")
     assert client.post(f"{API}/homes/{home_id}/assess").status_code == 404
     assert client.post(f"{API}/homes/{uuid.uuid4()}/assess").status_code == 404
 
