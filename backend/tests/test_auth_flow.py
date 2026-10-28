@@ -10,7 +10,13 @@ from sqlalchemy import func, select, text, update
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.pool import NullPool
 
-from app.config import AUTH_COOKIE_NAME, PRIVACY_VERSION, RESET_PASSWORD_PATH, Settings
+from app.config import (
+    AUTH_COOKIE_NAME,
+    DEV_AUTH_SECRET,
+    PRIVACY_VERSION,
+    RESET_PASSWORD_PATH,
+    Settings,
+)
 from app.db.models import User
 from tests.conftest import PASSWORD, USER_TABLES, load_fixture, log_in
 
@@ -254,8 +260,10 @@ def test_forwarded_ip_is_used_only_in_production(monkeypatch) -> None:
 
 
 def test_production_refuses_the_dev_secret() -> None:
+    # Pass the dev secret explicitly: an ambient AUTH_SECRET env var (e.g. CI's) would
+    # otherwise override the field default and defeat this test.
     with pytest.raises(ValueError, match="AUTH_SECRET"):
-        Settings(env="production", _env_file=None)
+        Settings(env="production", auth_secret=DEV_AUTH_SECRET, _env_file=None)
     Settings(env="production", auth_secret="x" * 40, _env_file=None)
 
 
