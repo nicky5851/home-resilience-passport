@@ -800,5 +800,5 @@ Format: spec §13. Newest at the bottom.
   presentation on top of the same numbers
 - Files: backend/app/studio/features/s06_grid_carbon_clock/**, backend/tests/studio/test_s06_grid_carbon_clock.py,
   frontend/src/features/studio/s06/**, frontend/src/app/studio/[ref]/s06-grid-carbon-clock/page.tsx
-- PR: #?
+- PR: #35
 - Affects the other coder? no
