@@ -39,16 +39,48 @@ Notes:
 
 ## Resilience score (`app/scoring/score.py`, step L5)
 
-Not yet implemented (still the L3 stub). Will follow CODING_SPEC.md §6:
+`compute_score` is a pure function of `(RiskProfile, PropertyFacts, completed_measures)`. 100
+points total: flood 30, heat 20, storm 10, subsidence 10 (resilience = 70%), carbon 30.
 
-- 100 points total: flood 30, heat 20, storm 10, subsidence 10 (resilience = 70%), carbon 30.
-- Hazard points use the **2050** level: low = full marks, medium = half, high = 10%.
-- Carbon points = `epc_score × 0.3`; if only `epc_rating` is known, use the band midpoint
-  (A 96 … G 10); if both are unknown, 15 points flat.
-- Measures (completed or candidate) add their `resilience_points` to the component named by
-  their `category`, capped at that component's max.
-- Bands: A ≥ 85, B 70–84, C 55–69, D 40–54, E 25–39, F 10–24, G < 10.
+- Hazard points use the **2050** level (forward-looking): low = full marks, medium = half,
+  high = 10% of the component's max (`LEVEL_FRACTION` in `config.py`). `surface_water` has no
+  score component (spec §6 only lists 4 hazard components; it still shows on the risk page).
+- Carbon points = `epc_score × 0.3`. If `epc_score` is `null` but `epc_rating` is known, use the
+  band midpoint (A 96, B 86, C 75, D 61, E 47, F 30, G 10) × 0.3. If both are unknown, a flat 15
+  points.
+- Completed (or candidate) measures add their `resilience_points` to the component named by
+  their `category`, each component capped at its max (a measure can't push a component past
+  full marks). `hazards_reduced` does not move points directly — only `category` + `resilience_points`
+  does.
+- `value = round(sum(component.points))`, clamped to 0–100 (the clamp is a belt-and-braces
+  safeguard; every component is already bounded `[0, max_points]` so the sum can't legally go
+  outside 0–100, but the spec's check explicitly requires the score "never goes above 100 or
+  below 0").
+- Bands (`band_for`): A ≥ 85, B 70–84, C 55–69, D 40–54, E 25–39, F 10–24, G < 10.
+- Each `ScoreComponent.reason` names the 2050 risk level and the points it's worth ("Your flood
+  risk is high by 2050, worth 3 of 30 points."), or the EPC basis for carbon ("Based on your EPC
+  score of 58."), plus a note when completed measures added points.
 
 ## Funding matcher (`app/scoring/funding.py`, step L6)
 
-Not yet implemented (still the L3 stub). Will follow CODING_SPEC.md §7 Funding.
+`match_funding` is a pure function of `(Plan, Household, options)`. Only the plan's **selected**
+items count — `hazards_reduced` plays no part here, only each measure's `category`.
+
+1. Filter `options` to those where `income_bands` is empty or contains the household's
+   `income_band`, `tenures` is empty or contains the household's `tenure`, and `categories` is
+   empty or overlaps the selected measures' categories (an empty list on either side means "all").
+2. Order the eligible options: `grant` → `cashback` → `insurance_discount` → `loan` /
+   `mortgage_further_advance` (`FUNDING_KIND_ORDER` in `config.py`), then lowest APR, then `id`.
+3. Walk the non-loan options in that order, allocating each up to
+   `min(remaining plan cost, cost of the measures that option's categories cover, the option's
+   max_amount_gbp)`. `covered_gbp` is the sum of these lines; `gap_gbp = plan.total_cost_low_gbp -
+   covered_gbp`.
+4. If `gap_gbp > 0` and at least one loan/further-advance option is eligible, put the whole gap on
+   the lowest-APR one and add it as a line (its `amount_gbp` is the gap, but it does **not** count
+   towards `covered_gbp` — a loan finances the gap, it doesn't remove it). `monthly_cost_gbp` is
+   the standard amortised payment over `LOAN_TERM_MONTHS` (60, spec §7 rule 3); a 0% APR option
+   splits the gap evenly over the term instead of dividing by zero.
+5. **Fairness rule:** nothing above reads `RiskProfile` or `ResilienceScore` — the same household
+   and plan always get the same terms, whatever their score. Mock Lloyds rows (`is_mock=true`)
+   get the note "Illustrative product." / "Illustrative loan over 5 years for the remaining
+   cost."; real rows get "You appear to qualify." / "A loan over 5 years for the remaining cost."

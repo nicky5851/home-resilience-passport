@@ -10,6 +10,8 @@ const USER_KEY = "hrp_mock_user"
 const UNSUPPORTED = /^(AB|DD|DG|EH|FK|G|HS|IV|KA|KW|KY|ML|PA|PH|TD|ZE|BT)[0-9]/
 const POSTCODE = /^([A-Z]{1,2}[0-9][A-Z0-9]?)([0-9][A-Z]{2})$/
 
+type Certificate = { bytes: Uint8Array<ArrayBuffer>; name: string }
+
 type MockHome = {
   id: string
   owner: string | null // null = demo home any logged-in user can open
@@ -19,6 +21,19 @@ type MockHome = {
   assessed: boolean
   shareToken: string | null
   events: PassportEvent[]
+  certificates: Map<string, Certificate>
+}
+
+const MAX_CERTIFICATE_BYTES = 5 * 1024 * 1024
+// First bytes of each allowed file type (CONTRACT §6: checked by content, not name or Content-Type).
+const MAGIC_BYTES = [
+  [0x25, 0x50, 0x44, 0x46], // %PDF
+  [0xff, 0xd8, 0xff], // JPEG
+  [0x89, 0x50, 0x4e, 0x47], // PNG
+]
+
+function isAllowedCertificate(bytes: Uint8Array): boolean {
+  return MAGIC_BYTES.some((magic) => magic.every((b, i) => bytes[i] === b))
 }
 
 let memoryUser: string | null = null
@@ -33,6 +48,7 @@ for (const f of fixtures) {
     assessed: true,
     shareToken: null,
     events: [...f.passport.events],
+    certificates: new Map(),
   })
 }
 
@@ -226,6 +242,7 @@ export async function mockFetch(input: RequestInfo | URL, init?: RequestInit): P
       assessed: false,
       shareToken: null,
       events: [],
+      certificates: new Map(),
     })
     return json(201, { home_id: id })
   }
@@ -236,6 +253,72 @@ export async function mockFetch(input: RequestInfo | URL, init?: RequestInit): P
       return error(404, "not_found", "We couldn't find that home.")
     const sub = `${method} ${m[3] ?? ""}`
     const f = h.fixture
+
+    if (sub === "POST /work") {
+      const form = await req.formData()
+      const measureId = String(form.get("measure_id") ?? "")
+      const completedOn = String(form.get("completed_on") ?? "")
+      if (!measureId || !completedOn)
+        return error(400, "validation", "measure_id and completed_on are required.")
+      const costRaw = form.get("cost_gbp")
+      const costGbp = costRaw ? Number(costRaw) : null
+      const file = form.get("certificate")
+      let certificateName: string | null = null
+      let hasCertificate = false
+      if (file instanceof File) {
+        if (file.size > MAX_CERTIFICATE_BYTES)
+          return error(
+            413,
+            "file_too_large",
+            "That file is over 5 MB. Please choose a smaller one.",
+          )
+        const bytes = new Uint8Array(await file.arrayBuffer())
+        if (!isAllowedCertificate(bytes))
+          return error(415, "unsupported_file", "Please upload a PDF, JPEG or PNG file.")
+        const eventId = crypto.randomUUID()
+        h.certificates.set(eventId, { bytes, name: file.name.slice(0, 100) })
+        certificateName = file.name.slice(0, 100)
+        hasCertificate = true
+        const event: PassportEvent = {
+          id: eventId,
+          kind: "work_recorded",
+          at: now(),
+          score_after: null,
+          detail: {
+            measure_id: measureId,
+            completed_on: completedOn,
+            cost_gbp: costGbp,
+            has_certificate: hasCertificate,
+            certificate_name: certificateName,
+          },
+        }
+        h.events.push(event)
+        return json(200, event)
+      }
+      const event: PassportEvent = {
+        id: crypto.randomUUID(),
+        kind: "work_recorded",
+        at: now(),
+        score_after: null,
+        detail: {
+          measure_id: measureId,
+          completed_on: completedOn,
+          cost_gbp: costGbp,
+          has_certificate: false,
+          certificate_name: null,
+        },
+      }
+      h.events.push(event)
+      return json(200, event)
+    }
+
+    if ((m = /^GET \/work\/([^/]+)\/certificate$/.exec(sub))) {
+      if (h.owner !== email) return error(404, "not_found", "We couldn't find that certificate.")
+      const cert = h.certificates.get(m[1]!)
+      if (!cert) return error(404, "not_found", "We couldn't find that certificate.")
+      return new Response(new Blob([cert.bytes]), { status: 200 })
+    }
+
     switch (sub) {
       case "DELETE ":
         if (h.owner === null) return error(404, "not_found", "We couldn't find that home.")

@@ -611,9 +611,11 @@ If two options are still equal, pick one, note the alternative in the log, and m
 - Alternatives: weighted average by property count
 - Why: simplest, conservative for flood risk (rule 3, rule 5)
 - Files: backend/app/adapters/flood.py
-- Commit: <short hash, filled in when committed>
+- PR: #<number of the pull request that carries it>
 - Affects the other coder? no
 ```
+
+The entry names the **pull request**, not a commit hash: a hash filled in before an amend or a squash merge never matches what lands on `main`, while the PR number stays valid and links to the merged commit. Write `PR: #?` when committing, then fill in the number in a follow-up commit once the PR is open. Entries written before this rule keep their `Commit:` line.
 
 At every sync meeting, N and L read both logs together. Any entry marked "Affects the other coder? yes" is copied into `docs/DECISIONS.md` and, if needed, becomes a contract change.
 
