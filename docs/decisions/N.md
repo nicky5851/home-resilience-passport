@@ -699,5 +699,5 @@ Format: spec §13. Newest at the bottom.
   backend/app/studio/common/home_ref.py, backend/app/studio/router.py,
   frontend/src/features/studio/s01/**, frontend/src/features/studio/components/Dial.tsx,
   frontend/src/app/studio/[ref]/s01-retrofit-sandbox/page.tsx
-- PR: #?
+- PR: #30
 - Affects the other coder? no
