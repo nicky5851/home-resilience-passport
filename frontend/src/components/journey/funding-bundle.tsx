@@ -50,7 +50,7 @@ export function FundingBundleView({ bundle, cost }: { bundle: FundingBundleType;
                 </span>
               </p>
               {line.option.is_mock && (
-                <span className="bg-warning/15 text-warning rounded-full px-2 py-0.5 text-xs font-semibold">
+                <span className="bg-warning text-deep rounded-full px-2 py-0.5 text-xs font-semibold">
                   Illustrative
                 </span>
               )}

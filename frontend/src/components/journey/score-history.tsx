@@ -1,6 +1,6 @@
 "use client"
 
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 
 import type { PassportEvent } from "@/lib/api/types"
 
@@ -16,11 +16,15 @@ export function ScoreHistory({ events }: { events: PassportEvent[] }) {
   }
 
   return (
-    <LineChart width={480} height={200} data={points} margin={{ left: 0, right: 16 }}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="date" fontSize={12} />
-      <YAxis domain={[0, 100]} fontSize={12} width={32} />
-      <Line type="monotone" dataKey="score" stroke="var(--color-green)" strokeWidth={2} dot />
-    </LineChart>
+    <div className="max-w-md">
+      <ResponsiveContainer width="100%" height={200}>
+        <LineChart data={points} margin={{ left: 0, right: 16 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="date" fontSize={12} />
+          <YAxis domain={[0, 100]} fontSize={12} width={32} />
+          <Line type="monotone" dataKey="score" stroke="var(--color-green)" strokeWidth={2} dot />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   )
 }

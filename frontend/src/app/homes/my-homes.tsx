@@ -39,7 +39,7 @@ function HomesList() {
       {homes.map((h) => (
         <li
           key={h.home_id}
-          className="border-border flex items-center justify-between rounded-md border p-3"
+          className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border p-3"
         >
           <Link href={`/homes/${h.home_id}/passport`} className="hover:underline">
             {h.line1}, {h.postcode}

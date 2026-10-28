@@ -148,6 +148,7 @@ function PlanGroup({
   onToggle: (id: string) => void
 }) {
   const sorted = [...items].sort((a, b) => a.rank - b.rank)
+  if (sorted.length === 0) return null
   return (
     <div className="space-y-3">
       <h2 className="font-semibold">{title}</h2>

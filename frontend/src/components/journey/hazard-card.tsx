@@ -14,10 +14,12 @@ const LEVEL_LABEL: Record<HazardLevel["today"], string> = {
   high: "High",
 }
 
+// Solid backgrounds with dark or white text, not a tint of the same colour behind matching text
+// (fails WCAG AA contrast — spec L14's accessibility pass).
 const LEVEL_CLASS: Record<HazardLevel["today"], string> = {
-  low: "bg-level-low/15 text-level-low",
-  medium: "bg-level-medium/15 text-level-medium",
-  high: "bg-level-high/15 text-level-high",
+  low: "bg-level-low text-white",
+  medium: "bg-level-medium text-deep",
+  high: "bg-level-high text-white",
 }
 
 /** One hazard, today or in 2050 depending on `when` (spec L9). */
