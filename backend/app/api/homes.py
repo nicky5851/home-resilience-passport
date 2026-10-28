@@ -34,6 +34,7 @@ from app.schemas.api import (
     PlanRequest,
     ShareLink,
 )
+from app.scoring import match_funding
 from app.services import assessment, homes, planner
 
 router = APIRouter(prefix="/homes", tags=["homes"])
@@ -159,7 +160,23 @@ def _completed(home: StubHome, measures: list[Measure]) -> list[Measure]:
 async def funding(
     home_id: uuid.UUID, body: FundingRequest, user: CurrentUser, session: SessionDep
 ) -> FundingBundle:
-    return store.funding(await _home(home_id, user, session))
+    home = await _home(home_id, user, session)
+    if not home.stored:
+        return store.funding(home)  # demo homes: the fixture's funding, offline
+    if home.assessment is None:
+        raise ApiError(404, "not_found", "This home has not been assessed yet.")
+    measures = await planner.load_measures(session)
+    options = await planner.load_funding_options(session)
+    plan_result = await planner.build_plan(
+        session,
+        measures,
+        home.assessment.risk,
+        home.real["property"],
+        home.real["household"],
+        _completed(home, measures),
+        selected_ids=body.selected_ids,
+    )
+    return match_funding(plan_result, home.real["household"], options)
 
 
 @router.get("/{home_id}/passport")
