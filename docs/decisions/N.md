@@ -765,3 +765,21 @@ Format: spec §13. Newest at the bottom.
   frontend/src/features/studio/s04/**, frontend/src/app/studio/[ref]/s04-heat-pump-year/page.tsx
 - PR: #33
 - Affects the other coder? no
+
+### 2026-10-28 · S05 · Solar Roof Studio: no bespoke sun-path UI; sourced figures logged
+- Decision: built the roof-area kWp estimator, PVGIS adapter (plus an 8-direction orientation
+  rose, scaled linearly by kWp per the spec), self-use/export savings maths, payback/breakeven
+  and suitability bands exactly per spec, but used a Recharts RadarChart for the orientation
+  rose and bar chart for monthly generation instead of the spec's draggable-compass roof plan
+  with an animated NOAA sun-path - same calibration as S01/S04's simplifications.
+- Sourced figures read live on 2026-10-28 (logged here rather than invented): Ofgem import rate
+  (same 26.32p/kWh as S04), a representative 15p/kWh SEG export rate (no single Ofgem "guide
+  rate" exists - suppliers set their own, ranging roughly 4p-30p in late 2026; user can override
+  via `export_p_per_kwh`), and an MCS/DESNZ-derived £1,500-£2,000/kWp install cost range (no
+  solar row exists yet in `measures.csv`).
+- Why: the measured generation estimate, rose and payback are the substance; the sun-path
+  animation is presentation on top of the same numbers
+- Files: backend/app/studio/features/s05_solar_roof_studio/**, backend/tests/studio/test_s05_solar_roof_studio.py,
+  frontend/src/features/studio/s05/**, frontend/src/app/studio/[ref]/s05-solar-roof-studio/page.tsx
+- PR: #?
+- Affects the other coder? no

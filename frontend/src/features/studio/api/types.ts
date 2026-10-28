@@ -19,3 +19,6 @@ export type Fingerprint = components["schemas"]["Fingerprint"]
 export type HeatPumpYear = components["schemas"]["HeatPumpYear"]
 export type MonthlyHeatPump = components["schemas"]["MonthlyHeatPump"]
 export type DailyHeatPump = components["schemas"]["DailyHeatPump"]
+
+export type SolarResult = components["schemas"]["SolarResult"]
+export type OrientationPoint = components["schemas"]["OrientationPoint"]

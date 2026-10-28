@@ -734,6 +734,25 @@
         "title": "MonthlyHeatPump",
         "type": "object"
       },
+      "OrientationPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "annual_kwh": {
+            "title": "Annual Kwh",
+            "type": "integer"
+          },
+          "aspect_deg": {
+            "title": "Aspect Deg",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "aspect_deg",
+          "annual_kwh"
+        ],
+        "title": "OrientationPoint",
+        "type": "object"
+      },
       "PropertyFacts": {
         "additionalProperties": false,
         "properties": {
@@ -1175,6 +1194,187 @@
           "measure_ids"
         ],
         "title": "SimulateRequest",
+        "type": "object"
+      },
+      "SolarRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "aspect_deg": {
+            "default": 0,
+            "title": "Aspect Deg",
+            "type": "integer"
+          },
+          "battery_kwh": {
+            "default": 0,
+            "enum": [
+              0,
+              5,
+              10
+            ],
+            "title": "Battery Kwh",
+            "type": "integer"
+          },
+          "export_p_per_kwh": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Export P Per Kwh"
+          },
+          "kwp": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kwp"
+          },
+          "pitch_deg": {
+            "default": 35,
+            "title": "Pitch Deg",
+            "type": "integer"
+          }
+        },
+        "title": "SolarRequest",
+        "type": "object"
+      },
+      "SolarResult": {
+        "additionalProperties": false,
+        "properties": {
+          "annual_kwh": {
+            "title": "Annual Kwh",
+            "type": "integer"
+          },
+          "annual_saving_gbp": {
+            "title": "Annual Saving Gbp",
+            "type": "integer"
+          },
+          "breakeven_year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Breakeven Year"
+          },
+          "co2_saved_kg_per_year": {
+            "title": "Co2 Saved Kg Per Year",
+            "type": "integer"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "export_kwh": {
+            "title": "Export Kwh",
+            "type": "integer"
+          },
+          "fallback_used": {
+            "title": "Fallback Used",
+            "type": "boolean"
+          },
+          "install_cost_high_gbp": {
+            "title": "Install Cost High Gbp",
+            "type": "integer"
+          },
+          "install_cost_low_gbp": {
+            "title": "Install Cost Low Gbp",
+            "type": "integer"
+          },
+          "kwp": {
+            "title": "Kwp",
+            "type": "number"
+          },
+          "kwp_source": {
+            "enum": [
+              "user",
+              "estimated_from_roof"
+            ],
+            "title": "Kwp Source",
+            "type": "string"
+          },
+          "lifetime_saving_gbp": {
+            "title": "Lifetime Saving Gbp",
+            "type": "integer"
+          },
+          "monthly_kwh": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Monthly Kwh",
+            "type": "array"
+          },
+          "orientation_rose": {
+            "items": {
+              "$ref": "#/components/schemas/OrientationPoint"
+            },
+            "title": "Orientation Rose",
+            "type": "array"
+          },
+          "payback_years": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payback Years"
+          },
+          "self_use_kwh": {
+            "title": "Self Use Kwh",
+            "type": "integer"
+          },
+          "suitability": {
+            "enum": [
+              "good",
+              "fair",
+              "poor",
+              "freeholder_needed"
+            ],
+            "title": "Suitability",
+            "type": "string"
+          },
+          "suitability_note": {
+            "title": "Suitability Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kwp",
+          "kwp_source",
+          "annual_kwh",
+          "monthly_kwh",
+          "self_use_kwh",
+          "export_kwh",
+          "annual_saving_gbp",
+          "install_cost_low_gbp",
+          "install_cost_high_gbp",
+          "payback_years",
+          "breakeven_year",
+          "lifetime_saving_gbp",
+          "co2_saved_kg_per_year",
+          "orientation_rose",
+          "suitability",
+          "suitability_note",
+          "evidence",
+          "fallback_used"
+        ],
+        "title": "SolarResult",
         "type": "object"
       },
       "Story": {
@@ -1838,6 +2038,59 @@
         "tags": [
           "studio",
           "studio:s01"
+        ]
+      }
+    },
+    "/api/v1/studio/homes/{ref}/solar": {
+      "post": {
+        "operationId": "solar_api_v1_studio_homes__ref__solar_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolarRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SolarResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Solar",
+        "tags": [
+          "studio",
+          "studio:s05"
         ]
       }
     },
