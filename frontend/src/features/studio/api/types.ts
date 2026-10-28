@@ -36,3 +36,6 @@ export type HourlyReplayPoint = components["schemas"]["HourlyReplayPoint"]
 export type FloodMemory = components["schemas"]["FloodMemory"]
 export type FloodEvent = components["schemas"]["FloodEvent"]
 export type DecadeCount = components["schemas"]["DecadeCount"]
+
+export type Shoreline = components["schemas"]["Shoreline"]
+export type Projection = components["schemas"]["Projection"]

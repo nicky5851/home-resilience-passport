@@ -174,6 +174,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/shoreline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Shoreline */
+        get: operations["shoreline_api_v1_studio_homes__ref__shoreline_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/solar": {
         parameters: {
             query?: never;
@@ -246,6 +263,13 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AdviceLink */
+        AdviceLink: {
+            /** Label */
+            label: string;
+            /** Url */
+            url: string;
+        };
         /** AnnualHeatPump */
         AnnualHeatPump: {
             /** Co2 Gas Kg */
@@ -749,6 +773,25 @@ export interface components {
             /** Label */
             label: string;
         };
+        /** Projection */
+        Projection: {
+            /** Climate */
+            climate: string;
+            /** Distance M */
+            distance_m: number | null;
+            /**
+             * Epoch
+             * @enum {integer}
+             */
+            epoch: 2055 | 2105;
+            /** Home Inside Zone */
+            home_inside_zone: boolean;
+            /**
+             * Scenario
+             * @enum {string}
+             */
+            scenario: "with_smp" | "no_active_intervention";
+        };
         /** PropertyFacts */
         PropertyFacts: {
             /** Built Form */
@@ -886,6 +929,29 @@ export interface components {
             max_points: number;
             /** Name */
             name: string;
+        };
+        /** Shoreline */
+        Shoreline: {
+            /** Advice Links */
+            advice_links: components["schemas"]["AdviceLink"][];
+            /** Coastal */
+            coastal: boolean;
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Features */
+            features: {
+                [key: string]: unknown;
+            };
+            /** Insurance Note */
+            insurance_note: string;
+            /** Nearest Coast M */
+            nearest_coast_m: number | null;
+            /** Projections */
+            projections: components["schemas"]["Projection"][];
+            /** Smp Policy */
+            smp_policy: string | null;
         };
         /** SimulateRequest */
         SimulateRequest: {
@@ -1377,6 +1443,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SandboxState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    shoreline_api_v1_studio_homes__ref__shoreline_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Shoreline"];
                 };
             };
             /** @description Validation Error */
