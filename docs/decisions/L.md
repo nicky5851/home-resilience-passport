@@ -169,5 +169,5 @@ Format: spec §13. Newest at the bottom.
 - Alternatives: leave it until N9/N11's own follow-up noticed it; write a separate funding-service module instead of extending `planner.py`
 - Why: §13 rule 1 ("keep the demo path working" extends to the real path once it exists) — this blocked the real (non-demo) journey end to end, discovered only by actually running the app locally rather than trusting unit tests alone; mirroring the existing `plan` endpoint's pattern is the smallest correct fix and needed no new design decisions, both pieces (`match_funding`, `build_plan`) already existed and were already approved
 - Files: backend/app/api/homes.py, backend/app/services/planner.py (both N-owned; flagging since I edited outside my usual paths)
-- PR: #<number, filled in once opened>
+- PR: #27
 - Affects the other coder? yes — N should sanity-check this wiring, it touches `homes.py` and `planner.py` which are N's files
