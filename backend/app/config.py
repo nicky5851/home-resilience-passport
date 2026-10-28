@@ -108,6 +108,13 @@ class Settings(BaseSettings):
     # Public front-end URL, used to build share links.
     next_public_app_url: str = "http://localhost:3000"
 
+    # Resilience Studio (N_20_function.md): comma-separated feature ids to skip, e.g. "s03,s19".
+    studio_disabled: str = ""
+
+    @property
+    def studio_disabled_ids(self) -> frozenset[str]:
+        return frozenset(s.strip() for s in self.studio_disabled.split(",") if s.strip())
+
     @model_validator(mode="after")
     def _production_needs_a_real_secret(self) -> "Settings":
         """Every session cookie is signed with AUTH_SECRET (CONTRACT §4)."""

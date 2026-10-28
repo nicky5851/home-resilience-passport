@@ -8,6 +8,7 @@ from app.api.errors import ERROR_RESPONSES, install_error_handlers
 from app.api.origin import origin_check
 from app.config import API_PREFIX, get_settings
 from app.schemas.api import Health
+from app.studio.router import router as studio_router
 from ml import predict
 
 
@@ -47,6 +48,7 @@ def create_app() -> FastAPI:
         public.model,
     ):
         api.include_router(router)
+    api.include_router(studio_router, include_in_schema=False)
     app.include_router(api)
     _drop_422_from_openapi(app)
     return app

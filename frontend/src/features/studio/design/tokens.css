@@ -1,0 +1,66 @@
+/* Resilience Studio design tokens (docs/studio/N_20_function.md §2). Scoped to `.studio` so
+   nothing leaks into L's pages. */
+
+.studio {
+  --s-forest-950: #00261b;
+  --s-forest-800: #003b2b;
+  --s-green-700: #006a4d;
+  --s-green-500: #11b67a;
+  --s-green-100: #e5f3ec;
+  --s-paper: #faf8f3;
+  --s-card: #ffffff;
+  --s-stone-200: #e7e2d8;
+  --s-stone-500: #8c857a;
+  --s-ink: #0e1f18;
+  --s-brass: #b08d57;
+
+  --s-observed: #1f5f8b;
+  --s-official: #006a4d;
+  --s-estimated: #a86200;
+
+  --s-risk-low: #2f8f5b;
+  --s-risk-med: #c98a0b;
+  --s-risk-high: #b3261e;
+
+  --s-epc-a: #008054;
+  --s-epc-b: #19b459;
+  --s-epc-c: #8dce46;
+  --s-epc-d: #ffd500;
+  --s-epc-e: #fcaa65;
+  --s-epc-f: #ef8023;
+  --s-epc-g: #e9153b;
+
+  --s-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --s-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --s-dur-1: 160ms;
+  --s-dur-2: 320ms;
+  --s-dur-3: 640ms;
+  --s-dur-4: 1200ms;
+
+  background: var(--s-paper);
+  color: var(--s-ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.studio .s-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.studio .s-mono {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.8125rem;
+  color: var(--s-stone-500);
+}
+
+.studio .s-stage {
+  background: linear-gradient(180deg, var(--s-forest-950), var(--s-forest-800));
+  color: var(--s-paper);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
