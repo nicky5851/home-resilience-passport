@@ -16,7 +16,7 @@ from app.schemas import Household
 from app.services import homes as homes_service
 from app.services import passport as passports
 from app.services import planner
-from app.studio.common.schemas import StudioHome
+from app.studio.common.schemas import StudioHome, StudioHomeSummary, postcode_district
 
 DEMO_PREFIX = "demo-"
 
@@ -97,4 +97,19 @@ async def resolve_home(
         score=home.assessment.score,
         household=household,
         completed_measure_ids=completed,
+    )
+
+
+def summarize(home: StudioHome) -> StudioHomeSummary:
+    """`StudioHomeSummary` for the HomeChip — never the full postcode or (for demos) a UPRN."""
+    is_demo_slug = home.ref[len(DEMO_PREFIX) :] if home.is_demo else None
+    return StudioHomeSummary(
+        ref=home.ref,
+        is_demo=home.is_demo,
+        line1=demo_label(is_demo_slug) if is_demo_slug is not None else home.address.line1,
+        postcode_district=postcode_district(home.address.postcode),
+        lat=home.address.lat,
+        lon=home.address.lon,
+        property=home.property,
+        score=home.score,
     )

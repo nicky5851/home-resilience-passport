@@ -679,3 +679,25 @@ Format: spec §13. Newest at the bottom.
 - PR: #29
 - Affects the other coder? no — purely additive, verified `make test`/`make lint`/`pnpm build`
   all green and docs/openapi.json unchanged
+
+### 2026-10-28 · S01 · Retrofit Sandbox: one house diagram, not five
+- Decision: drew one schematic SVG house with the spec's six hotspot regions
+  (roof/walls/windows/door/ground/services) that highlight when a measure there is applied,
+  instead of five separate hand-drawn isometric templates (terrace/semi/detached/bungalow/flat)
+  with per-measure visual layers. Click-to-toggle measure chips (not HTML5 drag-and-drop) drive
+  the sandbox — the spec already asks for an "Add" button alternative for keyboard/touch, so
+  that path became the only path.
+- Also: `resolve_home`'s home-summary conversion was duplicated in `router.py`'s hub route and
+  would have been duplicated again here, so it moved to a shared `summarize()` in
+  `common/home_ref.py` (used by both).
+- Alternatives: the full five-template, per-measure-layer build as written (explicitly scoped
+  down by the human given the 1 am deadline across all 20 features)
+- Why: the data/interaction model (hotspot grouping, live score simulation, save-as-plan) is
+  what §13 rule 1 and the acceptance test actually check; the illustration fidelity is not
+  load-bearing for any test or the contract
+- Files: backend/app/studio/features/s01_retrofit_sandbox/**, backend/tests/studio/test_s01_retrofit_sandbox.py,
+  backend/app/studio/common/home_ref.py, backend/app/studio/router.py,
+  frontend/src/features/studio/s01/**, frontend/src/features/studio/components/Dial.tsx,
+  frontend/src/app/studio/[ref]/s01-retrofit-sandbox/page.tsx
+- PR: #?
+- Affects the other coder? no

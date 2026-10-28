@@ -4,221 +4,453 @@
  */
 
 export interface paths {
-  "/api/v1/studio/features": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Features */
-    get: operations["list_features_api_v1_studio_features_get"]
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  "/api/v1/studio/homes/{ref}": {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Home Summary */
-    get: operations["home_summary_api_v1_studio_homes__ref__get"]
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
+    "/api/v1/studio/features": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Features */
+        get: operations["list_features_api_v1_studio_features_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/homes/{ref}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Home Summary */
+        get: operations["home_summary_api_v1_studio_homes__ref__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/homes/{ref}/sandbox": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Sandbox Init */
+        get: operations["sandbox_init_api_v1_studio_homes__ref__sandbox_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/homes/{ref}/sandbox/simulate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sandbox Simulate */
+        post: operations["sandbox_simulate_api_v1_studio_homes__ref__sandbox_simulate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
-export type webhooks = Record<string, never>
+export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /** FeatureMeta */
-    FeatureMeta: {
-      /**
-       * Chapter
-       * @enum {string}
-       */
-      chapter: "understand" | "measure" | "plan" | "live" | "money" | "ask"
-      /** Demo Ok */
-      demo_ok: boolean
-      /** Id */
-      id: string
-      /** Needs Login */
-      needs_login: boolean
-      /** Pitch */
-      pitch: string
-      /** Slug */
-      slug: string
-      /** Title */
-      title: string
-    }
-    /** HTTPValidationError */
-    HTTPValidationError: {
-      /** Detail */
-      detail?: components["schemas"]["ValidationError"][]
-    }
-    /** PropertyFacts */
-    PropertyFacts: {
-      /** Built Form */
-      built_form: string | null
-      /** Co2 Tonnes Per Year */
-      co2_tonnes_per_year: number | null
-      /** Construction Age Band */
-      construction_age_band: string | null
-      /** Epc Rating */
-      epc_rating: ("A" | "B" | "C" | "D" | "E" | "F" | "G") | null
-      /** Epc Score */
-      epc_score: number | null
-      /** Floor Area M2 */
-      floor_area_m2: number | null
-      /** Floor Level */
-      floor_level: number | null
-      /** Main Fuel */
-      main_fuel: string | null
-      /** Main Heating */
-      main_heating: string | null
-      /**
-       * Property Type
-       * @enum {string}
-       */
-      property_type: "detached" | "semi_detached" | "terraced" | "flat" | "bungalow" | "other"
-      /**
-       * Source
-       * @enum {string}
-       */
-      source: "epc_api" | "model" | "user" | "demo"
-      /** Top Floor */
-      top_floor: boolean | null
-    }
-    /** ResilienceScore */
-    ResilienceScore: {
-      /**
-       * Band
-       * @enum {string}
-       */
-      band: "A" | "B" | "C" | "D" | "E" | "F" | "G"
-      /**
-       * Components
-       * @default []
-       */
-      components: components["schemas"]["ScoreComponent"][]
-      /** Value */
-      value: number
-      /** Version */
-      version: string
-    }
-    /** ScoreComponent */
-    ScoreComponent: {
-      /** Max Points */
-      max_points: number
-      /**
-       * Name
-       * @enum {string}
-       */
-      name: "flood" | "heat" | "storm" | "subsidence" | "carbon"
-      /** Points */
-      points: number
-      /** Reason */
-      reason: string
-    }
-    /** StudioHomeSummary */
-    StudioHomeSummary: {
-      /** Is Demo */
-      is_demo: boolean
-      /** Lat */
-      lat: number
-      /** Line1 */
-      line1: string | null
-      /** Lon */
-      lon: number
-      /** Postcode District */
-      postcode_district: string | null
-      property: components["schemas"]["PropertyFacts"]
-      /** Ref */
-      ref: string
-      score: components["schemas"]["ResilienceScore"]
-    }
-    /** ValidationError */
-    ValidationError: {
-      /** Context */
-      ctx?: Record<string, never>
-      /** Input */
-      input?: unknown
-      /** Location */
-      loc: (string | number)[]
-      /** Message */
-      msg: string
-      /** Error Type */
-      type: string
-    }
-  }
-  responses: never
-  parameters: never
-  requestBodies: never
-  headers: never
-  pathItems: never
+    schemas: {
+        /** Evidence */
+        Evidence: {
+            /**
+             * Evidence
+             * @enum {string}
+             */
+            evidence: "observed" | "official_modelled" | "estimated";
+            /** Label */
+            label: string;
+            /** Note */
+            note: string | null;
+            /**
+             * Retrieved At
+             * Format: date-time
+             */
+            retrieved_at: string;
+            /** Source */
+            source: string;
+            /** Source Url */
+            source_url: string;
+        };
+        /** FeatureMeta */
+        FeatureMeta: {
+            /**
+             * Chapter
+             * @enum {string}
+             */
+            chapter: "understand" | "measure" | "plan" | "live" | "money" | "ask";
+            /** Demo Ok */
+            demo_ok: boolean;
+            /** Id */
+            id: string;
+            /** Needs Login */
+            needs_login: boolean;
+            /** Pitch */
+            pitch: string;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+        };
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
+        /** Hotspot */
+        Hotspot: {
+            /**
+             * Id
+             * @enum {string}
+             */
+            id: "roof" | "walls" | "windows" | "door" | "ground" | "services";
+            /** Label */
+            label: string;
+            /** Measure Ids */
+            measure_ids: string[];
+        };
+        /**
+         * Measure
+         * @description One row of data/reference/measures.csv (CONTRACT §5).
+         */
+        Measure: {
+            /** Annual Bill Saving Gbp */
+            annual_bill_saving_gbp: number;
+            /**
+             * Category
+             * @enum {string}
+             */
+            category: "flood" | "heat" | "storm" | "subsidence" | "carbon";
+            /** Co2 Saved Kg Per Year */
+            co2_saved_kg_per_year: number;
+            /** Cost High Gbp */
+            cost_high_gbp: number;
+            /** Cost Low Gbp */
+            cost_low_gbp: number;
+            /**
+             * Hazards Reduced
+             * @default []
+             */
+            hazards_reduced: string[];
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Needs Landlord */
+            needs_landlord: boolean;
+            /**
+             * Property Types
+             * @default []
+             */
+            property_types: string[];
+            /** Renter Ok */
+            renter_ok: boolean;
+            /** Resilience Points */
+            resilience_points: number;
+            /** Source Url */
+            source_url: string;
+        };
+        /** PropertyFacts */
+        PropertyFacts: {
+            /** Built Form */
+            built_form: string | null;
+            /** Co2 Tonnes Per Year */
+            co2_tonnes_per_year: number | null;
+            /** Construction Age Band */
+            construction_age_band: string | null;
+            /** Epc Rating */
+            epc_rating: ("A" | "B" | "C" | "D" | "E" | "F" | "G") | null;
+            /** Epc Score */
+            epc_score: number | null;
+            /** Floor Area M2 */
+            floor_area_m2: number | null;
+            /** Floor Level */
+            floor_level: number | null;
+            /** Main Fuel */
+            main_fuel: string | null;
+            /** Main Heating */
+            main_heating: string | null;
+            /**
+             * Property Type
+             * @enum {string}
+             */
+            property_type: "detached" | "semi_detached" | "terraced" | "flat" | "bungalow" | "other";
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "epc_api" | "model" | "user" | "demo";
+            /** Top Floor */
+            top_floor: boolean | null;
+        };
+        /** ResilienceScore */
+        ResilienceScore: {
+            /**
+             * Band
+             * @enum {string}
+             */
+            band: "A" | "B" | "C" | "D" | "E" | "F" | "G";
+            /**
+             * Components
+             * @default []
+             */
+            components: components["schemas"]["ScoreComponent"][];
+            /** Value */
+            value: number;
+            /** Version */
+            version: string;
+        };
+        /** SandboxInit */
+        SandboxInit: {
+            baseline: components["schemas"]["SandboxState"];
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            home: components["schemas"]["StudioHomeSummary"];
+            /** Hotspots */
+            hotspots: components["schemas"]["Hotspot"][];
+            /** Measures */
+            measures: components["schemas"]["SandboxMeasure"][];
+        };
+        /** SandboxMeasure */
+        SandboxMeasure: {
+            /** Already Done */
+            already_done: boolean;
+            /**
+             * Hotspot
+             * @enum {string}
+             */
+            hotspot: "roof" | "walls" | "windows" | "door" | "ground" | "services";
+            measure: components["schemas"]["Measure"];
+        };
+        /** SandboxState */
+        SandboxState: {
+            /** Bill Saving Gbp Per Year */
+            bill_saving_gbp_per_year: number;
+            /** Co2 Saved Kg Per Year */
+            co2_saved_kg_per_year: number;
+            /** Components */
+            components: components["schemas"]["ScoreComponentDelta"][];
+            /** Cost High Gbp */
+            cost_high_gbp: number;
+            /** Cost Low Gbp */
+            cost_low_gbp: number;
+            /** Delta Points */
+            delta_points: number;
+            /** Payback Years */
+            payback_years: number | null;
+            score: components["schemas"]["ResilienceScore"];
+        };
+        /** ScoreComponent */
+        ScoreComponent: {
+            /** Max Points */
+            max_points: number;
+            /**
+             * Name
+             * @enum {string}
+             */
+            name: "flood" | "heat" | "storm" | "subsidence" | "carbon";
+            /** Points */
+            points: number;
+            /** Reason */
+            reason: string;
+        };
+        /** ScoreComponentDelta */
+        ScoreComponentDelta: {
+            /** After */
+            after: number;
+            /** Before */
+            before: number;
+            /** Max Points */
+            max_points: number;
+            /** Name */
+            name: string;
+        };
+        /** SimulateRequest */
+        SimulateRequest: {
+            /** Measure Ids */
+            measure_ids: string[];
+        };
+        /** StudioHomeSummary */
+        StudioHomeSummary: {
+            /** Is Demo */
+            is_demo: boolean;
+            /** Lat */
+            lat: number;
+            /** Line1 */
+            line1: string | null;
+            /** Lon */
+            lon: number;
+            /** Postcode District */
+            postcode_district: string | null;
+            property: components["schemas"]["PropertyFacts"];
+            /** Ref */
+            ref: string;
+            score: components["schemas"]["ResilienceScore"];
+        };
+        /** ValidationError */
+        ValidationError: {
+            /** Context */
+            ctx?: Record<string, never>;
+            /** Input */
+            input?: unknown;
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
-export type $defs = Record<string, never>
+export type $defs = Record<string, never>;
 export interface operations {
-  list_features_api_v1_studio_features_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          "application/json": components["schemas"]["FeatureMeta"][]
-        }
-      }
-    }
-  }
-  home_summary_api_v1_studio_homes__ref__get: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        ref: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          "application/json": components["schemas"]["StudioHomeSummary"]
-        }
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"]
-        }
-      }
-    }
-  }
+    list_features_api_v1_studio_features_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeatureMeta"][];
+                };
+            };
+        };
+    };
+    home_summary_api_v1_studio_homes__ref__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudioHomeSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sandbox_init_api_v1_studio_homes__ref__sandbox_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SandboxInit"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sandbox_simulate_api_v1_studio_homes__ref__sandbox_simulate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SimulateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SandboxState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
 }

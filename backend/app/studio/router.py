@@ -9,8 +9,8 @@ from fastapi import APIRouter
 from app.api.deps import SessionDep
 from app.config import get_settings
 from app.studio import features as features_pkg
-from app.studio.common.home_ref import DEMO_PREFIX, MaybeUser, demo_label, resolve_home
-from app.studio.common.schemas import FeatureMeta, StudioHomeSummary, postcode_district
+from app.studio.common.home_ref import MaybeUser, resolve_home, summarize
+from app.studio.common.schemas import FeatureMeta, StudioHomeSummary
 
 router = APIRouter(prefix="/studio", tags=["studio"])
 
@@ -46,13 +46,4 @@ def list_features() -> list[FeatureMeta]:
 @router.get("/homes/{ref}")
 async def home_summary(ref: str, session: SessionDep, user: MaybeUser) -> StudioHomeSummary:
     home = await resolve_home(ref, session, user)
-    return StudioHomeSummary(
-        ref=home.ref,
-        is_demo=home.is_demo,
-        line1=demo_label(ref[len(DEMO_PREFIX) :]) if home.is_demo else home.address.line1,
-        postcode_district=postcode_district(home.address.postcode),
-        lat=home.address.lat,
-        lon=home.address.lon,
-        property=home.property,
-        score=home.score,
-    )
+    return summarize(home)
