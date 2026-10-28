@@ -39,6 +39,29 @@ class PostcodeInfo(BaseModel):
     region: str | None = None  # English region name ("South West"), or "Wales"
 
 
+async def nearest_postcodes(lat: float, lon: float, radius_m: int, limit: int) -> list[str]:
+    """Normalised postcodes within `radius_m` of (lat, lon) (Studio S02's peer search).
+
+    Not cached per-call (lat/lon pairs rarely repeat); the EPC lookups downstream of this are.
+    Raises `UpstreamUnavailable` on a network error; empty list on no results.
+    """
+    try:
+        async with new_client() as client:
+            res = await client.get(
+                POSTCODES_IO_URL.removesuffix("/"),
+                params={"lon": lon, "lat": lat, "radius": radius_m, "limit": limit},
+            )
+    except httpx.HTTPError as e:
+        raise UpstreamUnavailable(SOURCE) from e
+    if res.status_code != 200:
+        raise UpstreamUnavailable(SOURCE)
+    try:
+        rows = res.json()["result"] or []
+    except (ValueError, KeyError, TypeError) as e:
+        raise UpstreamUnavailable(SOURCE) from e
+    return [r["postcode"] for r in rows if r.get("postcode")]
+
+
 async def lookup_postcode(postcode: str, cache: Cache) -> PostcodeInfo:
     """`postcode` must already be normalised (`SW1A 1AA`, CONTRACT §1 rule 7)."""
     key = cache_key(postcode)

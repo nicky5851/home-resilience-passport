@@ -8,3 +8,8 @@ export type Hotspot = components["schemas"]["Hotspot"]
 export type SandboxMeasure = components["schemas"]["SandboxMeasure"]
 export type SandboxState = components["schemas"]["SandboxState"]
 export type SandboxInit = components["schemas"]["SandboxInit"]
+
+export type StreetProof = components["schemas"]["StreetProof"]
+export type Story = components["schemas"]["Story"]
+export type UpgradeRow = components["schemas"]["UpgradeRow"]
+export type BandCount = components["schemas"]["BandCount"]

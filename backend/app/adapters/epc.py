@@ -93,6 +93,13 @@ async def search_postcode(postcode: str, cache: Cache) -> list[EpcAddress]:
     `postcode` must already be normalised. Raises `UpstreamUnavailable` (no token, timeout,
     error), which the caller turns into an empty list.
     """
+    rows = await search_postcode_rows(postcode, cache)
+    return latest_per_address(rows)
+
+
+async def search_postcode_rows(postcode: str, cache: Cache) -> list[dict[str, Any]]:
+    """Every certificate summary row in the postcode, not deduplicated to one per address
+    (Studio S02 needs each address's full history to spot improvers)."""
 
     async def fetch() -> dict[str, Any]:
         body = await _get(
@@ -101,8 +108,17 @@ async def search_postcode(postcode: str, cache: Cache) -> list[EpcAddress]:
         )
         return {"data": (body or {}).get("data") or []}
 
-    rows = (await _cached(cache, _key(f"search:{postcode}"), fetch))["data"]
-    return latest_per_address(rows)
+    return (await _cached(cache, _key(f"search:{postcode}"), fetch))["data"]
+
+
+async def certificate_by_number(certificate_number: str, cache: Cache) -> dict[str, Any] | None:
+    """The raw certificate body (Studio S02 compares full certs, not just `PropertyFacts`)."""
+
+    async def fetch() -> dict[str, Any]:
+        body = await _get("/api/certificate", {"certificate_number": certificate_number})
+        return {"data": (body or {}).get("data")}
+
+    return (await _cached(cache, _key(f"certificate:{certificate_number}"), fetch))["data"]
 
 
 def latest_per_address(rows: list[dict[str, Any]]) -> list[EpcAddress]:
@@ -186,6 +202,22 @@ def _decode(schema: str, code: str, raw: Any) -> str | None:
     if value is not None:
         return value
     return str(raw) if isinstance(raw, str) and not raw.isdigit() else None
+
+
+def decode_field(schema: str, field: str, raw: Any) -> str | None:
+    """Public `_decode`, for Studio S02 to read `built_form`/`construction_age_band` off a raw
+    certificate the same way `map_certificate` does."""
+    return _decode(schema, field, raw)
+
+
+def property_type_from_certificate(c: dict[str, Any]) -> PropertyType:
+    """The same `PropertyType` `map_certificate` derives, exposed for Studio S02's peer
+    matching (it needs this without the rest of `PropertyFacts`)."""
+    schema = c.get("schema_type") or ""
+    kind = _decode(schema, "property_type", c.get("property_type"))
+    built_form = _decode(schema, "built_form", c.get("built_form"))
+    dwelling = (_text(c.get("dwelling_type")) or "").lower()
+    return _property_type(kind, built_form, dwelling)
 
 
 def _text(v: Any) -> str | None:

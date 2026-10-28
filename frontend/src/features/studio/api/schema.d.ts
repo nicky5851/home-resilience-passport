@@ -72,10 +72,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/street-proof": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Street Proof */
+        get: operations["street_proof_api_v1_studio_homes__ref__street_proof_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** BandCount */
+        BandCount: {
+            /** Band */
+            band: string;
+            /** Count */
+            count: number;
+        };
         /** Evidence */
         Evidence: {
             /**
@@ -297,6 +321,52 @@ export interface components {
             /** Measure Ids */
             measure_ids: string[];
         };
+        /** Story */
+        Story: {
+            /** Distance M */
+            distance_m: number;
+            /** From Band */
+            from_band: string;
+            /** From Sap */
+            from_sap: number;
+            /** To Band */
+            to_band: string;
+            /** To Sap */
+            to_sap: number;
+            /** Upgrades */
+            upgrades: string[];
+            /** Year From */
+            year_from: number;
+            /** Year To */
+            year_to: number;
+        };
+        /** StreetProof */
+        StreetProof: {
+            /** Band Distribution */
+            band_distribution: components["schemas"]["BandCount"][];
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Improvers Count */
+            improvers_count: number;
+            /** Median Sap Gain */
+            median_sap_gain: number | null;
+            /** Partial */
+            partial: boolean;
+            /** Peer Definition */
+            peer_definition: string;
+            /** Peers Count */
+            peers_count: number;
+            /** Stories */
+            stories: components["schemas"]["Story"][];
+            /** Top Upgrades */
+            top_upgrades: components["schemas"]["UpgradeRow"][];
+            /** Your Percentile */
+            your_percentile: number | null;
+            /** Your Sap */
+            your_sap: number | null;
+        };
         /** StudioHomeSummary */
         StudioHomeSummary: {
             /** Is Demo */
@@ -313,6 +383,15 @@ export interface components {
             /** Ref */
             ref: string;
             score: components["schemas"]["ResilienceScore"];
+        };
+        /** UpgradeRow */
+        UpgradeRow: {
+            /** Label */
+            label: string;
+            /** Median Sap Gain */
+            median_sap_gain: number | null;
+            /** Share Pct */
+            share_pct: number;
         };
         /** ValidationError */
         ValidationError: {
@@ -440,6 +519,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SandboxState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    street_proof_api_v1_studio_homes__ref__street_proof_get: {
+        parameters: {
+            query?: {
+                radius_m?: number;
+            };
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StreetProof"];
                 };
             };
             /** @description Validation Error */
