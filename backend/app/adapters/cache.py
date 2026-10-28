@@ -4,6 +4,7 @@ The cache is best-effort: if the database cannot be reached, reads miss and writ
 so a data source that is up still answers (spec §5: the app keeps working when a part is down).
 """
 
+import asyncio
 import logging
 from datetime import UTC, datetime, timedelta
 from typing import Any, Protocol
@@ -25,18 +26,23 @@ class Cache(Protocol):
 
 
 class DbCache:
+    """One request's cache. Adapters run in parallel (`asyncio.gather`) but an AsyncSession
+    allows one operation at a time, so every call takes the lock first."""
+
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
+        self._lock = asyncio.Lock()
 
     async def get(self, key: str) -> dict[str, Any] | None:
         stmt = select(ApiCache.value).where(
             ApiCache.key == key, ApiCache.expires_at > datetime.now(UTC)
         )
-        try:
-            return await self.session.scalar(stmt)
-        except (SQLAlchemyError, OSError) as e:
-            await self._failed("read", e)
-            return None
+        async with self._lock:
+            try:
+                return await self.session.scalar(stmt)
+            except (SQLAlchemyError, OSError) as e:
+                await self._failed("read", e)
+                return None
 
     async def put(self, key: str, source: str, value: dict[str, Any], ttl: timedelta) -> None:
         now = datetime.now(UTC)
@@ -46,11 +52,12 @@ class DbCache:
             index_elements=[ApiCache.key],
             set_={"value": stmt.excluded.value, "fetched_at": now, "expires_at": now + ttl},
         )
-        try:
-            await self.session.execute(stmt)
-            await self.session.commit()
-        except (SQLAlchemyError, OSError) as e:
-            await self._failed("write", e)
+        async with self._lock:
+            try:
+                await self.session.execute(stmt)
+                await self.session.commit()
+            except (SQLAlchemyError, OSError) as e:
+                await self._failed("write", e)
 
     async def _failed(self, action: str, e: Exception) -> None:
         # The key may contain a postcode, so only the error type is logged (CONTRACT §6).

@@ -36,6 +36,7 @@ class PostcodeInfo(BaseModel):
     lon: float
     local_authority: str | None
     country: Country | None
+    region: str | None = None  # English region name ("South West"), or "Wales"
 
 
 async def lookup_postcode(postcode: str, cache: Cache) -> PostcodeInfo:
@@ -65,10 +66,13 @@ async def _fetch(postcode: str) -> PostcodeInfo:
         raise UpstreamUnavailable(SOURCE) from e
     if lat is None or lon is None:  # a few live postcodes have no grid reference
         raise PostcodeNotFound(postcode)
+    country = _COUNTRIES.get(r.get("country") or "")
     return PostcodeInfo(
         postcode=postcode,
         lat=lat,
         lon=lon,
         local_authority=r.get("admin_district"),
-        country=_COUNTRIES.get(r.get("country") or ""),
+        country=country,
+        # postcodes.io has English regions only; Wales is one row of the climate defaults.
+        region=r.get("region") or ("Wales" if country == "wales" else None),
     )

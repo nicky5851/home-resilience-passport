@@ -281,3 +281,35 @@ Format: spec §13. Newest at the bottom.
 - Files: backend/app/db/load_rofrs.py, backend/app/config.py, Makefile
 - Commit: 4ada357
 - Affects the other coder? yes (each machine runs `make flood-data` once, otherwise every flood band is unknown)
+
+### 2026-10-27 · N8 · Climate averages use the years that have data (no 2050 in the model)
+- Decision: each statistic is averaged over the years with at least 360 days of data; the request still asks for 2041–2050, but `EC_Earth3P_HR` returns no 2050, so the future figures are 2041–2049 in practice. A period whose numbers fall outside CONTRACT §2's ranges is treated as failed
+- Alternatives: divide by the 10 years asked for; request 2041–2049
+- Why: dividing by 10 would understate every 2050 figure by about 10%; keeping the contract window means a model that adds 2050 just works
+- Files: backend/app/adapters/climate.py
+- Commit: 6b5caec
+- Affects the other coder? yes (L's `why` text says "by 2050"; the figure is the 2041–2049 mean)
+
+### 2026-10-27 · N8 · Regional defaults: by region name, else nearest point
+- Decision: `climate_defaults.py` has one row per English region and Wales, filled by `scripts/climate_defaults.py` from real calls at one city per region. The fallback picks the row by the postcode's region from postcodes.io (`PostcodeInfo.region`, "Wales" for Wales), else the nearest reference point. Each period falls back on its own; defaults are never cached
+- Alternatives: nearest point only
+- Why: nearest-point alone sends GL54 (rural-cottage demo, South West) to West Midlands
+- Files: backend/app/adapters/climate.py, backend/app/adapters/climate_defaults.py, backend/scripts/climate_defaults.py, backend/app/adapters/postcodes.py
+- Commit: 6b5caec
+- Affects the other coder? no
+
+### 2026-10-27 · N8 · `DbCache` serialises its own session use
+- Decision: `DbCache` holds an `asyncio.Lock` so adapters can share one request's cache under `asyncio.gather`
+- Alternatives: one session per adapter call
+- Why: the live check showed parallel reads failing (`InvalidRequestError`) and silently skipping the cache; N9 gathers every adapter
+- Files: backend/app/adapters/cache.py
+- Commit: 6b5caec
+- Affects the other coder? no
+
+### 2026-10-27 · N8 · `make fixtures` (outputs) and `make fixtures-inputs` (contract)
+- Decision: `make fixtures` recomputes `risk`, `score` and the passport copies from each fixture's inputs with `app.scoring`, offline. `make fixtures-inputs` first records `rofrs_band` and the six climate fields from the real adapters (real answers only), keeping `property`, `subsidence_signal` and `active_flood_warnings` (a live value). `plan` and `funding` stay until N11/L6. Fixture changes go in the separate `fixtures: real data` PR, which needs L's approval
+- Alternatives: one command doing both; record a live warnings snapshot
+- Why: inputs are contract (spec §3.3); outputs may be refreshed by either coder
+- Files: backend/scripts/make_fixtures.py, Makefile
+- Commit: 6b5caec
+- Affects the other coder? yes (until L5 merges, `compute_score` is the stub, so refreshed scores are all 50)
