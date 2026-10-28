@@ -101,38 +101,38 @@
     "generated_at": "2026-10-27T09:00:00Z"
   },
   "score": {
-    "value": 50,
-    "band": "D",
+    "value": 77,
+    "band": "B",
     "components": [
       {
         "name": "flood",
-        "points": 15.0,
+        "points": 30.0,
         "max_points": 30.0,
-        "reason": "Placeholder points until the score engine is ready."
+        "reason": "Your flood risk is low by 2050, worth 30 of 30 points."
       },
       {
         "name": "heat",
-        "points": 10.0,
+        "points": 20.0,
         "max_points": 20.0,
-        "reason": "Placeholder points until the score engine is ready."
+        "reason": "Your heat risk is low by 2050, worth 20 of 20 points."
       },
       {
         "name": "storm",
         "points": 5.0,
         "max_points": 10.0,
-        "reason": "Placeholder points until the score engine is ready."
+        "reason": "Your storm risk is medium by 2050, worth 5 of 10 points."
       },
       {
         "name": "subsidence",
-        "points": 5.0,
+        "points": 10.0,
         "max_points": 10.0,
-        "reason": "Placeholder points until the score engine is ready."
+        "reason": "Your subsidence risk is low by 2050, worth 10 of 10 points."
       },
       {
         "name": "carbon",
-        "points": 15.0,
+        "points": 12.3,
         "max_points": 30.0,
-        "reason": "Placeholder points until the score engine is ready."
+        "reason": "Based on your EPC score of 41."
       }
     ],
     "version": "v1"
@@ -481,38 +481,38 @@
       "generated_at": "2026-10-27T09:00:00Z"
     },
     "latest_score": {
-      "value": 50,
-      "band": "D",
+      "value": 77,
+      "band": "B",
       "components": [
         {
           "name": "flood",
-          "points": 15.0,
+          "points": 30.0,
           "max_points": 30.0,
-          "reason": "Placeholder points until the score engine is ready."
+          "reason": "Your flood risk is low by 2050, worth 30 of 30 points."
         },
         {
           "name": "heat",
-          "points": 10.0,
+          "points": 20.0,
           "max_points": 20.0,
-          "reason": "Placeholder points until the score engine is ready."
+          "reason": "Your heat risk is low by 2050, worth 20 of 20 points."
         },
         {
           "name": "storm",
           "points": 5.0,
           "max_points": 10.0,
-          "reason": "Placeholder points until the score engine is ready."
+          "reason": "Your storm risk is medium by 2050, worth 5 of 10 points."
         },
         {
           "name": "subsidence",
-          "points": 5.0,
+          "points": 10.0,
           "max_points": 10.0,
-          "reason": "Placeholder points until the score engine is ready."
+          "reason": "Your subsidence risk is low by 2050, worth 10 of 10 points."
         },
         {
           "name": "carbon",
-          "points": 15.0,
+          "points": 12.3,
           "max_points": 30.0,
-          "reason": "Placeholder points until the score engine is ready."
+          "reason": "Based on your EPC score of 41."
         }
       ],
       "version": "v1"
