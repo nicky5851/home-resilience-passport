@@ -1,12 +1,13 @@
 // The in-progress "start a home" draft: address picked on /start, carried to /start/household.
 // Lives in sessionStorage so it survives the forced login round trip (CONTRACT §4.4).
-import type { AddressInput, PropertyFactsInput } from "@/lib/api/types"
+import type { AddressInput, HouseholdInput, PropertyFactsInput } from "@/lib/api/types"
 
 const KEY = "hrp_start_draft"
 
 export type StartDraft = {
   address: AddressInput
   property?: PropertyFactsInput | null
+  household?: HouseholdInput
 }
 
 export function saveDraft(draft: StartDraft): void {
