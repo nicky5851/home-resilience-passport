@@ -1,5 +1,6 @@
 "use client"
 
+import { FundingBundleView } from "@/components/journey/funding-bundle"
 import { RiskView } from "@/components/journey/risk-view"
 import { ScoreDashboard } from "@/components/journey/score-dashboard"
 import { useDemoHome } from "@/lib/journey/use-demo-home"
@@ -28,6 +29,10 @@ export function DemoHomeView({ slug }: { slug: string }) {
       </div>
       <RiskView risk={home.risk} address={home.address} />
       <ScoreDashboard score={home.score} property={home.property} />
+      <div>
+        <h2 className="text-deep mb-3 text-xl font-semibold">Funding</h2>
+        <FundingBundleView bundle={home.funding} cost={home.plan.total_cost_low_gbp} />
+      </div>
     </>
   )
 }
