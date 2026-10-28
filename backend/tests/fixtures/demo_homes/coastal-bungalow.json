@@ -36,14 +36,14 @@
     "source": "demo"
   },
   "inputs": {
-    "rofrs_band": "very_low",
+    "rofrs_band": "none",
     "active_flood_warnings": 0,
-    "hot_days_baseline": 0.2,
-    "hot_days_2050": 1.0,
-    "heavy_rain_days_baseline": 9.0,
-    "heavy_rain_days_2050": 11.0,
-    "max_wind_baseline_kmh": 66.0,
-    "max_wind_2050_kmh": 70.0,
+    "hot_days_baseline": 0.0,
+    "hot_days_2050": 0.0,
+    "heavy_rain_days_baseline": 1.4,
+    "heavy_rain_days_2050": 2.0,
+    "max_wind_baseline_kmh": 77.6,
+    "max_wind_2050_kmh": 79.9,
     "subsidence_signal": "unknown",
     "property": {
       "property_type": "bungalow",
@@ -66,28 +66,28 @@
         "hazard": "river_sea_flood",
         "today": "low",
         "y2050": "low",
-        "why": "The Environment Agency rates flood risk here as very low.",
+        "why": "Your postcode is not in the Environment Agency's flood dataset, so this is low risk.",
         "data_source": "Environment Agency"
       },
       {
         "hazard": "overheating",
         "today": "low",
         "y2050": "low",
-        "why": "About 1 hot days a year by 2050, up from 0 today.",
+        "why": "About 0 hot days a year by 2050, up from 0 today.",
         "data_source": "Open-Meteo (CMIP6)"
       },
       {
         "hazard": "storm",
         "today": "high",
         "y2050": "high",
-        "why": "Strongest winds around 70 km/h by 2050, from 66 km/h today.",
+        "why": "Strongest winds around 80 km/h by 2050, from 78 km/h today.",
         "data_source": "Open-Meteo (CMIP6)"
       },
       {
         "hazard": "subsidence",
         "today": "medium",
         "y2050": "medium",
-        "why": "Based on what you told us about your soil and walls.",
+        "why": "You did not tell us about soil or wall cracks, so this is scored as medium risk.",
         "data_source": "Your answer"
       },
       {
@@ -108,25 +108,25 @@
         "name": "flood",
         "points": 30.0,
         "max_points": 30.0,
-        "reason": "Your flood risk by 2050 sets these points."
+        "reason": "Your flood risk is low by 2050, worth 30 of 30 points."
       },
       {
         "name": "heat",
         "points": 20.0,
         "max_points": 20.0,
-        "reason": "Your heat risk by 2050 sets these points."
+        "reason": "Your heat risk is low by 2050, worth 20 of 20 points."
       },
       {
         "name": "storm",
         "points": 1.0,
         "max_points": 10.0,
-        "reason": "Your storm risk by 2050 sets these points."
+        "reason": "Your storm risk is high by 2050, worth 1 of 10 points."
       },
       {
         "name": "subsidence",
         "points": 5.0,
         "max_points": 10.0,
-        "reason": "Your subsidence risk by 2050 sets these points."
+        "reason": "Your subsidence risk is medium by 2050, worth 5 of 10 points."
       },
       {
         "name": "carbon",
@@ -486,28 +486,28 @@
           "hazard": "river_sea_flood",
           "today": "low",
           "y2050": "low",
-          "why": "The Environment Agency rates flood risk here as very low.",
+          "why": "Your postcode is not in the Environment Agency's flood dataset, so this is low risk.",
           "data_source": "Environment Agency"
         },
         {
           "hazard": "overheating",
           "today": "low",
           "y2050": "low",
-          "why": "About 1 hot days a year by 2050, up from 0 today.",
+          "why": "About 0 hot days a year by 2050, up from 0 today.",
           "data_source": "Open-Meteo (CMIP6)"
         },
         {
           "hazard": "storm",
           "today": "high",
           "y2050": "high",
-          "why": "Strongest winds around 70 km/h by 2050, from 66 km/h today.",
+          "why": "Strongest winds around 80 km/h by 2050, from 78 km/h today.",
           "data_source": "Open-Meteo (CMIP6)"
         },
         {
           "hazard": "subsidence",
           "today": "medium",
           "y2050": "medium",
-          "why": "Based on what you told us about your soil and walls.",
+          "why": "You did not tell us about soil or wall cracks, so this is scored as medium risk.",
           "data_source": "Your answer"
         },
         {
@@ -528,25 +528,25 @@
           "name": "flood",
           "points": 30.0,
           "max_points": 30.0,
-          "reason": "Your flood risk by 2050 sets these points."
+          "reason": "Your flood risk is low by 2050, worth 30 of 30 points."
         },
         {
           "name": "heat",
           "points": 20.0,
           "max_points": 20.0,
-          "reason": "Your heat risk by 2050 sets these points."
+          "reason": "Your heat risk is low by 2050, worth 20 of 20 points."
         },
         {
           "name": "storm",
           "points": 1.0,
           "max_points": 10.0,
-          "reason": "Your storm risk by 2050 sets these points."
+          "reason": "Your storm risk is high by 2050, worth 1 of 10 points."
         },
         {
           "name": "subsidence",
           "points": 5.0,
           "max_points": 10.0,
-          "reason": "Your subsidence risk by 2050 sets these points."
+          "reason": "Your subsidence risk is medium by 2050, worth 5 of 10 points."
         },
         {
           "name": "carbon",

@@ -5,21 +5,21 @@
         "hazard": "river_sea_flood",
         "today": "low",
         "y2050": "low",
-        "why": "The Environment Agency rates flood risk here as very low.",
+        "why": "Your postcode is not in the Environment Agency's flood dataset, so this is low risk.",
         "data_source": "Environment Agency"
       },
       {
         "hazard": "overheating",
         "today": "low",
         "y2050": "low",
-        "why": "About 1 hot days a year by 2050, up from 0 today.",
+        "why": "About 0 hot days a year by 2050, up from 0 today.",
         "data_source": "Open-Meteo (CMIP6)"
       },
       {
         "hazard": "storm",
         "today": "high",
         "y2050": "high",
-        "why": "Strongest winds around 70 km/h by 2050, from 66 km/h today.",
+        "why": "Strongest winds around 80 km/h by 2050, from 78 km/h today.",
         "data_source": "Open-Meteo (CMIP6)"
       },
       {
