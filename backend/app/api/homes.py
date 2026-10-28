@@ -1,4 +1,9 @@
-"""Home routes (spec §4.2). Foundation stub: answers from the demo fixtures."""
+"""Home routes (spec §4.2).
+
+N9: creating and assessing a home is real (`app/services/assessment.py`). Homes, plans, work
+records and sharing still live in the in-memory stub store until real accounts (N10) give homes
+a database owner.
+"""
 
 import uuid
 from datetime import date
@@ -6,9 +11,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, File, Form, Response, UploadFile, status
 
-from app.api.deps import CurrentUser
+from app.api.deps import ApiCacheDep, CurrentUser, SessionDep
 from app.api.errors import ApiError
-from app.api.stub_store import StubHome, now, store
+from app.api.stub_store import StubHome, fixture_by_postcode, now, store
 from app.config import CERTIFICATE_NAME_MAX_CHARS, UPLOAD_MAX_BYTES, get_settings
 from app.schemas import FundingBundle, Passport, PassportEvent, Plan
 from app.schemas.api import (
@@ -20,6 +25,7 @@ from app.schemas.api import (
     PlanRequest,
     ShareLink,
 )
+from app.services import assessment
 
 router = APIRouter(prefix="/homes", tags=["homes"])
 
@@ -39,8 +45,19 @@ def _home(home_id: uuid.UUID, user: CurrentUser) -> StubHome:
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
-def create_home(body: HomeCreate, user: CurrentUser) -> HomeCreated:
+async def create_home(body: HomeCreate, user: CurrentUser, cache: ApiCacheDep) -> HomeCreated:
+    prop = await assessment.property_for(body.address, body.property_override, cache)
+    if prop is None and (demo := fixture_by_postcode(body.address.postcode)) is not None:
+        prop = demo.demo.property  # a demo address without a certificate in the register
+    if prop is None:
+        raise ApiError(
+            400,
+            "validation",
+            "property_override: we couldn't find an energy certificate for this address. "
+            "Please add the property details.",
+        )
     home = store.create_home(user.email, body.address.line1, body.address.postcode)
+    home.real = {"address": body.address, "property": prop, "household": body.household}
     return HomeCreated(home_id=home.home_id)
 
 
@@ -66,8 +83,18 @@ def delete_home(home_id: uuid.UUID, user: CurrentUser) -> None:
 
 
 @router.post("/{home_id}/assess")
-def assess(home_id: uuid.UUID, user: CurrentUser) -> Assessment:
-    return store.assess(_home(home_id, user))
+async def assess(
+    home_id: uuid.UUID, user: CurrentUser, session: SessionDep, cache: ApiCacheDep
+) -> Assessment:
+    home = _home(home_id, user)
+    if home.real is None:
+        return store.assess(home)  # the five demo homes answer from their fixtures, offline
+    result = await assessment.assess(home.real["address"], home.real["property"], session, cache)
+    event = PassportEvent(
+        id=uuid.uuid4(), kind="assessed", at=now(), score_after=result.score.value, detail={}
+    )
+    store.record_assessment(home, result, event)
+    return result
 
 
 @router.get("/{home_id}/risk")
@@ -75,7 +102,7 @@ def latest_risk(home_id: uuid.UUID, user: CurrentUser) -> Assessment:
     home = _home(home_id, user)
     if not home.assessed:
         raise ApiError(404, "not_found", "This home has not been assessed yet.")
-    return home.fixture.assessment
+    return store.latest_assessment(home)
 
 
 @router.post("/{home_id}/plan")

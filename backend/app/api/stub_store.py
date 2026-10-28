@@ -69,6 +69,10 @@ class StubHome:
     line1: str
     postcode: str
     assessed: bool = False
+    # N9: the real latest assessment for homes stored in the database (None = use the fixture).
+    assessment: Assessment | None = None
+    # N9: the database home's address, property and household for its passport.
+    real: dict | None = None
     share_token: str | None = None
     events: list[PassportEvent] = field(default_factory=list)
     certificates: dict[uuid.UUID, tuple[bytes, str]] = field(default_factory=dict)
@@ -92,10 +96,14 @@ class StubStore:
                 events=list(f.passport.events),
             )
 
-    def create_home(self, owner: str, line1: str, postcode: str) -> StubHome:
+    def create_home(
+        self, owner: str, line1: str, postcode: str, home_id: uuid.UUID | None = None
+    ) -> StubHome:
+        """`home_id` is the database row's id (N9); the stub still serves plan, funding, work
+        records and sharing for it until N11/N14."""
         match = fixture_by_postcode(postcode)
         home = StubHome(
-            home_id=uuid.uuid4(),
+            home_id=home_id or uuid.uuid4(),
             owner=owner,
             slug=match.slug if match else DEFAULT_SLUG,
             line1=line1,
@@ -120,6 +128,13 @@ class StubStore:
     def by_share_token(self, token: str) -> StubHome | None:
         return next((h for h in self.homes.values() if h.share_token == token), None)
 
+    def record_assessment(
+        self, home: StubHome, assessment: Assessment, event: PassportEvent
+    ) -> None:
+        home.assessed = True
+        home.assessment = assessment
+        home.events.append(event)
+
     def assess(self, home: StubHome) -> Assessment:
         home.assessed = True
         a = home.fixture.assessment
@@ -139,14 +154,18 @@ class StubStore:
 
     def passport(self, home: StubHome) -> Passport:
         f = home.fixture
-        return f.passport.model_copy(
-            update={
-                "home_id": home.home_id,
-                "address": f.demo.address.model_copy(update={"line1": home.line1}),
-                "events": home.events,
-                "share_token": home.share_token,
-            }
-        )
+        risk, score = self.latest(home)
+        update = {
+            "home_id": home.home_id,
+            "address": f.demo.address.model_copy(update={"line1": home.line1}),
+            "latest_risk": risk,
+            "latest_score": score,
+            "events": home.events,
+            "share_token": home.share_token,
+        }
+        if home.real is not None:  # N9: a database home's own address, property and household
+            update |= home.real
+        return f.passport.model_copy(update=update)
 
     def plan(self, home: StubHome) -> Plan:
         return home.fixture.demo.plan
@@ -155,7 +174,12 @@ class StubStore:
         return home.fixture.demo.funding
 
     def latest(self, home: StubHome) -> tuple[RiskProfile, ResilienceScore]:
+        if home.assessment is not None:
+            return home.assessment.risk, home.assessment.score
         return home.fixture.demo.risk, home.fixture.demo.score
+
+    def latest_assessment(self, home: StubHome) -> Assessment:
+        return home.assessment or home.fixture.assessment
 
 
 def now() -> datetime:

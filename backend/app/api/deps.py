@@ -18,6 +18,7 @@ def get_api_cache(session: Annotated[AsyncSession, Depends(get_session)]) -> Cac
 
 
 ApiCacheDep = Annotated[Cache, Depends(get_api_cache)]
+SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 
 def current_user(request: Request) -> UserRead:
