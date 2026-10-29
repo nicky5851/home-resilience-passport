@@ -344,6 +344,40 @@
         "title": "ColdestHour",
         "type": "object"
       },
+      "Comp": {
+        "additionalProperties": false,
+        "properties": {
+          "distance_m": {
+            "title": "Distance M",
+            "type": "integer"
+          },
+          "indexed_gbp": {
+            "title": "Indexed Gbp",
+            "type": "integer"
+          },
+          "month": {
+            "title": "Month",
+            "type": "string"
+          },
+          "price_gbp": {
+            "title": "Price Gbp",
+            "type": "integer"
+          },
+          "property_type": {
+            "title": "Property Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "month",
+          "price_gbp",
+          "indexed_gbp",
+          "property_type",
+          "distance_m"
+        ],
+        "title": "Comp",
+        "type": "object"
+      },
       "Constraint": {
         "additionalProperties": false,
         "properties": {
@@ -1093,6 +1127,143 @@
           "index"
         ],
         "title": "ForecastSlot",
+        "type": "object"
+      },
+      "GreenValue": {
+        "additionalProperties": false,
+        "properties": {
+          "comparables_count": {
+            "title": "Comparables Count",
+            "type": "integer"
+          },
+          "comps": {
+            "items": {
+              "$ref": "#/components/schemas/Comp"
+            },
+            "title": "Comps",
+            "type": "array"
+          },
+          "current_band": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Band"
+          },
+          "disclaimer": {
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "fallback_used": {
+            "title": "Fallback Used",
+            "type": "boolean"
+          },
+          "indexed_median_gbp": {
+            "title": "Indexed Median Gbp",
+            "type": "integer"
+          },
+          "method": {
+            "enum": [
+              "comparables",
+              "hpi_average"
+            ],
+            "title": "Method",
+            "type": "string"
+          },
+          "plan_cost_high_gbp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plan Cost High Gbp"
+          },
+          "plan_cost_low_gbp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plan Cost Low Gbp"
+          },
+          "premium_sources": {
+            "items": {
+              "$ref": "#/components/schemas/PremiumSource"
+            },
+            "title": "Premium Sources",
+            "type": "array"
+          },
+          "range_high_gbp": {
+            "title": "Range High Gbp",
+            "type": "integer"
+          },
+          "range_low_gbp": {
+            "title": "Range Low Gbp",
+            "type": "integer"
+          },
+          "target_band": {
+            "title": "Target Band",
+            "type": "string"
+          },
+          "uplift_high_gbp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uplift High Gbp"
+          },
+          "uplift_low_gbp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uplift Low Gbp"
+          }
+        },
+        "required": [
+          "comparables_count",
+          "method",
+          "indexed_median_gbp",
+          "range_low_gbp",
+          "range_high_gbp",
+          "comps",
+          "current_band",
+          "target_band",
+          "uplift_low_gbp",
+          "uplift_high_gbp",
+          "plan_cost_low_gbp",
+          "plan_cost_high_gbp",
+          "premium_sources",
+          "disclaimer",
+          "evidence",
+          "fallback_used"
+        ],
+        "title": "GreenValue",
         "type": "object"
       },
       "GridCarbon": {
@@ -1984,6 +2155,40 @@
           "fallback_used"
         ],
         "title": "PermissionRadar",
+        "type": "object"
+      },
+      "PremiumSource": {
+        "additionalProperties": false,
+        "properties": {
+          "pct_high": {
+            "title": "Pct High",
+            "type": "number"
+          },
+          "pct_low": {
+            "title": "Pct Low",
+            "type": "number"
+          },
+          "study": {
+            "title": "Study",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "year": {
+            "title": "Year",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "study",
+          "url",
+          "year",
+          "pct_low",
+          "pct_high"
+        ],
+        "title": "PremiumSource",
         "type": "object"
       },
       "Projection": {
@@ -3570,6 +3775,59 @@
         "tags": [
           "studio",
           "studio:s08"
+        ]
+      }
+    },
+    "/api/v1/studio/homes/{ref}/green-value": {
+      "get": {
+        "operationId": "green_value_api_v1_studio_homes__ref__green_value_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "target_band",
+            "required": false,
+            "schema": {
+              "default": "B",
+              "title": "Target Band",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreenValue"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Green Value",
+        "tags": [
+          "studio",
+          "studio:s14"
         ]
       }
     },

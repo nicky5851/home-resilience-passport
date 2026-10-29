@@ -54,3 +54,6 @@ export type HourReading = components["schemas"]["HourReading"]
 
 export type Affordability = components["schemas"]["Affordability"]
 export type AffordabilityScenario = components["schemas"]["Scenario"]
+
+export type GreenValue = components["schemas"]["GreenValue"]
+export type Comp = components["schemas"]["Comp"]

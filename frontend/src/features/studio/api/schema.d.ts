@@ -106,6 +106,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/green-value": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Green Value */
+        get: operations["green_value_api_v1_studio_homes__ref__green_value_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/grid-carbon": {
         parameters: {
             query?: never;
@@ -467,6 +484,19 @@ export interface components {
             /** Temp C */
             temp_c: number;
         };
+        /** Comp */
+        Comp: {
+            /** Distance M */
+            distance_m: number;
+            /** Indexed Gbp */
+            indexed_gbp: number;
+            /** Month */
+            month: string;
+            /** Price Gbp */
+            price_gbp: number;
+            /** Property Type */
+            property_type: string;
+        };
         /** Constraint */
         Constraint: {
             /** Applies */
@@ -737,6 +767,44 @@ export interface components {
              * Format: date-time
              */
             to_at: string;
+        };
+        /** GreenValue */
+        GreenValue: {
+            /** Comparables Count */
+            comparables_count: number;
+            /** Comps */
+            comps: components["schemas"]["Comp"][];
+            /** Current Band */
+            current_band: string | null;
+            /** Disclaimer */
+            disclaimer: string;
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Indexed Median Gbp */
+            indexed_median_gbp: number;
+            /**
+             * Method
+             * @enum {string}
+             */
+            method: "comparables" | "hpi_average";
+            /** Plan Cost High Gbp */
+            plan_cost_high_gbp: number | null;
+            /** Plan Cost Low Gbp */
+            plan_cost_low_gbp: number | null;
+            /** Premium Sources */
+            premium_sources: components["schemas"]["PremiumSource"][];
+            /** Range High Gbp */
+            range_high_gbp: number;
+            /** Range Low Gbp */
+            range_low_gbp: number;
+            /** Target Band */
+            target_band: string;
+            /** Uplift High Gbp */
+            uplift_high_gbp: number | null;
+            /** Uplift Low Gbp */
+            uplift_low_gbp: number | null;
         };
         /** GridCarbon */
         GridCarbon: {
@@ -1050,6 +1118,19 @@ export interface components {
             local_planning_authority: string | null;
             /** Measures */
             measures: components["schemas"]["MeasureVerdict"][];
+        };
+        /** PremiumSource */
+        PremiumSource: {
+            /** Pct High */
+            pct_high: number;
+            /** Pct Low */
+            pct_low: number;
+            /** Study */
+            study: string;
+            /** Url */
+            url: string;
+            /** Year */
+            year: number;
         };
         /** Projection */
         Projection: {
@@ -1645,6 +1726,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FloodMemory"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    green_value_api_v1_studio_homes__ref__green_value_get: {
+        parameters: {
+            query?: {
+                target_band?: string;
+            };
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GreenValue"];
                 };
             };
             /** @description Validation Error */
