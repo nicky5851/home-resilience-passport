@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/breathe-easy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Breathe Easy */
+        post: operations["breathe_easy_api_v1_studio_homes__ref__breathe_easy_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/damp-lab": {
         parameters: {
             query?: never;
@@ -367,6 +384,34 @@ export interface components {
              * @enum {string}
              */
             unit: "kwh" | "m3";
+        };
+        /** BreatheEasy */
+        BreatheEasy: {
+            /** Avoid Windows */
+            avoid_windows: components["schemas"]["Window"][];
+            /** Best Windows */
+            best_windows: components["schemas"]["Window"][];
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Hours */
+            hours: components["schemas"]["HourReading"][];
+            /** Today Summary */
+            today_summary: string;
+        };
+        /** BreatheEasyRequest */
+        BreatheEasyRequest: {
+            /**
+             * Pollen Sensitive
+             * @default false
+             */
+            pollen_sensitive: boolean;
+            /**
+             * Pollution Sensitive
+             * @default false
+             */
+            pollution_sensitive: boolean;
         };
         /** ColdestHour */
         ColdestHour: {
@@ -753,6 +798,37 @@ export interface components {
             label: string;
             /** Measure Ids */
             measure_ids: string[];
+        };
+        /** HourReading */
+        HourReading: {
+            /**
+             * Advice
+             * @enum {string}
+             */
+            advice: "open" | "brief_airing" | "keep_closed";
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Daqi */
+            daqi: number | null;
+            /** Daqi Band */
+            daqi_band: ("low" | "moderate" | "high" | "very_high") | null;
+            /** No2 */
+            no2: number | null;
+            /** O3 */
+            o3: number | null;
+            /** Pm2 5 */
+            pm2_5: number | null;
+            /** Pollen Level */
+            pollen_level: ("none" | "low" | "moderate" | "high") | null;
+            /** Rh Pct */
+            rh_pct: number | null;
+            /** Score */
+            score: number;
+            /** Temp C */
+            temp_c: number | null;
         };
         /** HourlyReplayPoint */
         HourlyReplayPoint: {
@@ -1294,6 +1370,21 @@ export interface components {
             /** Error Type */
             type: string;
         };
+        /** Window */
+        Window: {
+            /**
+             * End At
+             * Format: date-time
+             */
+            end_at: string;
+            /** Reason */
+            reason: string;
+            /**
+             * Start At
+             * Format: date-time
+             */
+            start_at: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -1341,6 +1432,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StudioHomeSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    breathe_easy_api_v1_studio_homes__ref__breathe_easy_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BreatheEasyRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BreatheEasy"];
                 };
             };
             /** @description Validation Error */

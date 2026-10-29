@@ -47,3 +47,7 @@ export type MeasureVerdict = components["schemas"]["MeasureVerdict"]
 export type DampLab = components["schemas"]["DampLab"]
 export type DampLabRequest = components["schemas"]["DampLabRequest"]
 export type SurfaceRisk = components["schemas"]["SurfaceRisk"]
+
+export type BreatheEasy = components["schemas"]["BreatheEasy"]
+export type BreatheEasyRequest = components["schemas"]["BreatheEasyRequest"]
+export type HourReading = components["schemas"]["HourReading"]
