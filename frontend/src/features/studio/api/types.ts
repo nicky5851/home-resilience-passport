@@ -78,3 +78,7 @@ export type CompareTopMeasure = components["schemas"]["TopMeasure"]
 export type CompareCandidate = components["schemas"]["Candidate"]
 export type CompareRiskProfile = components["schemas"]["RiskProfile"]
 export type CompareHazardLevel = components["schemas"]["HazardLevel"]
+
+export type ConciergeReply = components["schemas"]["ConciergeReply"]
+export type ConciergeMessage = components["schemas"]["ConciergeMessage"]
+export type ConciergeCitation = components["schemas"]["Citation"]

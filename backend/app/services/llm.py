@@ -144,6 +144,42 @@ async def _create(user_prompt: str) -> str | None:
     return next((b.text for b in response.content if b.type == "text"), None)
 
 
+async def tool_call(
+    system: str, messages: list[dict[str, Any]], tools: list[dict[str, Any]]
+) -> anthropic.types.Message | None:
+    """One Messages API call with tool use (Studio S19 Concierge, docs/studio/N_20_function.md).
+
+    Same timeout, key and daily-cap handling as `_create`, but returns the raw `Message` so the
+    caller can run its own tool-use loop; `None` means "fall back to the template" for any
+    reason (no key, cap reached, timeout, upstream error). Tests replace this."""
+    settings = get_settings()
+    if not settings.anthropic_api_key:
+        return None
+    if not daily_cap.take(settings.llm_daily_call_limit):
+        log.warning("LLM daily call limit reached; concierge falls back to the template")
+        return None
+    try:
+        async with anthropic.AsyncAnthropic(
+            api_key=settings.anthropic_api_key, timeout=LLM_TIMEOUT_S, max_retries=0
+        ) as client:
+            return await client.messages.create(
+                model=settings.anthropic_model,
+                max_tokens=MAX_TOKENS,
+                system=system,
+                messages=messages,
+                tools=tools,
+            )
+    except anthropic.APITimeoutError:
+        log.warning("LLM slower than %.0f s; concierge falls back to the template", LLM_TIMEOUT_S)
+        return None
+    except anthropic.APIConnectionError:
+        log.warning("LLM unreachable; concierge falls back to the template")
+        return None
+    except anthropic.APIStatusError as e:
+        log.warning("LLM answered %s; concierge falls back to the template", e.status_code)
+        return None
+
+
 def _parse(text: str, wanted: set[str]) -> dict[str, str]:
     """Keep only sentences for measures we asked about that fit the length rules."""
     try:

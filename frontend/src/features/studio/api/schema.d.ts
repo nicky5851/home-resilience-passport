@@ -158,6 +158,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/concierge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Concierge */
+        post: operations["concierge_api_v1_studio_homes__ref__concierge_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/damp-lab": {
         parameters: {
             query?: never;
@@ -661,6 +678,13 @@ export interface components {
             /** Why */
             why: string;
         };
+        /** Citation */
+        Citation: {
+            /** Label */
+            label: string;
+            /** Tool */
+            tool: string;
+        };
         /** Climate */
         Climate: {
             /** First Frost Avg */
@@ -735,6 +759,35 @@ export interface components {
         CompareRequest: {
             /** Candidates */
             candidates: components["schemas"]["Candidate"][];
+        };
+        /** ConciergeMessage */
+        ConciergeMessage: {
+            /** Content */
+            content: string;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "user" | "assistant";
+        };
+        /** ConciergeReply */
+        ConciergeReply: {
+            /** Answer */
+            answer: string;
+            /** Citations */
+            citations: components["schemas"]["Citation"][];
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "llm" | "template";
+            /** Suggested */
+            suggested: string[];
+        };
+        /** ConciergeRequest */
+        ConciergeRequest: {
+            /** Messages */
+            messages: components["schemas"]["ConciergeMessage"][];
         };
         /** Constraint */
         Constraint: {
@@ -2261,6 +2314,41 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    concierge_api_v1_studio_homes__ref__concierge_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConciergeRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConciergeReply"];
+                };
             };
             /** @description Validation Error */
             422: {
