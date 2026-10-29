@@ -20,6 +20,81 @@
         "title": "AdviceLink",
         "type": "object"
       },
+      "Affordability": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "fallback_used": {
+            "title": "Fallback Used",
+            "type": "boolean"
+          },
+          "heating_fuel": {
+            "enum": [
+              "gas",
+              "electric",
+              "oil",
+              "lpg",
+              "other"
+            ],
+            "title": "Heating Fuel",
+            "type": "string"
+          },
+          "help_links": {
+            "items": {
+              "$ref": "#/components/schemas/HelpLink"
+            },
+            "title": "Help Links",
+            "type": "array"
+          },
+          "kwh": {
+            "$ref": "#/components/schemas/Kwh"
+          },
+          "kwh_source": {
+            "enum": [
+              "epc_certificate",
+              "estimated"
+            ],
+            "title": "Kwh Source",
+            "type": "string"
+          },
+          "lilee_indicator": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lilee Indicator"
+          },
+          "scenarios": {
+            "items": {
+              "$ref": "#/components/schemas/Scenario"
+            },
+            "title": "Scenarios",
+            "type": "array"
+          }
+        },
+        "required": [
+          "kwh",
+          "kwh_source",
+          "heating_fuel",
+          "scenarios",
+          "lilee_indicator",
+          "help_links",
+          "evidence",
+          "fallback_used"
+        ],
+        "title": "Affordability",
+        "type": "object"
+      },
       "AnnualHeatPump": {
         "additionalProperties": false,
         "properties": {
@@ -1262,6 +1337,25 @@
         "title": "HeatPumpYearRequest",
         "type": "object"
       },
+      "HelpLink": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "url"
+        ],
+        "title": "HelpLink",
+        "type": "object"
+      },
       "Hotspot": {
         "additionalProperties": false,
         "properties": {
@@ -1521,6 +1615,25 @@
           "delta_pct"
         ],
         "title": "Intervention",
+        "type": "object"
+      },
+      "Kwh": {
+        "additionalProperties": false,
+        "properties": {
+          "electricity": {
+            "title": "Electricity",
+            "type": "integer"
+          },
+          "heating_fuel": {
+            "title": "Heating Fuel",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "heating_fuel",
+          "electricity"
+        ],
+        "title": "Kwh",
         "type": "object"
       },
       "Lesson": {
@@ -2330,6 +2443,96 @@
           "kwh"
         ],
         "title": "ScatterPoint",
+        "type": "object"
+      },
+      "Scenario": {
+        "additionalProperties": false,
+        "properties": {
+          "above_10pct": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Above 10Pct"
+          },
+          "above_10pct_after": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Above 10Pct After"
+          },
+          "annual_cost_after_gbp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Annual Cost After Gbp"
+          },
+          "annual_cost_gbp": {
+            "title": "Annual Cost Gbp",
+            "type": "integer"
+          },
+          "id": {
+            "enum": [
+              "today",
+              "peak_2022",
+              "shock_30",
+              "pre_crisis_2021"
+            ],
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "pct_income": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pct Income"
+          },
+          "pct_income_after": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pct Income After"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "annual_cost_gbp",
+          "annual_cost_after_gbp",
+          "pct_income",
+          "pct_income_after",
+          "above_10pct",
+          "above_10pct_after"
+        ],
+        "title": "Scenario",
         "type": "object"
       },
       "ScoreComponent": {
@@ -3147,6 +3350,65 @@
         "summary": "Home Summary",
         "tags": [
           "studio"
+        ]
+      }
+    },
+    "/api/v1/studio/homes/{ref}/affordability": {
+      "get": {
+        "operationId": "affordability_api_v1_studio_homes__ref__affordability_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "measure_ids",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Measure Ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Affordability"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Affordability",
+        "tags": [
+          "studio",
+          "studio:s13"
         ]
       }
     },

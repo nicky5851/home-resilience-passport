@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/affordability": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Affordability */
+        get: operations["affordability_api_v1_studio_homes__ref__affordability_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/breathe-easy": {
         parameters: {
             query?: never;
@@ -320,6 +337,30 @@ export interface components {
             label: string;
             /** Url */
             url: string;
+        };
+        /** Affordability */
+        Affordability: {
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /**
+             * Heating Fuel
+             * @enum {string}
+             */
+            heating_fuel: "gas" | "electric" | "oil" | "lpg" | "other";
+            /** Help Links */
+            help_links: components["schemas"]["HelpLink"][];
+            kwh: components["schemas"]["Kwh"];
+            /**
+             * Kwh Source
+             * @enum {string}
+             */
+            kwh_source: "epc_certificate" | "estimated";
+            /** Lilee Indicator */
+            lilee_indicator: boolean | null;
+            /** Scenarios */
+            scenarios: components["schemas"]["Scenario"][];
         };
         /** AnnualHeatPump */
         AnnualHeatPump: {
@@ -787,6 +828,13 @@ export interface components {
              */
             keep_gas_standing_charge: boolean;
         };
+        /** HelpLink */
+        HelpLink: {
+            /** Label */
+            label: string;
+            /** Url */
+            url: string;
+        };
         /** Hotspot */
         Hotspot: {
             /**
@@ -860,6 +908,13 @@ export interface components {
             id: string;
             /** Label */
             label: string;
+        };
+        /** Kwh */
+        Kwh: {
+            /** Electricity */
+            electricity: number;
+            /** Heating Fuel */
+            heating_fuel: number;
         };
         /** Lesson */
         Lesson: {
@@ -1127,6 +1182,28 @@ export interface components {
             kwh: number;
             /** T Mean C */
             t_mean_c: number;
+        };
+        /** Scenario */
+        Scenario: {
+            /** Above 10Pct */
+            above_10pct: boolean | null;
+            /** Above 10Pct After */
+            above_10pct_after: boolean | null;
+            /** Annual Cost After Gbp */
+            annual_cost_after_gbp: number | null;
+            /** Annual Cost Gbp */
+            annual_cost_gbp: number;
+            /**
+             * Id
+             * @enum {string}
+             */
+            id: "today" | "peak_2022" | "shock_30" | "pre_crisis_2021";
+            /** Label */
+            label: string;
+            /** Pct Income */
+            pct_income: number | null;
+            /** Pct Income After */
+            pct_income_after: number | null;
         };
         /** ScoreComponent */
         ScoreComponent: {
@@ -1432,6 +1509,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StudioHomeSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    affordability_api_v1_studio_homes__ref__affordability_get: {
+        parameters: {
+            query?: {
+                measure_ids?: string | null;
+            };
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Affordability"];
                 };
             };
             /** @description Validation Error */

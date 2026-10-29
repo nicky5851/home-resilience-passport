@@ -51,3 +51,6 @@ export type SurfaceRisk = components["schemas"]["SurfaceRisk"]
 export type BreatheEasy = components["schemas"]["BreatheEasy"]
 export type BreatheEasyRequest = components["schemas"]["BreatheEasyRequest"]
 export type HourReading = components["schemas"]["HourReading"]
+
+export type Affordability = components["schemas"]["Affordability"]
+export type AffordabilityScenario = components["schemas"]["Scenario"]
