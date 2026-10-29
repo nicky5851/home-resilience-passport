@@ -117,9 +117,15 @@ export function StudioHub({ homeRef }: { homeRef?: string }) {
                   <li key={f.id}>
                     <Reveal index={i}>
                       <Link
-                        href={homeRef ? `/studio/${homeRef}/${f.id}-${f.slug}` : "/studio"}
+                        href={
+                          f.id === "s18"
+                            ? "/studio/compare"
+                            : homeRef
+                              ? `/studio/${homeRef}/${f.id}-${f.slug}`
+                              : "/studio"
+                        }
                         className="s-card s-focus-ring block"
-                        aria-disabled={!homeRef}
+                        aria-disabled={f.id !== "s18" && !homeRef}
                       >
                         <p className="s-mono">
                           {f.id.toUpperCase()} · {f.needs_login ? "sign in" : "open to all"}

@@ -4,6 +4,40 @@
  */
 
 export interface paths {
+    "/api/v1/studio/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Compare */
+        post: operations["compare_api_v1_studio_compare_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/compare/demo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Compare Demo */
+        get: operations["compare_demo_api_v1_studio_compare_demo_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/features": {
         parameters: {
             query?: never;
@@ -593,6 +627,15 @@ export interface components {
              */
             pollution_sensitive: boolean;
         };
+        /** Candidate */
+        Candidate: {
+            /** Line1 */
+            line1: string;
+            /** Postcode */
+            postcode: string;
+            /** Uprn */
+            uprn?: string | null;
+        };
         /** CareCalendar */
         CareCalendar: {
             climate: components["schemas"]["Climate"];
@@ -654,6 +697,44 @@ export interface components {
             price_gbp: number;
             /** Property Type */
             property_type: string;
+        };
+        /** Compare */
+        Compare: {
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Homes */
+            homes: components["schemas"]["CompareHome"][];
+            /** Summary */
+            summary: string;
+            winners: components["schemas"]["Winners"];
+        };
+        /** CompareHome */
+        CompareHome: {
+            /** Cost To 70 High Gbp */
+            cost_to_70_high_gbp: number | null;
+            /** Cost To 70 Low Gbp */
+            cost_to_70_low_gbp: number | null;
+            /**
+             * Label
+             * @enum {string}
+             */
+            label: "A" | "B" | "C";
+            /** Line1 */
+            line1: string;
+            /** Postcode */
+            postcode: string;
+            property: components["schemas"]["PropertyFacts"];
+            risk: components["schemas"]["RiskProfile"];
+            score: components["schemas"]["ResilienceScore"];
+            /** Top Measures */
+            top_measures: components["schemas"]["TopMeasure"][];
+        };
+        /** CompareRequest */
+        CompareRequest: {
+            /** Candidates */
+            candidates: components["schemas"]["Candidate"][];
         };
         /** Constraint */
         Constraint: {
@@ -1009,6 +1090,28 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** HazardLevel */
+        HazardLevel: {
+            /** Data Source */
+            data_source: string;
+            /**
+             * Hazard
+             * @enum {string}
+             */
+            hazard: "river_sea_flood" | "overheating" | "storm" | "subsidence" | "surface_water";
+            /**
+             * Today
+             * @enum {string}
+             */
+            today: "low" | "medium" | "high";
+            /** Why */
+            why: string;
+            /**
+             * Y2050
+             * @enum {string}
+             */
+            y2050: "low" | "medium" | "high";
         };
         /** HeatPumpPrices */
         HeatPumpPrices: {
@@ -1428,6 +1531,19 @@ export interface components {
             /** Version */
             version: string;
         };
+        /** RiskProfile */
+        RiskProfile: {
+            /**
+             * Generated At
+             * Format: date-time
+             */
+            generated_at: string;
+            /**
+             * Levels
+             * @default []
+             */
+            levels: components["schemas"]["HazardLevel"][];
+        };
         /** SandboxInit */
         SandboxInit: {
             baseline: components["schemas"]["SandboxState"];
@@ -1731,6 +1847,19 @@ export interface components {
              */
             surface: "wall" | "corner" | "window";
         };
+        /** TopMeasure */
+        TopMeasure: {
+            /** Cost High Gbp */
+            cost_high_gbp: number;
+            /** Cost Low Gbp */
+            cost_low_gbp: number;
+            /** Measure Id */
+            measure_id: string;
+            /** Name */
+            name: string;
+            /** Score Uplift */
+            score_uplift: number;
+        };
         /** UpgradeRow */
         UpgradeRow: {
             /** Label */
@@ -1786,6 +1915,39 @@ export interface components {
              */
             start_at: string;
         };
+        /** Winners */
+        Winners: {
+            /**
+             * Carbon
+             * @enum {string}
+             */
+            carbon: "A" | "B" | "C";
+            /**
+             * Flood
+             * @enum {string}
+             */
+            flood: "A" | "B" | "C";
+            /**
+             * Heat
+             * @enum {string}
+             */
+            heat: "A" | "B" | "C";
+            /**
+             * Overall
+             * @enum {string}
+             */
+            overall: "A" | "B" | "C";
+            /**
+             * Storm
+             * @enum {string}
+             */
+            storm: "A" | "B" | "C";
+            /**
+             * Subsidence
+             * @enum {string}
+             */
+            subsidence: "A" | "B" | "C";
+        };
         /** YearRow */
         YearRow: {
             /** Co2 Kg Do Nothing */
@@ -1806,6 +1968,70 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    compare_api_v1_studio_compare_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompareRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Compare"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    compare_demo_api_v1_studio_compare_demo_get: {
+        parameters: {
+            query: {
+                slugs: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Compare"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_features_api_v1_studio_features_get: {
         parameters: {
             query?: never;

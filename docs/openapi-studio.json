@@ -360,6 +360,36 @@
         "title": "BreatheEasyRequest",
         "type": "object"
       },
+      "Candidate": {
+        "additionalProperties": false,
+        "properties": {
+          "line1": {
+            "title": "Line1",
+            "type": "string"
+          },
+          "postcode": {
+            "title": "Postcode",
+            "type": "string"
+          },
+          "uprn": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uprn"
+          }
+        },
+        "required": [
+          "postcode",
+          "line1"
+        ],
+        "title": "Candidate",
+        "type": "object"
+      },
       "CareCalendar": {
         "additionalProperties": false,
         "properties": {
@@ -549,6 +579,135 @@
           "distance_m"
         ],
         "title": "Comp",
+        "type": "object"
+      },
+      "Compare": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "fallback_used": {
+            "title": "Fallback Used",
+            "type": "boolean"
+          },
+          "homes": {
+            "items": {
+              "$ref": "#/components/schemas/CompareHome"
+            },
+            "title": "Homes",
+            "type": "array"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "winners": {
+            "$ref": "#/components/schemas/Winners"
+          }
+        },
+        "required": [
+          "homes",
+          "winners",
+          "summary",
+          "evidence",
+          "fallback_used"
+        ],
+        "title": "Compare",
+        "type": "object"
+      },
+      "CompareHome": {
+        "additionalProperties": false,
+        "properties": {
+          "cost_to_70_high_gbp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost To 70 High Gbp"
+          },
+          "cost_to_70_low_gbp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost To 70 Low Gbp"
+          },
+          "label": {
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ],
+            "title": "Label",
+            "type": "string"
+          },
+          "line1": {
+            "title": "Line1",
+            "type": "string"
+          },
+          "postcode": {
+            "title": "Postcode",
+            "type": "string"
+          },
+          "property": {
+            "$ref": "#/components/schemas/PropertyFacts"
+          },
+          "risk": {
+            "$ref": "#/components/schemas/RiskProfile"
+          },
+          "score": {
+            "$ref": "#/components/schemas/ResilienceScore"
+          },
+          "top_measures": {
+            "items": {
+              "$ref": "#/components/schemas/TopMeasure"
+            },
+            "title": "Top Measures",
+            "type": "array"
+          }
+        },
+        "required": [
+          "label",
+          "line1",
+          "postcode",
+          "property",
+          "risk",
+          "score",
+          "top_measures",
+          "cost_to_70_low_gbp",
+          "cost_to_70_high_gbp"
+        ],
+        "title": "CompareHome",
+        "type": "object"
+      },
+      "CompareRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/Candidate"
+            },
+            "title": "Candidates",
+            "type": "array"
+          }
+        },
+        "required": [
+          "candidates"
+        ],
+        "title": "CompareRequest",
         "type": "object"
       },
       "Constraint": {
@@ -1603,6 +1762,58 @@
           }
         },
         "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HazardLevel": {
+        "additionalProperties": false,
+        "properties": {
+          "data_source": {
+            "title": "Data Source",
+            "type": "string"
+          },
+          "hazard": {
+            "enum": [
+              "river_sea_flood",
+              "overheating",
+              "storm",
+              "subsidence",
+              "surface_water"
+            ],
+            "title": "Hazard",
+            "type": "string"
+          },
+          "today": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Today",
+            "type": "string"
+          },
+          "why": {
+            "maxLength": 140,
+            "title": "Why",
+            "type": "string"
+          },
+          "y2050": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Y2050",
+            "type": "string"
+          }
+        },
+        "required": [
+          "hazard",
+          "today",
+          "y2050",
+          "why",
+          "data_source"
+        ],
+        "title": "HazardLevel",
         "type": "object"
       },
       "HeatPumpPrices": {
@@ -2859,6 +3070,30 @@
         "title": "ResilienceScore",
         "type": "object"
       },
+      "RiskProfile": {
+        "additionalProperties": false,
+        "properties": {
+          "generated_at": {
+            "format": "date-time",
+            "title": "Generated At",
+            "type": "string"
+          },
+          "levels": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/HazardLevel"
+            },
+            "title": "Levels",
+            "type": "array"
+          }
+        },
+        "required": [
+          "levels",
+          "generated_at"
+        ],
+        "title": "RiskProfile",
+        "type": "object"
+      },
       "SandboxInit": {
         "additionalProperties": false,
         "properties": {
@@ -3782,6 +4017,40 @@
         "title": "SurfaceRisk",
         "type": "object"
       },
+      "TopMeasure": {
+        "additionalProperties": false,
+        "properties": {
+          "cost_high_gbp": {
+            "title": "Cost High Gbp",
+            "type": "integer"
+          },
+          "cost_low_gbp": {
+            "title": "Cost Low Gbp",
+            "type": "integer"
+          },
+          "measure_id": {
+            "title": "Measure Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "score_uplift": {
+            "title": "Score Uplift",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "measure_id",
+          "name",
+          "cost_low_gbp",
+          "cost_high_gbp",
+          "score_uplift"
+        ],
+        "title": "TopMeasure",
+        "type": "object"
+      },
       "UpgradeRow": {
         "additionalProperties": false,
         "properties": {
@@ -3925,6 +4194,75 @@
         "title": "Window",
         "type": "object"
       },
+      "Winners": {
+        "additionalProperties": false,
+        "properties": {
+          "carbon": {
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ],
+            "title": "Carbon",
+            "type": "string"
+          },
+          "flood": {
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ],
+            "title": "Flood",
+            "type": "string"
+          },
+          "heat": {
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ],
+            "title": "Heat",
+            "type": "string"
+          },
+          "overall": {
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ],
+            "title": "Overall",
+            "type": "string"
+          },
+          "storm": {
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ],
+            "title": "Storm",
+            "type": "string"
+          },
+          "subsidence": {
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ],
+            "title": "Subsidence",
+            "type": "string"
+          }
+        },
+        "required": [
+          "flood",
+          "heat",
+          "storm",
+          "subsidence",
+          "carbon",
+          "overall"
+        ],
+        "title": "Winners",
+        "type": "object"
+      },
       "YearRow": {
         "additionalProperties": false,
         "properties": {
@@ -3962,6 +4300,91 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/studio/compare": {
+      "post": {
+        "operationId": "compare_api_v1_studio_compare_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompareRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Compare"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Compare",
+        "tags": [
+          "studio",
+          "studio:s18"
+        ]
+      }
+    },
+    "/api/v1/studio/compare/demo": {
+      "get": {
+        "operationId": "compare_demo_api_v1_studio_compare_demo_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "slugs",
+            "required": true,
+            "schema": {
+              "title": "Slugs",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Compare"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Compare Demo",
+        "tags": [
+          "studio",
+          "studio:s18"
+        ]
+      }
+    },
     "/api/v1/studio/features": {
       "get": {
         "operationId": "list_features_api_v1_studio_features_get",
