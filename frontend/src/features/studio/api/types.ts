@@ -61,3 +61,7 @@ export type Comp = components["schemas"]["Comp"]
 export type NetZeroRoad = components["schemas"]["NetZeroRoad"]
 export type NetZeroRoadStep = components["schemas"]["Step"]
 export type NetZeroYearRow = components["schemas"]["YearRow"]
+
+export type WeekAhead = components["schemas"]["WeekAhead"]
+export type WeekAheadDay = components["schemas"]["Day"]
+export type WeekAheadAlert = components["schemas"]["Alert"]

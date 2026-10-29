@@ -361,6 +361,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/week-ahead": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Week Ahead */
+        get: operations["week_ahead_api_v1_studio_homes__ref__week_ahead_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -395,6 +412,25 @@ export interface components {
             lilee_indicator: boolean | null;
             /** Scenarios */
             scenarios: components["schemas"]["Scenario"][];
+        };
+        /** Alert */
+        Alert: {
+            /** Actions */
+            actions: string[];
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "frost" | "hard_frost" | "heat" | "wind" | "strong_wind" | "heavy_rain";
+            /**
+             * Level
+             * @enum {string}
+             */
+            level: "low" | "medium" | "high";
+            /** Title */
+            title: string;
+            /** When */
+            when: string;
         };
         /** AnnualHeatPump */
         AnnualHeatPump: {
@@ -603,6 +639,31 @@ export interface components {
             occupants: number;
             /** Trickle Vents */
             trickle_vents: boolean;
+        };
+        /** Day */
+        Day: {
+            /** Alerts */
+            alerts: components["schemas"]["Alert"][];
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /**
+             * Glyph
+             * @enum {string}
+             */
+            glyph: "sun" | "cloud" | "rain" | "heavy_rain" | "wind" | "frost" | "snow" | "storm";
+            /** Gust Kmh */
+            gust_kmh: number | null;
+            /** Rain Mm */
+            rain_mm: number | null;
+            /** T Max C */
+            t_max_c: number | null;
+            /** T Min C */
+            t_min_c: number | null;
+            /** Uv Index */
+            uv_index: number | null;
         };
         /** DecadeCount */
         DecadeCount: {
@@ -1575,6 +1636,24 @@ export interface components {
             /** Error Type */
             type: string;
         };
+        /** WeekAhead */
+        WeekAhead: {
+            /** Days */
+            days: components["schemas"]["Day"][];
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Headline */
+            headline: string;
+            /**
+             * Issued At
+             * Format: date-time
+             */
+            issued_at: string;
+            /** Model */
+            model: string;
+        };
         /** Window */
         Window: {
             /**
@@ -2276,6 +2355,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StreetProof"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    week_ahead_api_v1_studio_homes__ref__week_ahead_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeekAhead"];
                 };
             };
             /** @description Validation Error */
