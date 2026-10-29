@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/damp-lab": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Damp Lab */
+        post: operations["damp_lab_api_v1_studio_homes__ref__damp_lab_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/flood-memory": {
         parameters: {
             query?: never;
@@ -405,6 +422,55 @@ export interface components {
             /** T Mean C */
             t_mean_c: number;
         };
+        /** DampLab */
+        DampLab: {
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Interventions */
+            interventions: components["schemas"]["Intervention"][];
+            /** Landlord Note */
+            landlord_note: string | null;
+            /**
+             * Moisture Class
+             * @enum {integer}
+             */
+            moisture_class: 1 | 2 | 3 | 4;
+            /** Monthly */
+            monthly: components["schemas"]["MonthlyCornerRisk"][];
+            /** Surfaces */
+            surfaces: components["schemas"]["SurfaceRisk"][];
+            /** Wall U */
+            wall_u: number;
+            /**
+             * Wall U Source
+             * @enum {string}
+             */
+            wall_u_source: "epc_description" | "age_band_default";
+            /** Window U */
+            window_u: number;
+            /** Winter */
+            winter: string;
+        };
+        /** DampLabRequest */
+        DampLabRequest: {
+            /** Bathroom Extractor */
+            bathroom_extractor: boolean;
+            /** Dries Clothes Indoors */
+            dries_clothes_indoors: boolean;
+            /**
+             * Heating Setpoint C
+             * @default 18
+             */
+            heating_setpoint_c: number;
+            /** Kitchen Extractor */
+            kitchen_extractor: boolean;
+            /** Occupants */
+            occupants: number;
+            /** Trickle Vents */
+            trickle_vents: boolean;
+        };
         /** DecadeCount */
         DecadeCount: {
             /** Count */
@@ -708,6 +774,17 @@ export interface components {
             /** Wind Kmh */
             wind_kmh: number;
         };
+        /** Intervention */
+        Intervention: {
+            /** Corner Risk Pct After */
+            corner_risk_pct_after: number;
+            /** Delta Pct */
+            delta_pct: number;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+        };
         /** Lesson */
         Lesson: {
             /** Measure Id */
@@ -790,6 +867,13 @@ export interface components {
             fuel: string;
             /** Percent */
             percent: number;
+        };
+        /** MonthlyCornerRisk */
+        MonthlyCornerRisk: {
+            /** Corner Risk Pct */
+            corner_risk_pct: number;
+            /** Month */
+            month: string;
         };
         /** MonthlyHeatPump */
         MonthlyHeatPump: {
@@ -1173,6 +1257,21 @@ export interface components {
             ref: string;
             score: components["schemas"]["ResilienceScore"];
         };
+        /** SurfaceRisk */
+        SurfaceRisk: {
+            /**
+             * Level
+             * @enum {string}
+             */
+            level: "low" | "medium" | "high";
+            /** Risk Hours Pct */
+            risk_hours_pct: number;
+            /**
+             * Surface
+             * @enum {string}
+             */
+            surface: "wall" | "corner" | "window";
+        };
         /** UpgradeRow */
         UpgradeRow: {
             /** Label */
@@ -1242,6 +1341,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StudioHomeSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    damp_lab_api_v1_studio_homes__ref__damp_lab_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DampLabRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DampLab"];
                 };
             };
             /** @description Validation Error */

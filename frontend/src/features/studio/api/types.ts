@@ -43,3 +43,7 @@ export type Projection = components["schemas"]["Projection"]
 export type PermissionRadar = components["schemas"]["PermissionRadar"]
 export type Constraint = components["schemas"]["Constraint"]
 export type MeasureVerdict = components["schemas"]["MeasureVerdict"]
+
+export type DampLab = components["schemas"]["DampLab"]
+export type DampLabRequest = components["schemas"]["DampLabRequest"]
+export type SurfaceRisk = components["schemas"]["SurfaceRisk"]

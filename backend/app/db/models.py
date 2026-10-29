@@ -212,6 +212,27 @@ class FloodPostcode(Base):
     band: Mapped[str] = mapped_column(String(10), primary_key=True)
 
 
+# --- Resilience Studio (additive, N) ----------------------------------------------------
+
+
+class StudioDampAnswers(Base):
+    """S11 Damp & Mould Lab: the last answers an owner home entered. Not sensitive, but
+    included in the user export (spec §1.6)."""
+
+    __tablename__ = "studio_damp_answers"
+
+    home_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("homes.id", ondelete="CASCADE"), primary_key=True
+    )
+    occupants: Mapped[int] = mapped_column(Integer)
+    dries_clothes_indoors: Mapped[bool] = mapped_column(Boolean)
+    kitchen_extractor: Mapped[bool] = mapped_column(Boolean)
+    bathroom_extractor: Mapped[bool] = mapped_column(Boolean)
+    trickle_vents: Mapped[bool] = mapped_column(Boolean)
+    heating_setpoint_c: Mapped[float] = mapped_column(Float)
+    updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())
+
+
 # --- Caches (no personal data) ------------------------------------------------------------
 
 

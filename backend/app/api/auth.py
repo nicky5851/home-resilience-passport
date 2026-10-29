@@ -144,6 +144,7 @@ async def _export_home(session: SessionDep, home: Any) -> dict[str, Any]:
         .where(db.SavedPlan.home_id == home.home_id)
         .order_by(db.SavedPlan.created_at)
     )
+    damp_answers = await session.get(db.StudioDampAnswers, home.home_id)
     return {
         "passport": store.passport(home).model_dump(mode="json"),
         "assessments": [
@@ -160,6 +161,17 @@ async def _export_home(session: SessionDep, home: Any) -> dict[str, Any]:
             {"created_at": _iso(p.created_at), "budget_gbp": p.budget_gbp, "plan": p.plan}
             for p in plans.all()
         ],
+        "studio_damp_answers": None
+        if damp_answers is None
+        else {
+            "occupants": damp_answers.occupants,
+            "dries_clothes_indoors": damp_answers.dries_clothes_indoors,
+            "kitchen_extractor": damp_answers.kitchen_extractor,
+            "bathroom_extractor": damp_answers.bathroom_extractor,
+            "trickle_vents": damp_answers.trickle_vents,
+            "heating_setpoint_c": damp_answers.heating_setpoint_c,
+            "updated_at": _iso(damp_answers.updated_at),
+        },
     }
 
 

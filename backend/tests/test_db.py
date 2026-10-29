@@ -16,6 +16,7 @@ from app.db.models import (
     PassportEvent,
     SavedPlan,
     ShareLink,
+    StudioDampAnswers,
     User,
     WorkFile,
 )
@@ -29,8 +30,17 @@ pytestmark = pytest.mark.anyio
 SPEC_TABLES = {
     "users", "homes", "households", "assessments", "plans", "passport_events", "work_files",
     "share_links", "measures", "funding_options", "flood_postcodes", "api_cache", "llm_cache",
+    "studio_damp_answers",
 }  # fmt: skip
-HOME_TABLES = (Household, Assessment, SavedPlan, PassportEvent, WorkFile, ShareLink)
+HOME_TABLES = (
+    Household,
+    Assessment,
+    SavedPlan,
+    PassportEvent,
+    WorkFile,
+    ShareLink,
+    StudioDampAnswers,
+)
 
 
 async def _tables(engine) -> set[str]:
@@ -91,6 +101,9 @@ async def test_deleting_a_user_removes_everything(engine) -> None:
             SavedPlan(home_id=home_id, budget_gbp=0, selected_ids=[], plan={}),
             PassportEvent(id=event_id, home_id=home_id, kind="work_recorded", detail={}),
             ShareLink(home_id=home_id, token=uuid.uuid4().hex),
+            StudioDampAnswers(home_id=home_id, occupants=2, dries_clothes_indoors=False,
+                      kitchen_extractor=True, bathroom_extractor=True, trickle_vents=True,
+                      heating_setpoint_c=18.0),
         ])  # fmt: skip
         await s.flush()
         s.add(

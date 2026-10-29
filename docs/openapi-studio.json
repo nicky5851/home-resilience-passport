@@ -332,6 +332,140 @@
         "title": "DailyHeatPump",
         "type": "object"
       },
+      "DampLab": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "fallback_used": {
+            "title": "Fallback Used",
+            "type": "boolean"
+          },
+          "interventions": {
+            "items": {
+              "$ref": "#/components/schemas/Intervention"
+            },
+            "title": "Interventions",
+            "type": "array"
+          },
+          "landlord_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Landlord Note"
+          },
+          "moisture_class": {
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "title": "Moisture Class",
+            "type": "integer"
+          },
+          "monthly": {
+            "items": {
+              "$ref": "#/components/schemas/MonthlyCornerRisk"
+            },
+            "title": "Monthly",
+            "type": "array"
+          },
+          "surfaces": {
+            "items": {
+              "$ref": "#/components/schemas/SurfaceRisk"
+            },
+            "title": "Surfaces",
+            "type": "array"
+          },
+          "wall_u": {
+            "title": "Wall U",
+            "type": "number"
+          },
+          "wall_u_source": {
+            "enum": [
+              "epc_description",
+              "age_band_default"
+            ],
+            "title": "Wall U Source",
+            "type": "string"
+          },
+          "window_u": {
+            "title": "Window U",
+            "type": "number"
+          },
+          "winter": {
+            "title": "Winter",
+            "type": "string"
+          }
+        },
+        "required": [
+          "winter",
+          "wall_u",
+          "window_u",
+          "wall_u_source",
+          "moisture_class",
+          "surfaces",
+          "monthly",
+          "interventions",
+          "landlord_note",
+          "evidence",
+          "fallback_used"
+        ],
+        "title": "DampLab",
+        "type": "object"
+      },
+      "DampLabRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "bathroom_extractor": {
+            "title": "Bathroom Extractor",
+            "type": "boolean"
+          },
+          "dries_clothes_indoors": {
+            "title": "Dries Clothes Indoors",
+            "type": "boolean"
+          },
+          "heating_setpoint_c": {
+            "default": 18.0,
+            "title": "Heating Setpoint C",
+            "type": "number"
+          },
+          "kitchen_extractor": {
+            "title": "Kitchen Extractor",
+            "type": "boolean"
+          },
+          "occupants": {
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Occupants",
+            "type": "integer"
+          },
+          "trickle_vents": {
+            "title": "Trickle Vents",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "occupants",
+          "dries_clothes_indoors",
+          "kitchen_extractor",
+          "bathroom_extractor",
+          "trickle_vents"
+        ],
+        "title": "DampLabRequest",
+        "type": "object"
+      },
       "DecadeCount": {
         "additionalProperties": false,
         "properties": {
@@ -1154,6 +1288,35 @@
         "title": "HourlyReplayPoint",
         "type": "object"
       },
+      "Intervention": {
+        "additionalProperties": false,
+        "properties": {
+          "corner_risk_pct_after": {
+            "title": "Corner Risk Pct After",
+            "type": "number"
+          },
+          "delta_pct": {
+            "title": "Delta Pct",
+            "type": "number"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "corner_risk_pct_after",
+          "delta_pct"
+        ],
+        "title": "Intervention",
+        "type": "object"
+      },
       "Lesson": {
         "additionalProperties": false,
         "properties": {
@@ -1355,6 +1518,25 @@
           "percent"
         ],
         "title": "MixShare",
+        "type": "object"
+      },
+      "MonthlyCornerRisk": {
+        "additionalProperties": false,
+        "properties": {
+          "corner_risk_pct": {
+            "title": "Corner Risk Pct",
+            "type": "number"
+          },
+          "month": {
+            "title": "Month",
+            "type": "string"
+          }
+        },
+        "required": [
+          "month",
+          "corner_risk_pct"
+        ],
+        "title": "MonthlyCornerRisk",
         "type": "object"
       },
       "MonthlyHeatPump": {
@@ -2556,6 +2738,40 @@
         "title": "StudioHomeSummary",
         "type": "object"
       },
+      "SurfaceRisk": {
+        "additionalProperties": false,
+        "properties": {
+          "level": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "risk_hours_pct": {
+            "title": "Risk Hours Pct",
+            "type": "number"
+          },
+          "surface": {
+            "enum": [
+              "wall",
+              "corner",
+              "window"
+            ],
+            "title": "Surface",
+            "type": "string"
+          }
+        },
+        "required": [
+          "surface",
+          "risk_hours_pct",
+          "level"
+        ],
+        "title": "SurfaceRisk",
+        "type": "object"
+      },
       "UpgradeRow": {
         "additionalProperties": false,
         "properties": {
@@ -2699,6 +2915,59 @@
         "summary": "Home Summary",
         "tags": [
           "studio"
+        ]
+      }
+    },
+    "/api/v1/studio/homes/{ref}/damp-lab": {
+      "post": {
+        "operationId": "damp_lab_api_v1_studio_homes__ref__damp_lab_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DampLabRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DampLab"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Damp Lab",
+        "tags": [
+          "studio",
+          "studio:s11"
         ]
       }
     },
