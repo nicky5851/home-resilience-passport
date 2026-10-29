@@ -14,6 +14,13 @@ import { SkeletonBlock } from "@/features/studio/components/SkeletonBlock"
 import { studioApi, unwrap as studioUnwrap } from "@/features/studio/api/client"
 import type { FeatureMeta } from "@/features/studio/api/types"
 
+/** Features with no home ref: they work on arbitrary addresses (S18) or a portfolio sample
+ * (S20), so they get their own standalone page instead of `/studio/{ref}/{id}-{slug}`. */
+const STANDALONE_PATH: Record<string, string> = {
+  s18: "/studio/compare",
+  s20: "/studio/portfolio",
+}
+
 const CHAPTER_LABEL: Record<string, string> = {
   understand: "Understand",
   measure: "Measure",
@@ -118,14 +125,11 @@ export function StudioHub({ homeRef }: { homeRef?: string }) {
                     <Reveal index={i}>
                       <Link
                         href={
-                          f.id === "s18"
-                            ? "/studio/compare"
-                            : homeRef
-                              ? `/studio/${homeRef}/${f.id}-${f.slug}`
-                              : "/studio"
+                          STANDALONE_PATH[f.id] ??
+                          (homeRef ? `/studio/${homeRef}/${f.id}-${f.slug}` : "/studio")
                         }
                         className="s-card s-focus-ring block"
-                        aria-disabled={f.id !== "s18" && !homeRef}
+                        aria-disabled={!(f.id in STANDALONE_PATH) && !homeRef}
                       >
                         <p className="s-mono">
                           {f.id.toUpperCase()} · {f.needs_login ? "sign in" : "open to all"}

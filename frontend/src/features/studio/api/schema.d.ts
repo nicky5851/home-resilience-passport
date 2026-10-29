@@ -498,6 +498,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/portfolio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Portfolio */
+        get: operations["portfolio_api_v1_studio_portfolio_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/portfolio/scenario": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Scenario */
+        post: operations["scenario_api_v1_studio_portfolio_scenario_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -910,6 +944,21 @@ export interface components {
             count: number;
             /** Decade */
             decade: number;
+        };
+        /** District */
+        District: {
+            /** Avg Score */
+            avg_score: number;
+            /** Below C Share Pct */
+            below_c_share_pct: number;
+            /** Count */
+            count: number;
+            /** Lat */
+            lat: number;
+            /** Lon */
+            lon: number;
+            /** Outcode */
+            outcode: string;
         };
         /** EventSummary */
         EventSummary: {
@@ -1330,6 +1379,16 @@ export interface components {
             /** Text */
             text: string;
         };
+        /** LevelCount */
+        LevelCount: {
+            /** Count */
+            count: number;
+            /**
+             * Level
+             * @enum {string}
+             */
+            level: "low" | "medium" | "high";
+        };
         /** LocalPeak */
         LocalPeak: {
             /**
@@ -1487,6 +1546,48 @@ export interface components {
             local_planning_authority: string | null;
             /** Measures */
             measures: components["schemas"]["MeasureVerdict"][];
+        };
+        /** Portfolio */
+        Portfolio: {
+            /** Attribution Note */
+            attribution_note: string;
+            /** Below C Share Pct */
+            below_c_share_pct: number;
+            /** By Epc Band */
+            by_epc_band: components["schemas"]["BandCount"][];
+            /** By Score Band */
+            by_score_band: components["schemas"]["BandCount"][];
+            /** Districts */
+            districts: components["schemas"]["District"][];
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fairness Note */
+            fairness_note: string;
+            /**
+             * Fallback Used
+             * @default false
+             * @constant
+             */
+            fallback_used: false;
+            /** Financed Emissions T */
+            financed_emissions_t: number;
+            /** Flood Exposure */
+            flood_exposure: components["schemas"]["LevelCount"][];
+            /**
+             * Generated On
+             * Format: date
+             */
+            generated_on: string;
+            /** Heat 2050 */
+            heat_2050: components["schemas"]["LevelCount"][];
+            /** Sample Note */
+            sample_note: string;
+            /** Sample Size */
+            sample_size: number;
+            /** Transition Cost High Gbp */
+            transition_cost_high_gbp: number;
+            /** Transition Cost Low Gbp */
+            transition_cost_low_gbp: number;
         };
         /** PremiumSource */
         PremiumSource: {
@@ -1667,6 +1768,30 @@ export interface components {
             pct_income: number | null;
             /** Pct Income After */
             pct_income_after: number | null;
+        };
+        /** ScenarioRequest */
+        ScenarioRequest: {
+            /** By Year */
+            by_year: number;
+            /** Uptake Pct */
+            uptake_pct: number;
+        };
+        /** ScenarioResult */
+        ScenarioResult: {
+            /** Below C Share After Pct */
+            below_c_share_after_pct: number;
+            /** Emissions After T */
+            emissions_after_t: number;
+            /** Emissions Before T */
+            emissions_before_t: number;
+            /** Finance Needed High Gbp */
+            finance_needed_high_gbp: number;
+            /** Finance Needed Low Gbp */
+            finance_needed_low_gbp: number;
+            /** Homes Upgraded */
+            homes_upgraded: number;
+            /** Reduction Pct */
+            reduction_pct: number;
         };
         /** ScoreComponent */
         ScoreComponent: {
@@ -2970,6 +3095,59 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    portfolio_api_v1_studio_portfolio_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Portfolio"];
+                };
+            };
+        };
+    };
+    scenario_api_v1_studio_portfolio_scenario_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScenarioRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioResult"];
                 };
             };
             /** @description Validation Error */

@@ -4,7 +4,7 @@ COMPOSE := docker compose -f infra/docker-compose.yml
 BACKEND := cd backend &&
 HAS_FRONTEND := $(wildcard frontend/package.json)
 
-.PHONY: help install db migrate dev api test lint format openapi openapi-check types seed flood-data validate-data fixtures fixtures-inputs epc-data train coverage studio-openapi studio-openapi-check studio-types studio-record studio-test
+.PHONY: help install db migrate dev api test lint format openapi openapi-check types seed flood-data validate-data fixtures fixtures-inputs epc-data train coverage studio-openapi studio-openapi-check studio-types studio-record studio-test studio-portfolio
 
 help: ## Show this list
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-15s %s\n", $$1, $$2}'
@@ -71,6 +71,9 @@ studio-record: migrate ## Record live-API fallbacks for the 5 demo homes (needs 
 
 studio-test: ## Studio's own backend tests only
 	$(BACKEND) uv run pytest -q tests/studio
+
+studio-portfolio: migrate seed flood-data ## Rebuild S20's committed portfolio sample (needs Postgres + network)
+	$(BACKEND) uv run python -m scripts.build_studio_portfolio
 
 seed: migrate ## Load data/reference/*.csv and cache the 5 demo homes for offline demos
 	$(BACKEND) uv run python -m app.db.seed

@@ -1195,6 +1195,45 @@
         "title": "DecadeCount",
         "type": "object"
       },
+      "District": {
+        "additionalProperties": false,
+        "properties": {
+          "avg_score": {
+            "title": "Avg Score",
+            "type": "number"
+          },
+          "below_c_share_pct": {
+            "title": "Below C Share Pct",
+            "type": "number"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "lat": {
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "title": "Lon",
+            "type": "number"
+          },
+          "outcode": {
+            "title": "Outcode",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outcode",
+          "lat",
+          "lon",
+          "count",
+          "avg_score",
+          "below_c_share_pct"
+        ],
+        "title": "District",
+        "type": "object"
+      },
       "EventSummary": {
         "additionalProperties": false,
         "properties": {
@@ -2418,6 +2457,30 @@
         "title": "Lesson",
         "type": "object"
       },
+      "LevelCount": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "level": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Level",
+            "type": "string"
+          }
+        },
+        "required": [
+          "level",
+          "count"
+        ],
+        "title": "LevelCount",
+        "type": "object"
+      },
       "LocalPeak": {
         "additionalProperties": false,
         "properties": {
@@ -2832,6 +2895,116 @@
           "fallback_used"
         ],
         "title": "PermissionRadar",
+        "type": "object"
+      },
+      "Portfolio": {
+        "additionalProperties": false,
+        "properties": {
+          "attribution_note": {
+            "title": "Attribution Note",
+            "type": "string"
+          },
+          "below_c_share_pct": {
+            "title": "Below C Share Pct",
+            "type": "number"
+          },
+          "by_epc_band": {
+            "items": {
+              "$ref": "#/components/schemas/BandCount"
+            },
+            "title": "By Epc Band",
+            "type": "array"
+          },
+          "by_score_band": {
+            "items": {
+              "$ref": "#/components/schemas/BandCount"
+            },
+            "title": "By Score Band",
+            "type": "array"
+          },
+          "districts": {
+            "items": {
+              "$ref": "#/components/schemas/District"
+            },
+            "title": "Districts",
+            "type": "array"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "fairness_note": {
+            "title": "Fairness Note",
+            "type": "string"
+          },
+          "fallback_used": {
+            "const": false,
+            "default": false,
+            "title": "Fallback Used",
+            "type": "boolean"
+          },
+          "financed_emissions_t": {
+            "title": "Financed Emissions T",
+            "type": "number"
+          },
+          "flood_exposure": {
+            "items": {
+              "$ref": "#/components/schemas/LevelCount"
+            },
+            "title": "Flood Exposure",
+            "type": "array"
+          },
+          "generated_on": {
+            "format": "date",
+            "title": "Generated On",
+            "type": "string"
+          },
+          "heat_2050": {
+            "items": {
+              "$ref": "#/components/schemas/LevelCount"
+            },
+            "title": "Heat 2050",
+            "type": "array"
+          },
+          "sample_note": {
+            "title": "Sample Note",
+            "type": "string"
+          },
+          "sample_size": {
+            "title": "Sample Size",
+            "type": "integer"
+          },
+          "transition_cost_high_gbp": {
+            "title": "Transition Cost High Gbp",
+            "type": "integer"
+          },
+          "transition_cost_low_gbp": {
+            "title": "Transition Cost Low Gbp",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "sample_size",
+          "generated_on",
+          "sample_note",
+          "by_epc_band",
+          "by_score_band",
+          "flood_exposure",
+          "heat_2050",
+          "below_c_share_pct",
+          "transition_cost_low_gbp",
+          "transition_cost_high_gbp",
+          "financed_emissions_t",
+          "attribution_note",
+          "districts",
+          "fairness_note",
+          "evidence",
+          "fallback_used"
+        ],
+        "title": "Portfolio",
         "type": "object"
       },
       "PremiumSource": {
@@ -3439,6 +3612,73 @@
           "above_10pct_after"
         ],
         "title": "Scenario",
+        "type": "object"
+      },
+      "ScenarioRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "by_year": {
+            "maximum": 2035.0,
+            "minimum": 2026.0,
+            "title": "By Year",
+            "type": "integer"
+          },
+          "uptake_pct": {
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Uptake Pct",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "uptake_pct",
+          "by_year"
+        ],
+        "title": "ScenarioRequest",
+        "type": "object"
+      },
+      "ScenarioResult": {
+        "additionalProperties": false,
+        "properties": {
+          "below_c_share_after_pct": {
+            "title": "Below C Share After Pct",
+            "type": "number"
+          },
+          "emissions_after_t": {
+            "title": "Emissions After T",
+            "type": "number"
+          },
+          "emissions_before_t": {
+            "title": "Emissions Before T",
+            "type": "number"
+          },
+          "finance_needed_high_gbp": {
+            "title": "Finance Needed High Gbp",
+            "type": "integer"
+          },
+          "finance_needed_low_gbp": {
+            "title": "Finance Needed Low Gbp",
+            "type": "integer"
+          },
+          "homes_upgraded": {
+            "title": "Homes Upgraded",
+            "type": "integer"
+          },
+          "reduction_pct": {
+            "title": "Reduction Pct",
+            "type": "number"
+          }
+        },
+        "required": [
+          "emissions_before_t",
+          "emissions_after_t",
+          "reduction_pct",
+          "below_c_share_after_pct",
+          "homes_upgraded",
+          "finance_needed_low_gbp",
+          "finance_needed_high_gbp"
+        ],
+        "title": "ScenarioResult",
         "type": "object"
       },
       "ScoreComponent": {
@@ -5811,6 +6051,70 @@
         "tags": [
           "studio",
           "studio:s17"
+        ]
+      }
+    },
+    "/api/v1/studio/portfolio": {
+      "get": {
+        "operationId": "portfolio_api_v1_studio_portfolio_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Portfolio"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Portfolio",
+        "tags": [
+          "studio",
+          "studio:s20"
+        ]
+      }
+    },
+    "/api/v1/studio/portfolio/scenario": {
+      "post": {
+        "operationId": "scenario_api_v1_studio_portfolio_scenario_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScenarioRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Scenario",
+        "tags": [
+          "studio",
+          "studio:s20"
         ]
       }
     }
