@@ -16,6 +16,7 @@ from app.db.models import (
     PassportEvent,
     SavedPlan,
     ShareLink,
+    StudioCalendarToken,
     StudioDampAnswers,
     User,
     WorkFile,
@@ -30,7 +31,7 @@ pytestmark = pytest.mark.anyio
 SPEC_TABLES = {
     "users", "homes", "households", "assessments", "plans", "passport_events", "work_files",
     "share_links", "measures", "funding_options", "flood_postcodes", "api_cache", "llm_cache",
-    "studio_damp_answers",
+    "studio_damp_answers", "studio_calendar_tokens",
 }  # fmt: skip
 HOME_TABLES = (
     Household,
@@ -40,6 +41,7 @@ HOME_TABLES = (
     WorkFile,
     ShareLink,
     StudioDampAnswers,
+    StudioCalendarToken,
 )
 
 
@@ -104,6 +106,7 @@ async def test_deleting_a_user_removes_everything(engine) -> None:
             StudioDampAnswers(home_id=home_id, occupants=2, dries_clothes_indoors=False,
                       kitchen_extractor=True, bathroom_extractor=True, trickle_vents=True,
                       heating_setpoint_c=18.0),
+            StudioCalendarToken(home_id=home_id, token=uuid.uuid4().hex),
         ])  # fmt: skip
         await s.flush()
         s.add(

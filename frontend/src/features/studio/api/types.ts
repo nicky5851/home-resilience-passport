@@ -65,3 +65,8 @@ export type NetZeroYearRow = components["schemas"]["YearRow"]
 export type WeekAhead = components["schemas"]["WeekAhead"]
 export type WeekAheadDay = components["schemas"]["Day"]
 export type WeekAheadAlert = components["schemas"]["Alert"]
+
+export type CareCalendar = components["schemas"]["CareCalendar"]
+export type CareCalendarClimate = components["schemas"]["Climate"]
+export type CareCalendarMonth = components["schemas"]["MonthTasks"]
+export type CareTask = components["schemas"]["CareTask"]

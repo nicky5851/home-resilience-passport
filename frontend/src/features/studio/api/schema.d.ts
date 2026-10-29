@@ -72,6 +72,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/care-calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Care Calendar */
+        get: operations["care_calendar_api_v1_studio_homes__ref__care_calendar_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/homes/{ref}/care-calendar.ics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Care Calendar Ics */
+        get: operations["care_calendar_ics_api_v1_studio_homes__ref__care_calendar_ics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/homes/{ref}/care-calendar/subscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Subscribe */
+        post: operations["subscribe_api_v1_studio_homes__ref__care_calendar_subscribe_post"];
+        /** Unsubscribe */
+        delete: operations["unsubscribe_api_v1_studio_homes__ref__care_calendar_subscribe_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/damp-lab": {
         parameters: {
             query?: never;
@@ -378,6 +430,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/ical/{token}.ics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ical Feed */
+        get: operations["ical_feed_api_v1_studio_ical__token__ics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -523,6 +592,42 @@ export interface components {
              * @default false
              */
             pollution_sensitive: boolean;
+        };
+        /** CareCalendar */
+        CareCalendar: {
+            climate: components["schemas"]["Climate"];
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Months */
+            months: components["schemas"]["MonthTasks"][];
+        };
+        /** CareTask */
+        CareTask: {
+            /** Effort Minutes */
+            effort_minutes: number;
+            /** Guidance Url */
+            guidance_url: string;
+            /** Hazard */
+            hazard: string | null;
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
+            /** Why */
+            why: string;
+        };
+        /** Climate */
+        Climate: {
+            /** First Frost Avg */
+            first_frost_avg: string | null;
+            /** Last Frost Avg */
+            last_frost_avg: string | null;
+            /** Wettest Month */
+            wettest_month: number;
+            /** Windiest Month */
+            windiest_month: number;
         };
         /** ColdestHour */
         ColdestHour: {
@@ -1145,6 +1250,13 @@ export interface components {
             /** Percent */
             percent: number;
         };
+        /** MonthTasks */
+        MonthTasks: {
+            /** Month */
+            month: number;
+            /** Tasks */
+            tasks: components["schemas"]["CareTask"][];
+        };
         /** MonthlyCornerRisk */
         MonthlyCornerRisk: {
             /** Corner Risk Pct */
@@ -1599,6 +1711,11 @@ export interface components {
             ref: string;
             score: components["schemas"]["ResilienceScore"];
         };
+        /** SubscribeResponse */
+        SubscribeResponse: {
+            /** Url */
+            url: string;
+        };
         /** SurfaceRisk */
         SurfaceRisk: {
             /**
@@ -1796,6 +1913,128 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["BreatheEasy"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    care_calendar_api_v1_studio_homes__ref__care_calendar_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CareCalendar"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    care_calendar_ics_api_v1_studio_homes__ref__care_calendar_ics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    subscribe_api_v1_studio_homes__ref__care_calendar_subscribe_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubscribeResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unsubscribe_api_v1_studio_homes__ref__care_calendar_subscribe_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {
@@ -2386,6 +2625,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WeekAhead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ical_feed_api_v1_studio_ical__token__ics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */

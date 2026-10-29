@@ -233,6 +233,20 @@ class StudioDampAnswers(Base):
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())
 
 
+class StudioCalendarToken(Base):
+    """S17 Home Care Calendar: the one active public `.ics` feed token for an owner home, if
+    they have subscribed. Not sensitive on its own (the feed itself carries no address, postcode
+    or name), but included in the user export (spec §1.6)."""
+
+    __tablename__ = "studio_calendar_tokens"
+
+    home_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("homes.id", ondelete="CASCADE"), primary_key=True
+    )
+    token: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+
 # --- Caches (no personal data) ------------------------------------------------------------
 
 

@@ -145,6 +145,7 @@ async def _export_home(session: SessionDep, home: Any) -> dict[str, Any]:
         .order_by(db.SavedPlan.created_at)
     )
     damp_answers = await session.get(db.StudioDampAnswers, home.home_id)
+    calendar_token = await session.get(db.StudioCalendarToken, home.home_id)
     return {
         "passport": store.passport(home).model_dump(mode="json"),
         "assessments": [
@@ -172,6 +173,7 @@ async def _export_home(session: SessionDep, home: Any) -> dict[str, Any]:
             "heating_setpoint_c": damp_answers.heating_setpoint_c,
             "updated_at": _iso(damp_answers.updated_at),
         },
+        "studio_calendar_subscribed": calendar_token is not None,
     }
 
 

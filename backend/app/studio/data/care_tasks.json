@@ -1,0 +1,112 @@
+[
+  {
+    "id": "lag-outside-taps",
+    "title": "Lag outside taps and pipes",
+    "why": "Exposed pipes crack in a hard frost, and a burst pipe is expensive to fix.",
+    "effort_minutes": 20,
+    "hazard": null,
+    "guidance_url": "https://www.gov.uk/prepare-for-flooding/protect-your-property",
+    "schedule": { "type": "before_first_frost", "days": 14 },
+    "condition": null
+  },
+  {
+    "id": "clear-gutters-autumn",
+    "title": "Clear gutters and drains after leaf fall",
+    "why": "Blocked gutters send rainwater down your walls instead of away from them.",
+    "effort_minutes": 45,
+    "hazard": "surface_water",
+    "guidance_url": "https://www.gov.uk/prepare-for-flooding/protect-your-property",
+    "schedule": { "type": "fixed_month", "month": 11 },
+    "condition": null
+  },
+  {
+    "id": "clear-gutters-pre-wet",
+    "title": "Clear gutters and drains before the wettest month",
+    "why": "A second check before your wettest month of the year keeps drains clear when it matters most.",
+    "effort_minutes": 45,
+    "hazard": "surface_water",
+    "guidance_url": "https://www.gov.uk/prepare-for-flooding/protect-your-property",
+    "schedule": { "type": "before_wettest_month" },
+    "condition": null
+  },
+  {
+    "id": "boiler-service",
+    "title": "Book your annual boiler service",
+    "why": "An unserviced boiler is more likely to break down in winter, and less safe.",
+    "effort_minutes": 60,
+    "hazard": null,
+    "guidance_url": "https://www.gassaferegister.co.uk/",
+    "schedule": { "type": "fixed_month", "month": 9 },
+    "condition": { "type": "main_heating_contains", "value": "boiler" }
+  },
+  {
+    "id": "heat-pump-service",
+    "title": "Book your annual heat pump service",
+    "why": "A yearly check keeps a heat pump running efficiently through winter.",
+    "effort_minutes": 60,
+    "hazard": null,
+    "guidance_url": "https://energysavingtrust.org.uk/",
+    "schedule": { "type": "fixed_month", "month": 9 },
+    "condition": { "type": "main_heating_contains", "value": "heat pump" }
+  },
+  {
+    "id": "oil-tank-check",
+    "title": "Check your oil tank and order a top-up",
+    "why": "Oil prices and lead times both rise in winter - an autumn check avoids running dry.",
+    "effort_minutes": 15,
+    "hazard": null,
+    "guidance_url": "https://www.gov.uk/government/collections/government-conversion-factors-for-company-reporting",
+    "schedule": { "type": "fixed_month", "month": 9 },
+    "condition": { "type": "main_fuel_is", "value": "oil" }
+  },
+  {
+    "id": "flood-kit-check",
+    "title": "Test your flood kit and door seals",
+    "why": "Equipment that hasn't been checked since last winter may not work when you need it.",
+    "effort_minutes": 20,
+    "hazard": "river_sea_flood",
+    "guidance_url": "https://www.gov.uk/prepare-for-flooding/protect-your-property",
+    "schedule": { "type": "fixed_month", "month": 10 },
+    "condition": { "type": "flood_measure_or_risk" }
+  },
+  {
+    "id": "check-roof",
+    "title": "Check the roof and ridge tiles after the windiest month",
+    "why": "Gale-force gusts loosen tiles and fixings; a quick look catches problems early.",
+    "effort_minutes": 15,
+    "hazard": "storm",
+    "guidance_url": "https://www.gov.uk/prepare-for-flooding/protect-your-property",
+    "schedule": { "type": "after_windiest_month" },
+    "condition": null
+  },
+  {
+    "id": "bleed-radiators",
+    "title": "Bleed your radiators",
+    "why": "Trapped air makes radiators cold at the top and wastes heating.",
+    "effort_minutes": 20,
+    "hazard": null,
+    "guidance_url": "https://energysavingtrust.org.uk/",
+    "schedule": { "type": "fixed_month", "month": 10 },
+    "condition": null
+  },
+  {
+    "id": "clean-solar-panels",
+    "title": "Clean your solar panels",
+    "why": "A clean panel generates noticeably more power through spring and summer.",
+    "effort_minutes": 30,
+    "hazard": null,
+    "guidance_url": "https://energysavingtrust.org.uk/",
+    "schedule": { "type": "fixed_month", "month": 4 },
+    "condition": { "type": "measure_present", "value": "solar" }
+  },
+  {
+    "id": "check-trees",
+    "title": "Check trees near the house",
+    "why": "A tree surgeon can spot storm-risk branches before the next gale does.",
+    "effort_minutes": 20,
+    "hazard": "storm",
+    "guidance_url": "https://www.gov.uk/prepare-for-flooding/protect-your-property",
+    "schedule": { "type": "fixed_month", "month": 2 },
+    "condition": { "type": "storm_risk_at_least", "value": "medium" }
+  }
+]

@@ -88,6 +88,13 @@ async def by_share_token(session: AsyncSession, token: str) -> StubHome | None:
     return None if home is None else await _view(session, home)
 
 
+async def by_id_unchecked(session: AsyncSession, home_id: uuid.UUID) -> StubHome | None:
+    """No ownership check - only for call sites that already gate access another way (a public
+    token, for instance). Never expose this behind a route that takes a bare home ID."""
+    home = await session.get(db.Home, home_id)
+    return None if home is None else await _view(session, home)
+
+
 async def delete_home(session: AsyncSession, home: StubHome) -> None:
     """The home, everything hanging off it (ON DELETE CASCADE) and its certificate files."""
     keys = await storage_keys(session, db.Home.id == home.home_id)
