@@ -57,3 +57,7 @@ export type AffordabilityScenario = components["schemas"]["Scenario"]
 
 export type GreenValue = components["schemas"]["GreenValue"]
 export type Comp = components["schemas"]["Comp"]
+
+export type NetZeroRoad = components["schemas"]["NetZeroRoad"]
+export type NetZeroRoadStep = components["schemas"]["Step"]
+export type NetZeroYearRow = components["schemas"]["YearRow"]

@@ -2063,6 +2063,76 @@
         "title": "MonthlyHeatPump",
         "type": "object"
       },
+      "NetZeroRoad": {
+        "additionalProperties": false,
+        "properties": {
+          "cumulative_saved_kg": {
+            "title": "Cumulative Saved Kg",
+            "type": "integer"
+          },
+          "default_steps": {
+            "items": {
+              "$ref": "#/components/schemas/Step"
+            },
+            "title": "Default Steps",
+            "type": "array"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "fallback_used": {
+            "title": "Fallback Used",
+            "type": "boolean"
+          },
+          "near_zero_year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Near Zero Year"
+          },
+          "years": {
+            "items": {
+              "$ref": "#/components/schemas/YearRow"
+            },
+            "title": "Years",
+            "type": "array"
+          }
+        },
+        "required": [
+          "years",
+          "cumulative_saved_kg",
+          "near_zero_year",
+          "default_steps",
+          "evidence",
+          "fallback_used"
+        ],
+        "title": "NetZeroRoad",
+        "type": "object"
+      },
+      "NetZeroRoadRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "steps": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Step"
+            },
+            "title": "Steps",
+            "type": "array"
+          }
+        },
+        "title": "NetZeroRoadRequest",
+        "type": "object"
+      },
       "OrientationPoint": {
         "additionalProperties": false,
         "properties": {
@@ -3102,6 +3172,25 @@
         "title": "SolarResult",
         "type": "object"
       },
+      "Step": {
+        "additionalProperties": false,
+        "properties": {
+          "measure_id": {
+            "title": "Measure Id",
+            "type": "string"
+          },
+          "year": {
+            "title": "Year",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "measure_id",
+          "year"
+        ],
+        "title": "Step",
+        "type": "object"
+      },
       "StormReplayIndex": {
         "additionalProperties": false,
         "properties": {
@@ -3481,6 +3570,35 @@
           "reason"
         ],
         "title": "Window",
+        "type": "object"
+      },
+      "YearRow": {
+        "additionalProperties": false,
+        "properties": {
+          "co2_kg_do_nothing": {
+            "title": "Co2 Kg Do Nothing",
+            "type": "integer"
+          },
+          "co2_kg_with_plan": {
+            "title": "Co2 Kg With Plan",
+            "type": "integer"
+          },
+          "pathway_kg": {
+            "title": "Pathway Kg",
+            "type": "integer"
+          },
+          "year": {
+            "title": "Year",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "year",
+          "co2_kg_do_nothing",
+          "co2_kg_with_plan",
+          "pathway_kg"
+        ],
+        "title": "YearRow",
         "type": "object"
       }
     }
@@ -4078,6 +4196,59 @@
         "tags": [
           "studio",
           "studio:s03"
+        ]
+      }
+    },
+    "/api/v1/studio/homes/{ref}/net-zero-road": {
+      "post": {
+        "operationId": "net_zero_road_api_v1_studio_homes__ref__net_zero_road_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NetZeroRoadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NetZeroRoad"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Net Zero Road",
+        "tags": [
+          "studio",
+          "studio:s15"
         ]
       }
     },

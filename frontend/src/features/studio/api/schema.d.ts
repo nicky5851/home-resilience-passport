@@ -208,6 +208,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/homes/{ref}/net-zero-road": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Net Zero Road */
+        post: operations["net_zero_road_api_v1_studio_homes__ref__net_zero_road_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/homes/{ref}/permission-radar": {
         parameters: {
             query?: never;
@@ -1087,6 +1104,29 @@ export interface components {
             /** Month */
             month: number;
         };
+        /** NetZeroRoad */
+        NetZeroRoad: {
+            /** Cumulative Saved Kg */
+            cumulative_saved_kg: number;
+            /** Default Steps */
+            default_steps: components["schemas"]["Step"][];
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
+            /** Fallback Used */
+            fallback_used: boolean;
+            /** Near Zero Year */
+            near_zero_year: number | null;
+            /** Years */
+            years: components["schemas"]["YearRow"][];
+        };
+        /** NetZeroRoadRequest */
+        NetZeroRoadRequest: {
+            /**
+             * Steps
+             * @default []
+             */
+            steps: components["schemas"]["Step"][];
+        };
         /** OrientationPoint */
         OrientationPoint: {
             /** Annual Kwh */
@@ -1417,6 +1457,13 @@ export interface components {
             /** Suitability Note */
             suitability_note: string;
         };
+        /** Step */
+        Step: {
+            /** Measure Id */
+            measure_id: string;
+            /** Year */
+            year: number;
+        };
         /** StormReplayIndex */
         StormReplayIndex: {
             /** Events */
@@ -1542,6 +1589,17 @@ export interface components {
              * Format: date-time
              */
             start_at: string;
+        };
+        /** YearRow */
+        YearRow: {
+            /** Co2 Kg Do Nothing */
+            co2_kg_do_nothing: number;
+            /** Co2 Kg With Plan */
+            co2_kg_with_plan: number;
+            /** Pathway Kg */
+            pathway_kg: number;
+            /** Year */
+            year: number;
         };
     };
     responses: never;
@@ -1924,6 +1982,41 @@ export interface operations {
                 };
                 content: {
                     "text/plain": string;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    net_zero_road_api_v1_studio_homes__ref__net_zero_road_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NetZeroRoadRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NetZeroRoad"];
                 };
             };
             /** @description Validation Error */
