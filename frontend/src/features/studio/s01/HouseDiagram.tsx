@@ -92,13 +92,24 @@ export function HouseDiagram({
               d={r.path}
               fill="var(--s-green-500)"
               fillOpacity={isActive ? 0.28 : 0}
-              stroke={isActive ? "var(--s-brass)" : "transparent"}
-              strokeWidth={isActive ? 2.5 : 0}
-              strokeDasharray={isActive ? "6 3" : undefined}
+              stroke={isActive ? "#ffffff" : "transparent"}
+              strokeWidth={isActive ? 4 : 0}
+              strokeDasharray={isActive ? "7 4" : undefined}
               style={{
                 transition: "fill-opacity 320ms var(--s-ease-out), stroke 320ms var(--s-ease-out)",
+                filter: isActive ? "drop-shadow(0 0 3px rgba(0,0,0,0.55))" : undefined,
               }}
             />
+            {isActive && (
+              <path
+                d={r.path}
+                fill="none"
+                stroke="var(--s-brass)"
+                strokeWidth="2"
+                strokeDasharray="7 4"
+                strokeDashoffset="5.5"
+              />
+            )}
           </g>
         )
       })}

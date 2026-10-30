@@ -12,15 +12,10 @@ import { studioApi, unwrap as studioUnwrap } from "@/features/studio/api/client"
 import type { Compare, CompareHome } from "@/features/studio/api/types"
 import { ErrorState } from "@/features/studio/components/ErrorState"
 import { FallbackChip } from "@/features/studio/components/FallbackChip"
+import { ragColor } from "@/features/studio/lib/rag"
 
 const MIN_ROWS = 2
 const MAX_ROWS = 3
-
-const LEVEL_COLOUR: Record<string, string> = {
-  low: "var(--s-stone-500)",
-  medium: "var(--s-brass-500, #b08d57)",
-  high: "var(--s-red-600, #b3261e)",
-}
 
 const HAZARD_LABEL: Record<string, string> = {
   river_sea_flood: "River & sea flood",
@@ -223,7 +218,7 @@ export function HomeComparePage() {
               ) : null}
             </div>
             {row.lookupError ? (
-              <p className="text-sm" style={{ color: "var(--s-red-600, #b3261e)" }}>
+              <p className="text-sm" style={{ color: "var(--s-risk-high)" }}>
                 {row.lookupError}
               </p>
             ) : null}
@@ -397,10 +392,10 @@ function HomeCard({ home, winners }: { home: CompareHome; winners: Compare["winn
           {home.risk.levels.map((level) => (
             <tr key={level.hazard}>
               <td className="py-0.5">{HAZARD_LABEL[level.hazard] ?? level.hazard}</td>
-              <td className="py-0.5 text-right" style={{ color: LEVEL_COLOUR[level.today] }}>
+              <td className="py-0.5 text-right" style={{ color: ragColor(level.today) }}>
                 {level.today}
               </td>
-              <td className="py-0.5 text-right" style={{ color: LEVEL_COLOUR[level.y2050] }}>
+              <td className="py-0.5 text-right" style={{ color: ragColor(level.y2050) }}>
                 → {level.y2050}
               </td>
             </tr>

@@ -19,6 +19,7 @@ import { ErrorState } from "@/features/studio/components/ErrorState"
 import { FallbackChip } from "@/features/studio/components/FallbackChip"
 import { StatTile } from "@/features/studio/components/StatTile"
 import { StudioNav } from "@/features/studio/components/StudioNav"
+import { ragColor } from "@/features/studio/lib/rag"
 
 const REFRESH_MS = 15 * 60 * 1000
 
@@ -32,14 +33,6 @@ const MIX_COLOR: Record<string, string> = {
   hydro: "#1F5F8B",
   coal: "var(--s-forest-950)",
   other: "#D1D5DB",
-}
-
-const INDEX_COLOR: Record<string, string> = {
-  "very low": "var(--s-green-500)",
-  low: "var(--s-green-700)",
-  moderate: "#A86200",
-  high: "#C65D2E",
-  "very high": "var(--s-forest-950)",
 }
 
 function timeLabel(iso: string): string {
@@ -88,7 +81,7 @@ export function GridCarbonClockPage({ homeRef }: { homeRef: string }) {
               <p className="s-eyebrow">{result.region_name} right now</p>
               <p
                 className="s-display text-4xl"
-                style={{ color: INDEX_COLOR[result.now.index] ?? "inherit" }}
+                style={{ color: ragColor(result.now.index) }}
               >
                 {result.now.intensity_g_per_kwh} <span className="text-base">gCO2/kWh</span>
               </p>

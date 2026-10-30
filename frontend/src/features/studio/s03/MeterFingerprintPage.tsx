@@ -148,7 +148,11 @@ export function MeterFingerprintPage({ homeRef }: { homeRef: string }) {
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <StatTile eyebrow="Rating" value={RATING_LABEL[result.rating] ?? result.rating} />
+            <StatTile
+              eyebrow="Rating"
+              value={RATING_LABEL[result.rating] ?? result.rating}
+              tone={result.rating}
+            />
             <StatTile
               eyebrow="Heat-loss parameter"
               value={result.hlp_w_per_m2k != null ? result.hlp_w_per_m2k.toFixed(2) : "—"}

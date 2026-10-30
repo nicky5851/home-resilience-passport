@@ -19,21 +19,16 @@ import { studioApi, unwrap } from "@/features/studio/api/client"
 import type { Portfolio, ScenarioResult } from "@/features/studio/api/types"
 import { ErrorState } from "@/features/studio/components/ErrorState"
 import { StatTile } from "@/features/studio/components/StatTile"
-
-const LEVEL_COLOUR: Record<string, string> = {
-  low: "var(--s-green-500, #4a9d6e)",
-  medium: "var(--s-brass-500, #b08d57)",
-  high: "var(--s-red-600, #b3261e)",
-}
+import { ragColor } from "@/features/studio/lib/rag"
 
 const BAND_COLOUR: Record<string, string> = {
-  A: "#00a651",
-  B: "#19b459",
-  C: "#8dc63f",
-  D: "#fff200",
-  E: "#fbb040",
-  F: "#f36f21",
-  G: "#ed1c24",
+  A: "var(--s-epc-a)",
+  B: "var(--s-epc-b)",
+  C: "var(--s-epc-c)",
+  D: "var(--s-epc-d)",
+  E: "var(--s-epc-e)",
+  F: "var(--s-epc-f)",
+  G: "var(--s-epc-g)",
 }
 
 const YEARS = [2026, 2028, 2030, 2032, 2035]
@@ -133,7 +128,7 @@ export function LenderPortfolioLensPage() {
               <PieChart>
                 <Pie data={portfolio.flood_exposure} dataKey="count" nameKey="level" label>
                   {portfolio.flood_exposure.map((l) => (
-                    <Cell key={l.level} fill={LEVEL_COLOUR[l.level]} />
+                    <Cell key={l.level} fill={ragColor(l.level)} />
                   ))}
                 </Pie>
                 <Legend />
@@ -150,7 +145,7 @@ export function LenderPortfolioLensPage() {
               <PieChart>
                 <Pie data={portfolio.heat_2050} dataKey="count" nameKey="level" label>
                   {portfolio.heat_2050.map((l) => (
-                    <Cell key={l.level} fill={LEVEL_COLOUR[l.level]} />
+                    <Cell key={l.level} fill={ragColor(l.level)} />
                   ))}
                 </Pie>
                 <Legend />

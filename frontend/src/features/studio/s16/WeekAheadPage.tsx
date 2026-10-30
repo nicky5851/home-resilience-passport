@@ -7,6 +7,7 @@ import type { WeekAhead } from "@/features/studio/api/types"
 import { ErrorState } from "@/features/studio/components/ErrorState"
 import { FallbackChip } from "@/features/studio/components/FallbackChip"
 import { StudioNav } from "@/features/studio/components/StudioNav"
+import { ragColor } from "@/features/studio/lib/rag"
 
 const GLYPH_ICON: Record<string, string> = {
   sun: "☀️",
@@ -17,12 +18,6 @@ const GLYPH_ICON: Record<string, string> = {
   frost: "❄️",
   snow: "🌨️",
   storm: "⛈️",
-}
-
-const LEVEL_COLOUR: Record<string, string> = {
-  low: "var(--s-stone-500)",
-  medium: "var(--s-brass-500, #b08d57)",
-  high: "var(--s-red-600, #b3261e)",
 }
 
 function dayLabel(iso: string): string {
@@ -84,7 +79,7 @@ export function WeekAheadPage({ homeRef }: { homeRef: string }) {
                     <div
                       key={key}
                       className="space-y-1 rounded border-l-2 pl-2"
-                      style={{ borderColor: LEVEL_COLOUR[alert.level] }}
+                      style={{ borderColor: ragColor(alert.level) }}
                     >
                       <p className="s-mono text-sm font-semibold">{alert.title}</p>
                       {alert.actions.map((action, j) => {

@@ -123,6 +123,7 @@ export function DampMouldLabPage({ homeRef }: { homeRef: string }) {
                   value={`${s.risk_hours_pct}%`}
                   unit="of hours at risk"
                   delta={s.level}
+                  tone={s.level}
                 />
               </div>
             ))}

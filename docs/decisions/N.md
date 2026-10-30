@@ -843,3 +843,42 @@ Format: spec §13. Newest at the bottom.
 - Files: frontend/src/features/studio/s01/HouseDiagram.tsx, frontend/src/features/studio/design/tokens.css
 - PR: #? (local-only commit, not pushed, per the human's instruction)
 - Affects the other coder? no
+
+### 2026-10-30 · RAG colour system across Studio's classifying UI
+- Decision: added `frontend/src/features/studio/lib/rag.ts` (`ragBand`/`ragColor`, tested in
+  `rag.test.ts`), mapping every severity word Studio's APIs use (`low`/`medium`/`high`,
+  `none`/`moderate`/`very high`, `excellent`/`good`/`average`/`poor`, `good`/`fair`/`poor`, …)
+  onto the existing `--s-risk-low/-med/-high` tokens (green/amber/red, already defined in
+  `tokens.css` but unused outside the scoring §4.1 hazard levels). `StatTile` gained an optional
+  `tone` prop that colours its delta (or headline value, if there's no delta) by this signal.
+  Wired into every feature that actually classifies risk/suitability/severity: S01's hotspot
+  highlight (also made the dashed outline a white+brass double-stroke so it reads over the new
+  illustration), S03's heat-loss rating, S05's solar suitability, S06's live carbon-intensity
+  index, S11's per-surface damp risk, S16's weather-alert level, S18's hazard-today/2050 levels,
+  S20's flood/overheating exposure pies, and `ConciergeSheet`'s error text.
+- Bugs found along the way: S16 and S18 both coloured "low" severity **grey**, not green
+  (`var(--s-stone-500)`), and S11's per-surface risk delta was hardcoded green regardless of
+  level — a "high" damp risk displayed in the same green as "low". S20's EPC-band palette was a
+  second, slightly different hardcoded A-G hex set instead of reusing `tokens.css`'s canonical
+  one; replaced with the real tokens while in the file.
+- Deliberately left alone (per the human's own carve-out — Lloyd's green/black theme for
+  anything that isn't a red/amber/green classification): EPC letter bands and the resilience
+  score dial (human's explicit call — keep the familiar 7-colour certificate scale, not RAG),
+  S18's per-home comparison series colours (categorical identity, not severity), S06's generation
+  fuel-mix donut (categorical), and single-colour trend lines/bars with no per-point
+  classification (S07 temperature, S08 flood counts, S11's monthly trend bar, S12's airing score,
+  S15's carbon pathway).
+- Alternatives: collapsing EPC/score bands into 3-colour RAG too (asked the human directly;
+  declined); re-colouring S12's continuous 0-100 airing score by threshold bands (no backend
+  threshold exists for this, would be inventing bucket boundaries with no spec backing — left as
+  a single-colour trend, matching the "not a classification display" carve-out)
+- Why: requested directly by the human; real-world severity colour-coding should never put a
+  "high risk" result in the same colour family as "low risk", which two features were doing
+- Files: frontend/src/features/studio/lib/rag.ts, frontend/src/features/studio/lib/rag.test.ts,
+  frontend/src/features/studio/components/StatTile.tsx, frontend/src/features/studio/components/ConciergeSheet.tsx,
+  frontend/src/features/studio/s01/HouseDiagram.tsx, frontend/src/features/studio/s03/MeterFingerprintPage.tsx,
+  frontend/src/features/studio/s05/SolarRoofStudioPage.tsx, frontend/src/features/studio/s06/GridCarbonClockPage.tsx,
+  frontend/src/features/studio/s11/DampMouldLabPage.tsx, frontend/src/features/studio/s16/WeekAheadPage.tsx,
+  frontend/src/features/studio/s18/HomeComparePage.tsx, frontend/src/features/studio/s20/LenderPortfolioLensPage.tsx
+- PR: #? (local-only commit, not pushed, per the human's instruction)
+- Affects the other coder? no

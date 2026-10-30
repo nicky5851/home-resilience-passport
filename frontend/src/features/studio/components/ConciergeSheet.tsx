@@ -148,7 +148,7 @@ export function ConciergeSheet() {
                 </div>
               ))}
               {error ? (
-                <p className="text-sm" style={{ color: "var(--s-red-600, #b3261e)" }}>
+                <p className="text-sm" style={{ color: "var(--s-risk-high)" }}>
                   {error}
                 </p>
               ) : null}

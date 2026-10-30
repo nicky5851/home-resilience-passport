@@ -131,7 +131,11 @@ export function SolarRoofStudioPage({ homeRef }: { homeRef: string }) {
                   value={result.annual_kwh.toLocaleString()}
                   unit="kWh"
                 />
-                <StatTile eyebrow="Suitability" value={SUITABILITY_LABEL[result.suitability]} />
+                <StatTile
+                  eyebrow="Suitability"
+                  value={SUITABILITY_LABEL[result.suitability]}
+                  tone={result.suitability}
+                />
                 <StatTile
                   eyebrow="25-year saving"
                   value={`£${result.lifetime_saving_gbp.toLocaleString()}`}
