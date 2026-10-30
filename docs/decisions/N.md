@@ -802,3 +802,44 @@ Format: spec §13. Newest at the bottom.
   frontend/src/features/studio/s06/**, frontend/src/app/studio/[ref]/s06-grid-carbon-clock/page.tsx
 - PR: #35
 - Affects the other coder? no
+
+### 2026-10-30 · S19 fix · Hub tile 404 for the Concierge
+- Decision: `studio-hub.tsx` built every feature tile's `href` as
+  `/studio/{homeRef}/{id}-{slug}`, which 404'd for S19 because, per spec, S19 has no page of its
+  own — it's the global floating "Ask" button (`ConciergeSheet`) mounted once in
+  `app/studio/layout.tsx` and opened on every per-home Studio page, not a route. Added a
+  `HOME_HUB_FEATURES` set (currently just `s19`) alongside the existing `STANDALONE_PATH` map
+  (S18/S20); its tile now links to `/studio/{homeRef}` (where the Ask button already lives)
+  instead of a dead per-feature URL, and its pitch text gets "Use the Ask button." appended.
+  `aria-disabled` logic unchanged — it was already correct for this case.
+- Alternatives: give S19 a real page that just embeds the sheet open-by-default (rejected — adds
+  a route the spec explicitly says not to have, for no benefit); wire a shared open/close context
+  so the tile opens the sheet in place without navigating (more correct long-term, but needs
+  cross-component state the hub and the layout-mounted sheet don't currently share; deferred as
+  a bigger change than this bug warranted)
+- Why: found by the human clicking the S19 tile and hitting a 404; root cause confirmed against
+  the S19 spec section and the actual commit history (backend fully built, frontend page
+  intentionally never built, hub link-building never special-cased it)
+- Files: frontend/src/features/studio/studio-hub.tsx
+- PR: #? (local-only commit, not pushed, per the human's instruction)
+- Affects the other coder? no
+
+### 2026-10-30 · S01 follow-up · Illustrated house instead of flat hotspot blocks
+- Decision: replaced `HouseDiagram`'s six flat solid-colour rectangles with a small illustrated
+  scene (gradient sky and sun, grass with a ground shadow, brick-pattern wall, two-tone gradient
+  roof with ridge line and a decorative chimney, glazed window with mullions and a brass sill, a
+  wood-grain door with a brass handle, a paved path, a louvred services box) using new tokens
+  (`--s-sky-*`, `--s-roof-*`, `--s-brick*`, `--s-glass-*`, `--s-wood-*`, `--s-grass-*`, `--s-path`)
+  added to `tokens.css`. The "applied" state is now a soft green wash + dashed brass ring layered
+  on top of the illustration (instead of recolouring the whole shape), so a lit-up hotspot still
+  reads as part of a house. Same `HotspotId`s, same `onSelect` callback — `SandboxPage.tsx` is
+  unchanged.
+- Alternatives: the spec's full five-template (terrace/semi/detached/bungalow/flat), per-measure
+  visual-layer build (already explicitly descoped in the original S01 decision above); leaving
+  the flat blocks as-is
+- Why: requested directly by the human as a visual-only polish pass on an already-shipped
+  feature; no data, API or interaction change, so no new tests beyond the existing typecheck/
+  lint/build
+- Files: frontend/src/features/studio/s01/HouseDiagram.tsx, frontend/src/features/studio/design/tokens.css
+- PR: #? (local-only commit, not pushed, per the human's instruction)
+- Affects the other coder? no

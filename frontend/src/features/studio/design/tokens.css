@@ -30,6 +30,22 @@
   --s-epc-f: #ef8023;
   --s-epc-g: #e9153b;
 
+  /* House illustration (S01 Retrofit Sandbox) */
+  --s-sky-top: #cfe6df;
+  --s-sky-bottom: #f3ece0;
+  --s-sun: #f3d18a;
+  --s-roof-top: #2f5a4a;
+  --s-roof-bottom: #18372c;
+  --s-brick: #d9a07c;
+  --s-brick-mortar: #b97d57;
+  --s-glass-top: #eaf6ff;
+  --s-glass-bottom: #a9cdd9;
+  --s-wood-top: #8a5a36;
+  --s-wood-bottom: #5e3b22;
+  --s-grass-top: #bcd8a8;
+  --s-grass-bottom: #8fb876;
+  --s-path: #ddd3bf;
+
   --s-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --s-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
   --s-dur-1: 160ms;

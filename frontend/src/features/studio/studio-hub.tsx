@@ -21,6 +21,11 @@ const STANDALONE_PATH: Record<string, string> = {
   s20: "/studio/portfolio",
 }
 
+/** Features with no page of their own: they live as a global control on every per-home
+ * Studio page (S19's "Ask" sheet, mounted in layout.tsx), so their tile just opens that
+ * home's hub instead of linking to a route that was never built. */
+const HOME_HUB_FEATURES = new Set(["s19"])
+
 const CHAPTER_LABEL: Record<string, string> = {
   understand: "Understand",
   measure: "Measure",
@@ -126,7 +131,13 @@ export function StudioHub({ homeRef }: { homeRef?: string }) {
                       <Link
                         href={
                           STANDALONE_PATH[f.id] ??
-                          (homeRef ? `/studio/${homeRef}/${f.id}-${f.slug}` : "/studio")
+                          (HOME_HUB_FEATURES.has(f.id)
+                            ? homeRef
+                              ? `/studio/${homeRef}`
+                              : "/studio"
+                            : homeRef
+                              ? `/studio/${homeRef}/${f.id}-${f.slug}`
+                              : "/studio")
                         }
                         className="s-card s-focus-ring block"
                         aria-disabled={!(f.id in STANDALONE_PATH) && !homeRef}
@@ -136,7 +147,7 @@ export function StudioHub({ homeRef }: { homeRef?: string }) {
                         </p>
                         <p className="s-display mt-1 text-lg">{f.title}</p>
                         <p className="mt-1 text-sm" style={{ color: "var(--s-stone-500)" }}>
-                          {f.pitch}
+                          {HOME_HUB_FEATURES.has(f.id) ? `${f.pitch} Use the Ask button.` : f.pitch}
                         </p>
                       </Link>
                     </Reveal>
